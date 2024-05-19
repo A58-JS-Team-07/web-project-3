@@ -1,2 +1,7 @@
 # web-project-3
-Telerik Final Project: A calendar
+
+Project tehcnologies:
+- JavaScript (Vanilla)
+- React
+- Firebase
+- Chakra UI
