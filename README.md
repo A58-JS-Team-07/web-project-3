@@ -1,4 +1,4 @@
-t# web-project-3
+t# Sports Calendar
 
 Project tehcnologies:
 - JavaScript (Vanilla)
