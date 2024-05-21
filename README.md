@@ -1,7 +1,7 @@
-# web-project-3
+t# web-project-3
 
 Project tehcnologies:
 - JavaScript (Vanilla)
 - React
 - Firebase
-- Chakra UI
+- Tailwind and DaisyUI
