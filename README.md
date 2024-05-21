@@ -1,7 +1,7 @@
-# web-project-3
+t# Sports Calendar
 
 Project tehcnologies:
 - JavaScript (Vanilla)
 - React
 - Firebase
-- Chakra UI
+- Tailwind and DaisyUI
