@@ -4,7 +4,7 @@ import { LuCalendarPlus } from "react-icons/lu";
 
 function Header() {
   return (
-    <div className="navbar bg-base-200 p-2 px-6 py-[32px]">
+    <div className="navbar bg-base-200 p-2 px-6 min-h-[80px]">
       <div className="flex-1 gap-6 h-16">
         <label className="input input-bordered flex grow items-center gap-2 max-w-[600px]">
           <input type="text" className="grow" placeholder="Search" />
