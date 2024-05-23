@@ -1,4 +1,4 @@
-import PropTypes from "prop-types";
+import propTypes from "prop-types";
 
 function Button({ children, onClick = () => {}, style = "btn-secondary text-white" }) {
   return (
@@ -8,10 +8,10 @@ function Button({ children, onClick = () => {}, style = "btn-secondary text-whit
   );
 }
 
-Button.PropTypes = {
-  text: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
-  style: PropTypes.string,
+Button.propTypes = {
+  text: propTypes.string.isRequired,
+  onClick: propTypes.func,
+  style: propTypes.string,
 }
 
 export default Button;
