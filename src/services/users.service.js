@@ -2,8 +2,11 @@ import { get, set, update, ref, query, orderByChild, equalTo } from 'firebase/da
 import { db } from '../config/firebase-config.js';
 
 export const getUserByUsername = async (username) => {
-
-    return await get(ref(db, `users/${username}`));
+    try {
+        return await get(ref(db, `users/${username}`));
+    } catch (error) {
+        throw new Error('Error getting user data by username: ' + error)
+    }
 };
 
 export const createUser = async (username, uid, email, phoneNumber, firstName, lastName, address, avatar) => {
@@ -45,45 +48,70 @@ export const getAllUsersArray = async () => {
 };
 
 export const updateUser = async (username, updatedData) => {
-
-    return await set(ref(db, `users/${username}`), { ...updatedData, updatedOn: Date.now()});
+    try {
+        return await set(ref(db, `users/${username}`), { ...updatedData, updatedOn: Date.now()});
+    } catch (error) {
+        throw new Error('Error updating user:' + error);
+    }
 };
 
 export const changeCanBeInvitedStatus = async (username, status) => {
-
-    return await set(ref(db, `users/${username}/canBeInvited`), status);
+    try {
+        return await set(ref(db, `users/${username}/canBeInvited`), status);
+    } catch (error) {
+        throw new Error('Error changing can be invited status:' + error);
+    }
 };
 
 export const changeAdminStatus = async (username, status) => {
-
-    return await set(ref(db, `users/${username}/isAdmin`), status)
+    try {
+        return await set(ref(db, `users/${username}/isAdmin`), status);
+    } catch (error) {
+        throw new Error('Error changing admin status:' + error);
+    }
 };
 
 export const changeBanStatus = async (username, status) => {
-
-    return await set(ref(db, `users/${username}/isBanned`), status);
+    try {
+        return await set(ref(db, `users/${username}/isBanned`), status);
+    } catch (error) {
+        throw new Error('Error changing ban status:' + error);
+    }
 };
 
 //Check if there is another way to do it
 export const updateUserAvatar = async (username, avatarURL) => {
-    const changeAvatar = {};
-    changeAvatar[`users/${username}/avatarURL`] = avatarURL;
-
-    return await update(ref(db), changeAvatar);
+    try {
+        const changeAvatar = {};
+        changeAvatar[`users/${username}/avatarURL`] = avatarURL;
+    
+        return await update(ref(db), changeAvatar);
+    } catch (error) {
+        throw new Error('Error updating avatar' + error);
+    }
 };
 
-//Test these 3 functions to see if they work as expected
+//Transfer these 3 functions to event services and test them to see if they work as expected
 export const addUserCreatedEvent = async (username, eid) => {
-  
-    return await set(ref(db, `users/${username}/createdEvents/${eid}`));
+    try {
+        return await set(ref(db, `users/${username}/createdEvents/${eid}`));
+    } catch (error) {
+        throw new Error('Error adding created event to user:' + error);
+    }
 };
 
 export const addUserInvitedEvent = async (username, eid) => {
-  
-    return await set(ref(db, `users/${username}/invitedEvents/${eid}`));
+    try {
+        return await set(ref(db, `users/${username}/invitedEvents/${eid}`));
+    } catch (error) {
+        throw new Error('Error adding invited event to user:')
+    }
 };
 
 export const addUserParticipatedEvent = async (username, eid) => {
-  
-    return await set(ref(db, `users/${username}/participatedEvents/${eid}`));
+    try {
+        return await set(ref(db, `users/${username}/participatedEvents/${eid}`));
+    } catch (error) {
+        throw new Error('Error adding participated event to user:' + error);
+    }
 };
