@@ -6,38 +6,42 @@ export const getUserByUsername = async (username) => {
     return await get(ref(db, `users/${username}`));
 };
 
-export const createUserHandle = async (username, uid, email, phoneNumber, firstName, lastName, address, avatar) => {
-
-    return await set(ref(db, `users/${username}`), {
-        username,
-        uid,
-        email,
-        phoneNumber,
-        firstName,
-        lastName,
-        address,
-        avatar, // Check how to do it???
-        canBeInvited: false,
-        isAdmin: false,
-        isBanned: false,
-        createdO: Date.now()
-    })
+export const createUser = async (username, uid, email, phoneNumber, firstName, lastName, address, avatar) => {
+    try {
+        return await set(ref(db, `users/${username}`), {
+            username,
+            uid,
+            email,
+            phoneNumber,
+            firstName,
+            lastName,
+            address,
+            avatar, // Check how to do it???
+            canBeInvited: false,
+            isAdmin: false,
+            isBanned: false,
+            createdOn: Date.now()
+        });
+    } catch (error) {
+        throw new Error('Error creating user: ' + error);
+    }
 };
 
 export const getUserData = async (uid) => {
-
-    return await get(query(ref(db, 'users'), orderByChild('uid'), equalTo(uid)));
+    try {
+        return await get(query(ref(db, 'users'), orderByChild('uid'), equalTo(uid)));
+    } catch (error) {
+        throw new Error('Error getting user data: ' + error);
+    }
 };
 
 export const getAllUsersArray = async () => {
-    const userSnapshot = await get(ref(db, 'users'));
-    const users = [];
-
-    userSnapshot.forEach((user) => {
-        users.push(user.val());
-    });
-
-    return users;
+    try {
+        const usersSnapshot = await get(ref(db, 'users'));
+        return Object.values(usersSnapshot.val());
+    } catch (error) {
+        throw new Error('Error getting all users: ' + error);
+    }
 };
 
 export const updateUser = async (username, updatedData) => {
@@ -52,7 +56,7 @@ export const changeCanBeInvitedStatus = async (username, status) => {
 
 export const changeAdminStatus = async (username, status) => {
 
-    return set(ref(db, `users/${username}/isAdmin`), status)
+    return await set(ref(db, `users/${username}/isAdmin`), status)
 };
 
 export const changeBanStatus = async (username, status) => {
