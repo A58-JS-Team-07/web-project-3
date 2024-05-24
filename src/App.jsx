@@ -12,31 +12,38 @@ import SingleEvent from "./views/Events/SingleEvent/SingleEvent";
 import LoginRegister from "./views/LoginRegister/LoginRegister";
 import MyCalendar from "./views/MyCalendar/MyCalendar";
 import Profile from "./views/Profile/Profile";
+import { AppContext } from "./context/AppContext";
 
 function App() {
+  const [appState, setAppState] = useState({ user: null, userData: null });
+
   return (
-    <div className="flex h-screen">
-      <div className="left w-1/6 bg-primary">
-        <SideMenu />
-      </div>
-      <div className="right w-5/6 flex flex-col">
-        <Header />
-        <div className="overflow-auto flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<LoginRegister />} />
-            <Route path="/events" element={<AllEvents />} />
-            <Route path="/events/:id" element={<SingleEvent />} />
-            <Route path="/my-calendar" element={<MyCalendar />} />
-            <Route path="/contacts-lists" element={<ContactsLists />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/admin-center" element={<AdminCenter />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Footer />
+    <>
+      <AppContext.Provider value={{ ...appState, setAppState }}>
+        <div className="flex h-screen">
+          <div className="left w-1/6 bg-primary">
+            <SideMenu />
+          </div>
+          <div className="right w-5/6 flex flex-col">
+            <Header />
+            <div className="overflow-auto flex-grow">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<LoginRegister />} />
+                <Route path="/events" element={<AllEvents />} />
+                <Route path="/events/:id" element={<SingleEvent />} />
+                <Route path="/my-calendar" element={<MyCalendar />} />
+                <Route path="/contacts-lists" element={<ContactsLists />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/admin-center" element={<AdminCenter />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <Footer />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </AppContext.Provider>
+    </>
   );
 }
 
