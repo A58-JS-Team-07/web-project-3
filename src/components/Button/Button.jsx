@@ -9,7 +9,7 @@ function Button({ children, onClick = () => {}, style = "btn-secondary text-whit
 }
 
 Button.propTypes = {
-  text: propTypes.string.isRequired,
+  children: propTypes.any.isRequired,
   onClick: propTypes.func,
   style: propTypes.string,
 }
