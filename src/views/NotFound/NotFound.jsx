@@ -18,7 +18,7 @@ function NotFound() {
               Page Not Found
             </h1>
             <p className="mb-5 text-2xl text-white">
-              It looks like you're lost. <br /> Let's get you back on track.
+              It looks like you&apos;re lost. <br /> Let&apos;s get you back on track.
             </p>
             <NavLink to="/">
               <Button>Back to Home</Button>
