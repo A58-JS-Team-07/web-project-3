@@ -1,5 +1,6 @@
 import Button from "../../Button/Button";
 import { LuCalendarPlus } from "react-icons/lu";
+import { NavLink } from "react-router-dom";
 
 
 function Header() {
@@ -26,7 +27,7 @@ function Header() {
         <div className="flex-none">
           <ul className="menu menu-horizontal px-1">
             <li>
-              <a className="text-lg">Login / Register</a>
+              <NavLink to="/login" className="text-lg">Login / Register</NavLink>
             </li>
           </ul>
         </div>
@@ -69,7 +70,7 @@ function Header() {
             className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
           >
             <li>
-              <a className="justify-between text-base">Profile</a>
+              <NavLink to="/profile" className="justify-between text-base">Profile</NavLink>
             </li>
             <li>
               <a className="text-base">Logout</a>
