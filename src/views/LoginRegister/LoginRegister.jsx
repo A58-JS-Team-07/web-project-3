@@ -1,88 +1,183 @@
 import Button from "../../components/Button/Button";
+import { useState } from "react";
 
 function LoginRegister() {
-  return (
-    <>
-      <div className="login">
-        <h1>Login</h1>
-        <div className="login__form">
-          <div className="login__form-group">
-            <label htmlFor="email">Email</label>
-            <input type="email" id="email" name="email" />
-          </div>
-          <div className="login__form-group">
-            <label htmlFor="password">Password</label>
-            <input type="password" id="password" name="password" />
-          </div>
-          <Button>Login</Button>
-        </div>
-      </div>
+  const [activeTab, setActiveTab] = useState("login");
 
-      <div className="register">
-        <h1>Register</h1>
-        <div className="register__form">
-          <div className="register__row">
-            <div className="register__form-group">
-              <label htmlFor="firstName">First name</label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-              />
-            </div>
-            <div className="register__form-group">
-              <label htmlFor="lastName">Last name</label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-              />
-            </div>
+  const changeTab = (tab) => {
+    setActiveTab(tab);
+  };
+
+  return (
+    <div className="flex flex-row min-h-[83vh]">
+      <div className="left w-1/2 flex flex-col justify-center items-center">
+        <h1 className="text-4xl font-bold mb-4">Get started</h1>
+        <p className="max-w-[600px] text-center mb-4">
+          Log in to your account to unlock the full potential of our platform.
+          If you don&apos;t have an account yet, creating one is quick and easy.
+        </p>
+        <div className="switcher flex flex-row bg-neutral-200 rounded-full shadow-lg mt-2 mb-5">
+          <div
+            className={`switcher__item login px-6 py-3 rounded-full text-lg min-w-[140px] text-center ${
+              activeTab === "login"
+                ? "bg-secondary text-white"
+                : "bg-neutral-200 text-black"
+            } transition-colors duration-300`}
+            onClick={() => changeTab("login")}
+          >
+            Login
           </div>
-          <div className="register__row">
-            <div className="register__form-group">
-              <label htmlFor="username">Username</label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-              />
-            </div>
+          <div
+            className={`switcher__item register px-6 py-3 rounded-full text-lg min-w-[140px] text-center ${
+              activeTab === "register"
+                ? "bg-secondary text-white"
+                : "bg-neutral-200 text-black"
+            } transition-colors duration-300`}
+            onClick={() => changeTab("register")}
+          >
+            Register
           </div>
-          <div className="register__row">
-            <div className="register__form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-              />
-            </div>
-          </div>
-          <div className="register__row">
-            <div className="register__form-group">
-              <label htmlFor="phone">Phone</label>
-              <input
-                type="phone"
-                id="phone"
-                name="phone"
-              />
-            </div>
-          </div>
-          <div className="register__row">
-            <div className="register__form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-              />
-            </div>
-          </div>
-          <Button>Register</Button>
         </div>
+
+        {activeTab === "login" ? (
+          <div className="loginSection min-h-[400px] w-2/3">
+            <div className="login__form gap-4 flex flex-col">
+              <div className="login__form-group">
+                <label className="input input-bordered flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    className="w-4 h-4 opacity-70"
+                  >
+                    <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+                    <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+                  </svg>
+                  <input type="text" className="grow" placeholder="Email" />
+                </label>
+              </div>
+              <div className="login__form-group">
+                <label className="input input-bordered flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    className="w-4 h-4 opacity-70"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <input type="password" className="grow" value="password" />
+                </label>
+              </div>
+              <Button>Login</Button>
+            </div>
+          </div>
+        ) : (
+          <div className="registerSection min-h-[400px] w-2/3">
+            <div className="register__form gap-4 flex flex-col">
+              <div className="register__row">
+                <div className="flex row gap-4">
+                  <div className="register__form-group w-full">
+                    <input
+                      type="text"
+                      placeholder="Last name"
+                      className="input input-bordered w-full"
+                    />
+                  </div>
+                  <div className="register__form-group w-full">
+                    <input
+                      type="text"
+                      placeholder="First name"
+                      className="input input-bordered w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="register__row">
+                <div className="register__form-group">
+                  <label className="input input-bordered flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                      className="w-4 h-4 opacity-70"
+                    >
+                      <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+                    </svg>
+                    <input
+                      type="text"
+                      className="grow"
+                      placeholder="Username"
+                    />
+                  </label>
+                </div>
+              </div>
+              <div className="register__row">
+                <div className="register__form-group">
+                  <label className="input input-bordered flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                      className="w-4 h-4 opacity-70"
+                    >
+                      <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+                      <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+                    </svg>
+                    <input type="text" className="grow" placeholder="Email" />
+                  </label>
+                </div>
+              </div>
+              <div className="register__row">
+                <div className="register__form-group">
+                  <label className="input input-bordered flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                      className="w-[16px] h-[14px] opacity-70"
+                    >
+                      <path
+                        transform="scale(0.03) translate(12, 12)"
+                        d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"
+                      />
+                    </svg>
+
+                    <input type="text" className="grow" placeholder="Phone" />
+                  </label>
+                </div>
+              </div>
+              <div className="register__row">
+                <label className="input input-bordered flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    className="w-4 h-4 opacity-70"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <input type="password" className="grow" value="password" />
+                </label>
+              </div>
+              <Button>Register</Button>
+            </div>
+          </div>
+        )}
       </div>
-    </>
+      <div
+        className="right w-1/2 bg-cover bg-center rounded-tl-3xl rounded-bl-3xl"
+        style={{ backgroundImage: "url('/public/login-bg.jpg')" }}
+      ></div>
+    </div>
   );
 }
 
