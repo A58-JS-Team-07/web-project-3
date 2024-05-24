@@ -19,7 +19,6 @@ export const createUser = async (username, uid, email, phoneNumber, firstName, l
             firstName,
             lastName,
             address,
-            avatar, // Check how to do it???
             canBeInvited: false,
             isAdmin: false,
             isBanned: false,
