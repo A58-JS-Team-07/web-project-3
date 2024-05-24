@@ -13,7 +13,7 @@ export default {
         customThemeLight: {
           primary: "#002448",
           secondary: "#55d3d2",
-          accent: "red",
+          accent: "002448",
           neutral: "#212121",
           white: "#fff",
           "base-100": "#f6f7fa",
@@ -30,11 +30,11 @@ export default {
           "--tab-radius": "0.5rem", // border radius of tabs
         },
         customThemeDark: {
-          primary: "#fff",
-          secondary: "#55d3d2",
+          primary: "#002448",
+          secondary: "red",
           accent: "#37cdbe",
           neutral: "#3d4451",
-          "base-100": "#f6f7fa",
+          "base-100": "#212121",
 
           "--rounded-box": "1rem", // border radius rounded-box utility class, used in card and other large boxes
           "--rounded-btn": "0.5rem", // border radius rounded-btn utility class, used in buttons and similar element
