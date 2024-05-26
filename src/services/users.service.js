@@ -9,7 +9,7 @@ export const getUserByUsername = async (username) => {
     }
 };
 
-export const createUser = async (username, uid, email, phoneNumber, firstName, lastName, address, avatar) => {
+export const createUser = async (username, uid, email, phoneNumber, firstName, lastName, address) => {
     try {
         return await set(ref(db, `users/${username}`), {
             username,
