@@ -1,9 +1,13 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Button from "../../components/Button/Button.jsx";
-import { AppContext } from "../../context/AppContext.jsx";
-
+import Button from "../../components/Button/Button";
+import { AppContext } from "../../context/AppContext";
+import { MIN_USERNAME_LENGTH,  MAX_USERNAME_LENGTH, isValidEmail, isValidPhoneNumber, isValidPassword, isValidName } from "../../common/constants";
+import { createUser, getUserByUsername } from "../../services/users.service";
+import { auth } from "../../config/firebase-config";
+import { registerUser } from "../../services/auth.service";
+import { updateProfile } from "firebase/auth";
 
 function LoginRegister() {
   const [activeTab, setActiveTab] = useState("login");
@@ -17,7 +21,7 @@ function LoginRegister() {
     lastName: "",
     username: "",
     email: "",
-    phone: "",
+    phoneNumber: "",
     password: "",
   });
 
@@ -65,6 +69,62 @@ function LoginRegister() {
       return;
     }
 
+    if (!isValidPhoneNumber(form.phoneNumber)) {
+      toast.error("Phone number must be valid phone number with 10 digits!");
+      return;
+    }
+
+    if (!isValidEmail(form.email)) {
+      toast.error("Please enter a valid email address!");
+    }
+
+    if (form.username.length < MIN_USERNAME_LENGTH || form.username.length > MAX_USERNAME_LENGTH) {
+      toast.error("Username must be between 3 and 30 characters!");
+      return;
+    }
+
+    if (!isValidPassword(form.password)) {
+      toast.error("Password must be between 8 and 30 characters and must include at least one number and one symbol!");
+      return;
+      
+    }
+
+    if (!isValidName(form.firstName)) {
+      toast.error("First name must be between 1 and 30 characters and contain only letters!");
+      return;
+    }
+
+    if (!isValidName(form.lastName)) {
+      toast.error("Last name must be between 1 and 30 characters and contain only letters!");
+      return;
+    }
+
+    setLoading(true);
+
+    getUserByUsername(form.username).then((snapshot) => {
+      if (snapshot.exists()) {
+        toast.error("Username already exists!");
+        setLoading(false);
+        throw new Error("Username already exists!");
+      } 
+      return registerUser(form.email, form.password);
+    }).then(credential => {
+      createUser(form.username, credential.user.uid, credential.user.email, form.phoneNumber, form.firstName, form.lastName);
+    }).then(() => {
+      setAppState({ ...credential.user });
+    }).then(() => {
+      return updateProfile(auth.currentUser, { displayName: form.username });
+    }).catch((error) => {
+      if (error.code === 'auth/email-already-in-use') {
+        toast.error('Email has already been used!');
+      } else if (e.code === 'auth/weak-password') {
+        toast.error('Password must be between 8 and 30 characters and must include at least one number and one symbol!')
+      } else if (e.code === 'auth/invalid-email') {
+        toast.error('"Please enter a valid email address!')
+      } else {
+        toast.error(`${error.message}`);
+      }
+    });
   };
   return (
     <div className="flex flex-row min-h-[83vh]">
