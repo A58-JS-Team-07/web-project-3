@@ -1,6 +1,65 @@
-import Button from "../../components/Button/Button";
+import React, { useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import Button from "../../components/Button/Button.jsx";
+import { AppContext } from "../../context/AppContext.jsx";
+
 
 function LoginRegister() {
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    phone: "",
+    password: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const { user, setAppState } = useContext(AppContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    user ? navigate("/") : null;
+  }, [user, navigate]);
+
+  const updateForm = (prop) => (e) => {
+    setForm({
+      ...form,
+      [prop]: e.target.value
+    });
+  };
+
+  const onRegister = async (event) => {
+    event.preventDefault(); // Prevent the default form submit behavior which refreshes the page
+
+    if (!form.firstName) {
+      toast.error("First name is required");
+      return;
+    }
+
+    if (!form.lastName) {
+      toast.error("Last name is required");
+      return;
+    }
+
+    if (!form.username) {
+      toast.error("Username is required");
+      return;
+    }
+
+    if (!form.email) {
+      toast.error("Email is required");
+      return;
+    }
+
+    if (!form.password) {
+      toast.error("Password is required");
+      return;
+    }
+
+  };
   return (
     <>
       <div className="login">
@@ -12,7 +71,7 @@ function LoginRegister() {
           </div>
           <div className="login__form-group">
             <label htmlFor="password">Password</label>
-            <input type="password" id="password" name="password" />
+            <input type="password" id="login-password" name="password" />
           </div>
           <Button>Login</Button>
         </div>
@@ -54,7 +113,7 @@ function LoginRegister() {
               <label htmlFor="email">Email</label>
               <input
                 type="email"
-                id="email"
+                id="register-email"
                 name="email"
               />
             </div>
@@ -74,7 +133,7 @@ function LoginRegister() {
               <label htmlFor="password">Password</label>
               <input
                 type="password"
-                id="password"
+                id="register-password"
                 name="password"
               />
             </div>
