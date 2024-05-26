@@ -4,7 +4,11 @@ export default {
   mode: "jit",
   purge: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      aspectRatio: {
+        "40/21": "40 / 21",
+      },
+    },
   },
   plugins: [require("daisyui")],
   daisyui: {
