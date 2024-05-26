@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import Home from "./views/Home/Home";
 import Header from "./components/Frame/Header/Header";
@@ -14,13 +14,45 @@ import LoginRegister from "./views/LoginRegister/LoginRegister";
 import MyCalendar from "./views/MyCalendar/MyCalendar";
 import Profile from "./views/Profile/Profile";
 import { AppContext } from "./context/AppContext";
+import { app, auth } from "./config/firebase-config";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { getUserData } from "./services/users.service";
+import Loader from "./components/Loader/Loader";
+import Authenticated from "./hoc/Authenticated";
 
 function App() {
   const [appState, setAppState] = useState({ user: null, userData: null });
 
+  const [user] = useAuthState(auth);
+
+  const [loading, setLoading] = useState(false);
+
+  if (appState.user !== user) {
+    setAppState({ ...appState, user });
+  }
+
+  useEffect	(() => {
+    if (!appState.user) {
+      return;
+    }
+
+    setLoading(true);
+
+    getUserData(appState.user.uid).then((snapshot) => {
+      console.log('snapshot:', snapshot.val());
+      const userData = Object.values(snapshot.val())[0];
+      setAppState({ ...appState, userData });
+
+      setLoading(false);
+    })
+    .catch((error) => console.error('Error getting user data:', error));
+
+  }, [appState.user]);
+
   return (
     <>
       <AppContext.Provider value={{ ...appState, setAppState }}>
+        {!loading ? (
         <div className="flex h-screen">
           <div className="left w-1/6 bg-primary">
             <SideMenu />
@@ -32,17 +64,20 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<LoginRegister />} />
                 <Route path="/events" element={<AllEvents />} />
-                {/* <Route path="/events/:id" element={<SingleEvent />} /> */}
-                <Route path="/my-calendar" element={<MyCalendar />} />
-                <Route path="/contacts-lists" element={<ContactsLists />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/admin-center" element={<AdminCenter />} />
+                {/* <Route path="/events/:id" element={<Authenticated><SingleEvent /></Authenticated>} /> */}
+                <Route path="/my-calendar" element={<Authenticated><MyCalendar /></Authenticated>} />
+                <Route path="/contacts-lists" element={<Authenticated><ContactsLists /></Authenticated>} />
+                <Route path="/profile" element={<Authenticated><Profile /></Authenticated>} />
+                <Route path="/admin-center" element={<Authenticated><AdminCenter /></Authenticated>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Footer />
             </div>
           </div>
         </div>
+        ) : (
+          <Loader />
+        )}
       </AppContext.Provider>
     </>
   );
