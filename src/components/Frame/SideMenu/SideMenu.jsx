@@ -9,8 +9,11 @@ import {
   IoPersonOutline,
   IoPowerOutline,
 } from "react-icons/io5";
+import { useContext } from "react";
+import { AppContext } from "../../../context/AppContext";
 
 function SideMenu() {
+  const { userData, setAppState } = useContext(AppContext);
   return (
     <div className="sidebar flex flex-col">
       <div className="navbar sidebar__header p-2 pl-6 h-20 bg-primary border-b-2 border-gray-500 border-opacity-30  gap-3">
@@ -56,6 +59,8 @@ function SideMenu() {
               All Events
             </NavLink>
           </li>
+          {userData && (
+<>
           <li>
             <NavLink to="my-calendar"  className={({ isActive }) =>
                 `text-lg text-white flex items-center rounded-none ${
@@ -90,8 +95,12 @@ function SideMenu() {
               Contacts Lists
             </NavLink>
           </li>
+</>
+          )}
         </ul>
-        <hr className="border-t-2 border-gray-500 opacity-30" />
+        <hr className="border-t-2 border-gray-500 opacity-30" /> 
+        {userData && (
+
         <ul className="menu p-2">
           <li>
             <NavLink to="admin-center"  className={({ isActive }) =>
@@ -136,6 +145,7 @@ function SideMenu() {
             </a>
           </li>
         </ul>
+        )} 
         <hr className="border-t-2 border-gray-500 opacity-30" />
         {<ThemeSwitcher />}
       </div>
