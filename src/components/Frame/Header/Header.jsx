@@ -6,7 +6,7 @@ import { AppContext } from "../../../context/AppContext";
 import { logoutUser } from "../../../services/auth.service";
 
 function Header() {
-  const { user, setAppState } = useContext(AppContext);
+  const { userData, setAppState } = useContext(AppContext);
 
   const logout = async () => {
     await logoutUser();
@@ -33,7 +33,7 @@ function Header() {
         </label>
       </div>
       <div className="flex-none gap-2">
-        {!user ? (
+        {!userData ? (
           <div className="flex-none">
             <ul className="menu menu-horizontal px-1">
               <li>
