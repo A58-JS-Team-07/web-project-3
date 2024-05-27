@@ -22,8 +22,9 @@ import Authenticated from "./hoc/Authenticated";
 
 function App() {
   const [user] = useAuthState(auth);
+  // console.log("first user:", user);
 
-  const [appState, setAppState] = useState({ user, userData: null });
+  const [appState, setAppState] = useState({ user: null, userData: null });
 
   const [loading, setLoading] = useState(false);
 
@@ -31,28 +32,30 @@ function App() {
     setAppState({ ...appState, user });
   }
 
-  useEffect	(() => {
+  useEffect(() => {
     if (!appState.user) {
       return;
     }
 
     setLoading(true);
 
-    getUserData(appState.user.uid).then((snapshot) => {
-      console.log('snapshot:', snapshot.val());
-      const userData = Object.values(snapshot.val())[0];
-      setAppState({ ...appState, userData });
+    getUserData(appState.user.uid)
+      .then((snapshot) => {
+        // console.log("snapshot:", snapshot.val());
+        const userData = Object.values(snapshot.val())[0];
+        // console.log("userData:", userData);
+        // console.log("appState:", appState.user);
+        setAppState({ ...appState, userData });
 
-      setLoading(false);
-    })
-    .catch((error) => console.error('Error getting user data:', error));
-
+        setLoading(false);
+      })
+      .catch((error) => console.error("Error getting user data:", error));
   }, [appState.user]);
 
   return (
     <>
       <AppContext.Provider value={{ ...appState, setAppState }}>
-        {!loading ? (
+        {loading && <Loader />}
         <div className="flex h-screen">
           <div className="left w-1/6 bg-primary">
             <SideMenu />
@@ -65,19 +68,44 @@ function App() {
                 <Route path="/login" element={<LoginRegister />} />
                 <Route path="/events" element={<AllEvents />} />
                 {/* <Route path="/events/:id" element={<Authenticated><SingleEvent /></Authenticated>} /> */}
-                <Route path="/my-calendar" element={<Authenticated><MyCalendar /></Authenticated>} />
-                <Route path="/contacts-lists" element={<Authenticated><ContactsLists /></Authenticated>} />
-                <Route path="/profile" element={<Authenticated><Profile /></Authenticated>} />
-                <Route path="/admin-center" element={<Authenticated><AdminCenter /></Authenticated>} />
+                <Route
+                  path="/my-calendar"
+                  element={
+                    <Authenticated>
+                      <MyCalendar />
+                    </Authenticated>
+                  }
+                />
+                <Route
+                  path="/contacts-lists"
+                  element={
+                    <Authenticated>
+                      <ContactsLists />
+                    </Authenticated>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <Authenticated>
+                      <Profile />
+                    </Authenticated>
+                  }
+                />
+                <Route
+                  path="/admin-center"
+                  element={
+                    <Authenticated>
+                      <AdminCenter />
+                    </Authenticated>
+                  }
+                />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Footer />
             </div>
           </div>
         </div>
-        ) : (
-          <Loader />
-        )}
       </AppContext.Provider>
     </>
   );
