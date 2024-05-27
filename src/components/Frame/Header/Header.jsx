@@ -6,7 +6,7 @@ import { AppContext } from "../../../context/AppContext";
 import { logoutUser } from "../../../services/auth.service";
 
 function Header() {
-  const { userData, setAppState } = useContext(AppContext);
+  const { user, userData, setAppState } = useContext(AppContext);
 
   const logout = async () => {
     await logoutUser();
@@ -43,7 +43,6 @@ function Header() {
               </li>
             </ul>
           </div>
-
         ) : (
           <>
             <CreateEventModal />
@@ -63,21 +62,25 @@ function Header() {
               </div>
               <ul
                 tabIndex={0}
-                className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
+                className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52 pb-4"
               >
+                <h2 className="text-lg font-semibold px-3 pt-2 pb-2 border-b-2 mb-1">
+                  {"Hi, " + userData?.firstName + " " + userData?.lastName}
+                </h2>
                 <li>
                   <NavLink to="/profile" className="justify-between text-base">
                     Profile
                   </NavLink>
                 </li>
                 <li>
-                  <a className="text-base" onClick={logout}>Logout</a>
+                  <a className="text-base" onClick={logout}>
+                    Logout
+                  </a>
                 </li>
               </ul>
             </div>
           </>
         )}
-
       </div>
     </div>
   );

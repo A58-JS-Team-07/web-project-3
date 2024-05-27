@@ -7,11 +7,11 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply rounded-lg;
+  /* @apply rounded-lg; */
   @apply bg-base-100;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply rounded-lg;
+  /* @apply rounded-lg; */
   @apply bg-secondary;
 }

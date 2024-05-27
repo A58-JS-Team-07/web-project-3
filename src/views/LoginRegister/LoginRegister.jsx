@@ -3,7 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../../components/Button/Button";
 import { AppContext } from "../../context/AppContext";
-import { MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH, isValidEmail, isValidPhoneNumber, isValidPassword, isValidName } from "../../common/constants";
+import {
+  MIN_USERNAME_LENGTH,
+  MAX_USERNAME_LENGTH,
+  isValidEmail,
+  isValidPhoneNumber,
+  isValidPassword,
+  isValidName,
+} from "../../common/constants";
 import { createUser, getUserByUsername } from "../../services/users.service";
 import { auth } from "../../config/firebase-config";
 import { loginUser, registerUser } from "../../services/auth.service";
@@ -37,12 +44,11 @@ function LoginRegister() {
   const updateForm = (prop) => (e) => {
     setForm({
       ...form,
-      [prop]: e.target.value
+      [prop]: e.target.value,
     });
   };
 
   const onRegister = async () => {
-
     if (!form.firstName) {
       toast.error("First name is required");
       return;
@@ -77,24 +83,32 @@ function LoginRegister() {
       toast.error("Please enter a valid email address!");
     }
 
-    if (form.username.length < MIN_USERNAME_LENGTH || form.username.length > MAX_USERNAME_LENGTH) {
+    if (
+      form.username.length < MIN_USERNAME_LENGTH ||
+      form.username.length > MAX_USERNAME_LENGTH
+    ) {
       toast.error("Username must be between 3 and 30 characters!");
       return;
     }
 
     if (!isValidPassword(form.password)) {
-      toast.error("Password must be between 8 and 30 characters and must include at least one number and one symbol!");
+      toast.error(
+        "Password must be between 8 and 30 characters and must include at least one number and one symbol!"
+      );
       return;
-
     }
 
     if (!isValidName(form.firstName)) {
-      toast.error("First name must be between 1 and 30 characters and contain only letters!");
+      toast.error(
+        "First name must be between 1 and 30 characters and contain only letters!"
+      );
       return;
     }
 
     if (!isValidName(form.lastName)) {
-      toast.error("Last name must be between 1 and 30 characters and contain only letters!");
+      toast.error(
+        "Last name must be between 1 and 30 characters and contain only letters!"
+      );
       return;
     }
     try {
@@ -109,16 +123,25 @@ function LoginRegister() {
 
       const credential = await registerUser(form.email, form.password); // Register the user with email and password and get the credential object, which contains the user object in following format: { user: { uid, email, ... } }
       console.log(credential);
-      await createUser(form.username, credential.user.uid, credential.user.email, form.phoneNumber, form.firstName, form.lastName); // Create a user in the database with the provided data
+      await createUser(
+        form.username,
+        credential.user.uid,
+        credential.user.email,
+        form.phoneNumber,
+        form.firstName,
+        form.lastName
+      ); // Create a user in the database with the provided data
       setAppState({ ...credential.user }); // Set the user object in the context
       await updateProfile(auth.currentUser, { displayName: form.username }); // Update the user's display name with the provided username
     } catch (error) {
-      if (error.code === 'auth/email-already-in-use') {
-        console.error('Email has already been used!');
-      } else if (error.code === 'auth/weak-password') {
-        console.error('Password must be between 8 and 30 characters and must include at least one number and one symbol!')
-      } else if (error.code === 'auth/invalid-email') {
-        console.error('Please enter a valid email address!')
+      if (error.code === "auth/email-already-in-use") {
+        console.error("Email has already been used!");
+      } else if (error.code === "auth/weak-password") {
+        console.error(
+          "Password must be between 8 and 30 characters and must include at least one number and one symbol!"
+        );
+      } else if (error.code === "auth/invalid-email") {
+        console.error('"Please enter a valid email address!');
       } else {
         console.error(`${error.message}`);
       }
@@ -140,7 +163,7 @@ function LoginRegister() {
       setLoading(true);
       console.log(form.email, form.password);
       const credential = await loginUser(form.email, form.password);
-      setAppState({ ...credential.user, userData: null }); //we set the userData to null because we don't have it yet 
+      setAppState({ ...credential.user, userData: null }); //we set the userData to null because we don't have it yet
     } catch (error) {
       console.error(error.message);
     }
@@ -157,19 +180,21 @@ function LoginRegister() {
         </p>
         <div className="switcher flex flex-row bg-neutral-200 rounded-full shadow-lg mt-2 mb-5">
           <div
-            className={`switcher__item login px-6 py-3 rounded-full text-lg min-w-[140px] text-center ${activeTab === "login"
-              ? "bg-secondary text-white"
-              : "bg-neutral-200 text-black"
-              } transition-colors duration-300`}
+            className={`switcher__item login px-6 py-3 rounded-full text-lg min-w-[140px] text-center ${
+              activeTab === "login"
+                ? "bg-secondary text-white"
+                : "bg-neutral-200 text-black"
+            } transition-colors duration-300`}
             onClick={() => changeTab("login")}
           >
             Login
           </div>
           <div
-            className={`switcher__item register px-6 py-3 rounded-full text-lg min-w-[140px] text-center ${activeTab === "register"
-              ? "bg-secondary text-white"
-              : "bg-neutral-200 text-black"
-              } transition-colors duration-300`}
+            className={`switcher__item register px-6 py-3 rounded-full text-lg min-w-[140px] text-center ${
+              activeTab === "register"
+                ? "bg-secondary text-white"
+                : "bg-neutral-200 text-black"
+            } transition-colors duration-300`}
             onClick={() => changeTab("register")}
           >
             Register
@@ -195,7 +220,8 @@ function LoginRegister() {
                     onChange={updateForm("email")}
                     type="text"
                     className="grow"
-                    placeholder="Email" />
+                    placeholder="Email"
+                  />
                 </label>
               </div>
               <div className="login__form-group">
@@ -230,20 +256,22 @@ function LoginRegister() {
                 <div className="flex row gap-4">
                   <div className="register__form-group w-full">
                     <input
-                      value={form.lastName}
-                      onChange={updateForm("lastName")}
-                      type="text"
-                      placeholder="Last name"
-                      className="input input-bordered w-full"
-                    />
-                  </div>
-                  <div className="register__form-group w-full">
-                    <input
                       value={form.firstName}
                       onChange={updateForm("firstName")}
                       type="text"
                       placeholder="First name"
                       className="input input-bordered w-full"
+                      name="firstName"
+                    />
+                  </div>
+                  <div className="register__form-group w-full">
+                    <input
+                      value={form.lastName}
+                      onChange={updateForm("lastName")}
+                      type="text"
+                      placeholder="Last name"
+                      className="input input-bordered w-full"
+                      name="lastName"
                     />
                   </div>
                 </div>
@@ -286,7 +314,8 @@ function LoginRegister() {
                       onChange={updateForm("email")}
                       type="text"
                       className="grow"
-                      placeholder="Email" />
+                      placeholder="Email"
+                    />
                   </label>
                 </div>
               </div>
@@ -310,7 +339,8 @@ function LoginRegister() {
                       onChange={updateForm("phoneNumber")}
                       type="text"
                       className="grow"
-                      placeholder="Phone" />
+                      placeholder="Phone"
+                    />
                   </label>
                 </div>
               </div>
