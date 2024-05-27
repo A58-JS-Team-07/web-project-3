@@ -1,8 +1,18 @@
 import CreateEventModal from "../../Events/CreateEvent/CreateEventModal/CreateEventModal";
 import { NavLink } from "react-router-dom";
 import Notifications from "../../Notifications/Notifications";
+import { useContext } from "react";
+import { AppContext } from "../../../context/AppContext";
+import { logoutUser } from "../../../services/auth.service";
 
 function Header() {
+  const { setAppState } = useContext(AppContext);
+
+  const logout = async () => {
+    await logoutUser();
+    setAppState({ user: null, userData: null });
+  };
+
   return (
     <div className="navbar bg-base-200 p-2 px-6 min-h-[80px]">
       <div className="flex-1 gap-6 h-16">
@@ -58,7 +68,7 @@ function Header() {
               </NavLink>
             </li>
             <li>
-              <a className="text-base">Logout</a>
+              <a className="text-base" onClick={logout}>Logout</a>
             </li>
           </ul>
         </div>
