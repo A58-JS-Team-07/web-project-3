@@ -21,9 +21,9 @@ import Loader from "./components/Loader/Loader";
 import Authenticated from "./hoc/Authenticated";
 
 function App() {
-  const [appState, setAppState] = useState({ user: null, userData: null });
-
   const [user] = useAuthState(auth);
+
+  const [appState, setAppState] = useState({ user, userData: null });
 
   const [loading, setLoading] = useState(false);
 
