@@ -18,7 +18,6 @@ export const createUser = async (username, uid, email, phoneNumber, firstName, l
             phoneNumber,
             firstName,
             lastName,
-            // address,
             canBeInvited: false,
             isAdmin: false,
             isBanned: false,
