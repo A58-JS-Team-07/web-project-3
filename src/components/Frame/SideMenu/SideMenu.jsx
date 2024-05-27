@@ -11,9 +11,16 @@ import {
 } from "react-icons/io5";
 import { useContext } from "react";
 import { AppContext } from "../../../context/AppContext";
+import { logoutUser } from "../../../services/auth.service";
 
 function SideMenu() {
   const { userData, setAppState } = useContext(AppContext);
+
+  const logout = async () => {
+    await logoutUser();
+    setAppState({ user: null, userData: null });
+  };
+
   return (
     <div className="sidebar flex flex-col">
       <div className="navbar sidebar__header p-2 pl-6 h-20 bg-primary border-b-2 border-gray-500 border-opacity-30  gap-3">
@@ -137,7 +144,7 @@ function SideMenu() {
             </NavLink>
           </li>
           <li>
-            <a className="text-lg text-white">
+            <a className="text-lg text-white" onClick={logout}>
               {
                 <IoPowerOutline className="text-xl fill-secondary text-secondary" />
               }{" "}
