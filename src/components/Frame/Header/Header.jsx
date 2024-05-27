@@ -6,7 +6,7 @@ import { AppContext } from "../../../context/AppContext";
 import { logoutUser } from "../../../services/auth.service";
 
 function Header() {
-  const { setAppState } = useContext(AppContext);
+  const { user, setAppState } = useContext(AppContext);
 
   const logout = async () => {
     await logoutUser();
@@ -33,45 +33,51 @@ function Header() {
         </label>
       </div>
       <div className="flex-none gap-2">
-        <div className="flex-none">
-          <ul className="menu menu-horizontal px-1">
-            <li>
-              <NavLink to="/login" className="text-lg">
-                Login / Register
-              </NavLink>
-            </li>
-          </ul>
-        </div>
-        <CreateEventModal />
-        <Notifications />
-
-        <div className="dropdown dropdown-end">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-ghost btn-circle avatar"
-          >
-            <div className="w-10 rounded-full">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-              />
-            </div>
+        {!user ? (
+          <div className="flex-none">
+            <ul className="menu menu-horizontal px-1">
+              <li>
+                <NavLink to="/login" className="text-lg">
+                  Login / Register
+                </NavLink>
+              </li>
+            </ul>
           </div>
-          <ul
-            tabIndex={0}
-            className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
-          >
-            <li>
-              <NavLink to="/profile" className="justify-between text-base">
-                Profile
-              </NavLink>
-            </li>
-            <li>
-              <a className="text-base" onClick={logout}>Logout</a>
-            </li>
-          </ul>
-        </div>
+
+        ) : (
+          <>
+            <CreateEventModal />
+            <Notifications />
+            <div className="dropdown dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-circle avatar"
+              >
+                <div className="w-10 rounded-full">
+                  <img
+                    alt="Tailwind CSS Navbar component"
+                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                  />
+                </div>
+              </div>
+              <ul
+                tabIndex={0}
+                className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
+              >
+                <li>
+                  <NavLink to="/profile" className="justify-between text-base">
+                    Profile
+                  </NavLink>
+                </li>
+                <li>
+                  <a className="text-base" onClick={logout}>Logout</a>
+                </li>
+              </ul>
+            </div>
+          </>
+        )}
+
       </div>
     </div>
   );
