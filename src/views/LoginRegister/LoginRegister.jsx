@@ -118,7 +118,7 @@ function LoginRegister() {
       } else if (error.code === 'auth/weak-password') {
         console.error('Password must be between 8 and 30 characters and must include at least one number and one symbol!')
       } else if (error.code === 'auth/invalid-email') {
-        console.error('"Please enter a valid email address!')
+        console.error('Please enter a valid email address!')
       } else {
         console.error(`${error.message}`);
       }
@@ -142,7 +142,7 @@ function LoginRegister() {
       const credential = await loginUser(form.email, form.password);
       setAppState({ ...credential.user, userData: null }); //we set the userData to null because we don't have it yet 
     } catch (error) {
-      toast.error(error.message);
+      console.error(error.message);
     }
     setLoading(false);
   };
