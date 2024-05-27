@@ -141,7 +141,7 @@ function LoginRegister() {
           "Password must be between 8 and 30 characters and must include at least one number and one symbol!"
         );
       } else if (error.code === "auth/invalid-email") {
-        console.error('"Please enter a valid email address!');
+        console.error("Please enter a valid email address!");
       } else {
         console.error(`${error.message}`);
       }
