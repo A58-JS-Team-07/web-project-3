@@ -6,7 +6,7 @@ import { AppContext } from "../../context/AppContext";
 import { MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH, isValidEmail, isValidPhoneNumber, isValidPassword, isValidName } from "../../common/constants";
 import { createUser, getUserByUsername } from "../../services/users.service";
 import { auth } from "../../config/firebase-config";
-import { registerUser } from "../../services/auth.service";
+import { loginUser, registerUser } from "../../services/auth.service";
 import { updateProfile } from "firebase/auth";
 
 function LoginRegister() {
@@ -41,8 +41,7 @@ function LoginRegister() {
     });
   };
 
-  const onRegister = async (event) => {
-   // event.preventDefault(); // Prevent the default form submit behavior which refreshes the page
+  const onRegister = async () => {
 
     if (!form.firstName) {
       toast.error("First name is required");
@@ -126,6 +125,28 @@ function LoginRegister() {
     }
     setLoading(false);
   };
+
+  const onLogin = async () => {
+    try {
+      if (form.email === "" || form.password === "") {
+        toast.error("Please fill in all fields!");
+        return;
+      }
+
+      if (!isValidEmail(form.email)) {
+        toast.error("Please enter a valid email address!");
+      }
+
+      setLoading(true);
+      console.log(form.email, form.password);
+      const credential = await loginUser(form.email, form.password);
+      setAppState({ ...credential.user, userData: null }); //we set the userData to null because we don't have it yet 
+    } catch (error) {
+      toast.error(error.message);
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="flex flex-row min-h-[83vh]">
       <div className="left w-1/2 flex flex-col justify-center items-center">
@@ -137,8 +158,8 @@ function LoginRegister() {
         <div className="switcher flex flex-row bg-neutral-200 rounded-full shadow-lg mt-2 mb-5">
           <div
             className={`switcher__item login px-6 py-3 rounded-full text-lg min-w-[140px] text-center ${activeTab === "login"
-                ? "bg-secondary text-white"
-                : "bg-neutral-200 text-black"
+              ? "bg-secondary text-white"
+              : "bg-neutral-200 text-black"
               } transition-colors duration-300`}
             onClick={() => changeTab("login")}
           >
@@ -146,8 +167,8 @@ function LoginRegister() {
           </div>
           <div
             className={`switcher__item register px-6 py-3 rounded-full text-lg min-w-[140px] text-center ${activeTab === "register"
-                ? "bg-secondary text-white"
-                : "bg-neutral-200 text-black"
+              ? "bg-secondary text-white"
+              : "bg-neutral-200 text-black"
               } transition-colors duration-300`}
             onClick={() => changeTab("register")}
           >
@@ -169,7 +190,12 @@ function LoginRegister() {
                     <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
                     <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
                   </svg>
-                  <input type="text" className="grow" placeholder="Email" />
+                  <input
+                    value={form.email}
+                    onChange={updateForm("email")}
+                    type="text"
+                    className="grow"
+                    placeholder="Email" />
                 </label>
               </div>
               <div className="login__form-group">
@@ -186,10 +212,15 @@ function LoginRegister() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <input type="password" className="grow" value="password" />
+                  <input
+                    value={form.password}
+                    onChange={updateForm("password")}
+                    type="password"
+                    className="grow"
+                  />
                 </label>
               </div>
-              <Button>Login</Button>
+              <Button onClick={onLogin}>Login</Button>
             </div>
           </div>
         ) : (
