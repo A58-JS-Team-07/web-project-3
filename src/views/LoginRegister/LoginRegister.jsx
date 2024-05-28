@@ -83,10 +83,8 @@ function LoginRegister() {
       toast.error("Please enter a valid email address!");
     }
 
-    if (
-      form.username.length < MIN_USERNAME_LENGTH ||
-      form.username.length > MAX_USERNAME_LENGTH
-    ) {
+    if (form.username.length < MIN_USERNAME_LENGTH ||
+      form.username.length > MAX_USERNAME_LENGTH) {
       toast.error("Username must be between 3 and 30 characters!");
       return;
     }
@@ -99,16 +97,12 @@ function LoginRegister() {
     }
 
     if (!isValidName(form.firstName)) {
-      toast.error(
-        "First name must be between 1 and 30 characters and contain only letters!"
-      );
+      toast.error("First name must be between 1 and 30 characters and contain only letters!");
       return;
     }
 
     if (!isValidName(form.lastName)) {
-      toast.error(
-        "Last name must be between 1 and 30 characters and contain only letters!"
-      );
+      toast.error("Last name must be between 1 and 30 characters and contain only letters!");
       return;
     }
     try {
@@ -141,11 +135,17 @@ function LoginRegister() {
           "Password must be between 8 and 30 characters and must include at least one number and one symbol!"
         );
       } else if (error.code === "auth/invalid-email") {
-        console.error("Please enter a valid email address!");
-      } else {
+        toast.error("Please enter a valid email address!");
+      } else if (error.code === "auth/invalid-credential") {
+        toast.error("Please enter valid credentials!");
+      } else if (error.code === "auth/too-many-requests") {
+        toast.error("You have made too many requests for this account. Please try again later.");
+      } else
+      {
         console.error(`${error.message}`);
       }
     }
+
     setLoading(false);
   };
 
@@ -167,6 +167,12 @@ function LoginRegister() {
     } catch (error) {
       console.error(error.message);
     }
+
+    // setTimeout(() => {
+    //   setLoading(false);
+    
+    // }, 10000);
+
     setLoading(false);
   };
 
