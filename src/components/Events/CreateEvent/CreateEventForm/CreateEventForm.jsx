@@ -1,21 +1,88 @@
 import { IoClose } from "react-icons/io5";
 import Button from "../../../Button/Button";
 import { useState } from "react";
+import Datetime from "react-datetime";
+import "react-datetime/css/react-datetime.css";
+import { useContext } from "react";
+import { AppContext } from "../../../../context/AppContext";
+import { uploadEventImage } from "../../../../services/storage.service";
+import { uploadEvent, updateEvent } from "../../../../services/events.service";
 
 function CreateEventForm({ showModal, setShowModal = () => {} }) {
-  const [recurringEvent, setRecurringEvent] = useState(false);
+  const { userData } = useContext(AppContext);
+
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(false);
   const [canOthersInvite, setCanOthersInvite] = useState(false);
+  const [imageUpload, setImageUpload] = useState(null);
   const [invitees, setInvitees] = useState([]);
+
+  let inputProps = {
+    placeholder: "Select date and time",
+    className: "input input-bordered w-full",
+  };
+
+  const [eventData, setEventData] = useState({
+    title: null,
+    description: null,
+    image: null,
+    startDateTime: null,
+    endDateTime: null,
+    //TODO: location
+
+    isRecurring: isRecurring,
+    recurringFrequency: null,
+    lastRecurringDate: null,
+
+    isPrivate: isPrivate,
+
+    canOthersInvite: canOthersInvite,
+    invitees: invitees,
+  });
+
+  const updateForm = (prop) => (e) => {
+    setEventData({ ...eventData, [prop]: e.target.value });
+  };
+
+  const handleEventCreation = async () => {
+    try {
+      setIsLoading(true);
+      const eventId = await uploadEvent(eventData);
+      const imageId = await uploadEventImage(imageUpload, eventId);
+
+      await updateEvent(eventId, { image: imageId });
+
+      console.log("Event uploaded successfully");
+      setShowModal(false);
+      // TODO: Transfer the user to the event page
+      // TODO: history.push(`/events/${event.id}`);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error uploading event:", error);
+    }
+  };
+
+  console.log(eventData);
+
+  function closeModal() {
+    if (
+      window.confirm(
+        "Your event is not uploaded. Are you sure you want to leave? All content you have added will be lost."
+      )
+    ) {
+      setShowModal(false);
+    }
+  }
 
   return (
     <div>
       {showModal ? (
         <div className="create-event-modal-backdrop absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  min-w-full min-h-full bg-black z-10 bg-opacity-60  ">
-          <div className="create-event-modal m-8 rounded-3xl bg-base-200 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-[70%] min-h-[80%] max-h-[80%] overflow-auto max-w-7xl z-10 px-8 py-7">
+          <div className="create-event-modal m-8 rounded-bl-2xl rounded-tl-2xl bg-base-200 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-[70%] min-h-[80%] max-h-[80%] overflow-auto max-w-7xl z-10 px-8 py-7">
             <h2 className="text-3xl font-bold mb-5">Create Event</h2>
             <button
               className="btn rounded-full p-0 px-2 text-3xl absolute right-5 top-6"
-              onClick={() => setShowModal(false)}
+              onClick={closeModal}
             >
               <IoClose />
             </button>
@@ -32,6 +99,8 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                     className="input input-bordered w-full "
                     name="event-title"
                     id="event-title"
+                    value={eventData.title}
+                    onChange={updateForm("title")}
                   />
                 </label>
                 <div className="is-private flex flex-col gap-2 w-4/12 p-3 bg-base-100 rounded-md">
@@ -45,6 +114,10 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                       className="toggle"
                       name="private-event"
                       id="private-event"
+                      onChange={() => {
+                        setIsPrivate(!isPrivate);
+                        setEventData({ ...eventData, isPrivate: !isPrivate });
+                      }}
                     />
                   </div>
                   <span className="label-text-alt">
@@ -68,6 +141,8 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                     className="textarea min-h-[300px] textarea-bordered w-full text-[16px]"
                     name="event-description"
                     id="event-description"
+                    value={eventData.description}
+                    onChange={updateForm("description")}
                   />
                 </label>
                 <div className="event-image flex flex-col gap-2 w-4/12">
@@ -79,7 +154,12 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                     </div>
                     <input
                       type="file"
-                      className="file-input file-input-bordered w-full "
+                      className="file-input file-input-bordered w-full"
+                      name="event-image"
+                      id="event-image"
+                      onChange={(e) => {
+                        setImageUpload(e.target.files[0]);
+                      }}
                     />
                     <div className="label">
                       <span className="label-text-alt">
@@ -88,11 +168,17 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                       </span>
                     </div>
                     <div className="event-image">
-                      <img
-                        src="/public/dummy-img.png"
-                        alt=""
-                        className="aspect-40/21 object-cover mt-3 rounded-lg"
-                      />
+                      {imageUpload ? (
+                        <img
+                          src={URL.createObjectURL(imageUpload)}
+                          className="aspect-40/21 object-cover mt-3 rounded-lg"
+                        />
+                      ) : (
+                        <img
+                          src={"../../../../../public/dummy-img.png"}
+                          className="aspect-40/21 object-cover mt-3 rounded-lg"
+                        />
+                      )}
                     </div>
                   </label>
                 </div>
@@ -108,10 +194,16 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                         Start event date & time
                       </span>
                     </div>
-                    <input
-                      type="text"
-                      placeholder="MUST BE DATEPICKER"
-                      class="input input-bordered w-full "
+                    <Datetime
+                      inputProps={inputProps}
+                      dateFormat="DD/MM/YYYY"
+                      timeFormat="HH:mm"
+                      onChange={(date) => {
+                        setEventData({
+                          ...eventData,
+                          startDateTime: date.toDate(),
+                        });
+                      }}
                     />
                   </label>
                 </div>
@@ -122,15 +214,21 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                         End event date & time
                       </span>
                     </div>
-                    <input
-                      type="text"
-                      placeholder="MUST BE DATEPICKER"
-                      class="input input-bordered w-full "
+                    <Datetime
+                      inputProps={inputProps}
+                      dateFormat="DD/MM/YYYY"
+                      timeFormat="HH:mm"
+                      onChange={(date) => {
+                        setEventData({
+                          ...eventData,
+                          endDateTime: date.toDate(),
+                        });
+                      }}
                     />
                   </label>
                 </div>
                 <div className="event-recurring w-6/12">
-                  {recurringEvent ? (
+                  {isRecurring ? (
                     <div className="flex flex-row gap-8">
                       <div className="recurring__frequency flex w-1/2">
                         <label className="form-control w-full max-w-xs">
@@ -139,13 +237,21 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                               Recurring event frequency
                             </span>
                           </div>
-                          <select className="select select-bordered">
+                          <select
+                            className="select select-bordered capitalize"
+                            onChange={(e) => {
+                              setEventData({
+                                ...eventData,
+                                recurringFrequency: e.target.value,
+                              });
+                            }}
+                          >
                             <option disabled selected>
                               Select frequency
                             </option>
-                            <option>Weekly</option>
-                            <option>Monthly</option>
-                            <option>Yearly</option>
+                            <option>weekly</option>
+                            <option>monthly</option>
+                            <option>yearly</option>
                           </select>
                         </label>
                       </div>
@@ -156,10 +262,16 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                               Last recurring event date
                             </span>
                           </div>
-                          <input
-                            type="text"
-                            placeholder="MUST BE DATEPICKER"
-                            class="input input-bordered w-full "
+                          <Datetime
+                            inputProps={inputProps}
+                            timeFormat={false}
+                            dateFormat="DD/MM/YYYY"
+                            onChange={(date) => {
+                              setEventData({
+                                ...eventData,
+                                lastRecurringDate: date.toDate(),
+                              });
+                            }}
                           />
                         </label>
                       </div>
@@ -179,7 +291,13 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                       className="toggle"
                       name="recurring-event"
                       id="recurring-event"
-                      onChange={() => setRecurringEvent(!recurringEvent)}
+                      onChange={() => {
+                        setIsRecurring(!isRecurring);
+                        setEventData({
+                          ...eventData,
+                          isRecurring: !isRecurring,
+                        });
+                      }}
                     />
                   </div>
                 </div>
@@ -213,6 +331,13 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                       className="toggle"
                       name="private-event"
                       id="private-event"
+                      onClick={() => {
+                        setCanOthersInvite(!canOthersInvite);
+                        setEventData({
+                          ...eventData,
+                          canOthersInvite: !canOthersInvite,
+                        });
+                      }}
                     />
                   </div>
                   <span className="label-text-alt">
@@ -223,11 +348,8 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
               </div>
 
               <div className="form-upload-row flex gap-8 justify-between mt-5">
-                <Button>Upload</Button>
-                <button
-                  className="btn text-lg"
-                  onClick={() => setShowModal(false)}
-                >
+                <Button onClick={handleEventCreation}>Upload</Button>
+                <button className="btn text-lg" onClick={closeModal}>
                   Cancel upload
                 </button>
               </div>
