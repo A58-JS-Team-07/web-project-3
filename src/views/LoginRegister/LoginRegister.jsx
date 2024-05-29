@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../../components/Button/Button";
@@ -15,9 +15,11 @@ import { createUser, getUserByUsername } from "../../services/users.service";
 import { auth } from "../../config/firebase-config";
 import { loginUser, registerUser } from "../../services/auth.service";
 import { updateProfile } from "firebase/auth";
+import { LoaderContext } from "../../context/LoaderContext";
 
 function LoginRegister() {
   const [activeTab, setActiveTab] = useState("login");
+  const { setLoading } = useContext(LoaderContext);
 
   const changeTab = (tab) => {
     setActiveTab(tab);
@@ -31,8 +33,6 @@ function LoginRegister() {
     phoneNumber: "",
     password: "",
   });
-
-  const [loading, setLoading] = useState(false);
 
   const { user, setAppState } = useContext(AppContext);
   const navigate = useNavigate();
