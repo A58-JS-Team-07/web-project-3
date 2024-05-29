@@ -14,7 +14,7 @@ import LoginRegister from "./views/LoginRegister/LoginRegister";
 import MyCalendar from "./views/MyCalendar/MyCalendar";
 import Profile from "./views/Profile/Profile";
 import { AppContext } from "./context/AppContext";
-import { LoaderProvider } from "./context/LoaderContext";
+import { LoaderProvider } from "./hoc/LoaderProvider";
 import { auth } from "./config/firebase-config";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { getUserData } from "./services/users.service";
