@@ -12,7 +12,8 @@ export const uploadEventImage = async (file, eventId) => {
 
     return photoURL;
   } catch (error) {
-    console.error("Error uploading event image:", error.message);
+    console.error("Error storage.services > uploadEventImage", error.message);
+    throw error;
   }
 };
 
@@ -21,7 +22,8 @@ export const getEventImage = async (eventId) => {
     const fileRef = ref(storage, `events/${eventId}.png`);
     return getDownloadURL(fileRef);
   } catch (error) {
-    console.error("Error getting event image:", error.message);
+    console.error("Error storage.services > getEventImage:", error.message);
+    throw error;
   }
 };
 

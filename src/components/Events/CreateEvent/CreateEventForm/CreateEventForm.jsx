@@ -1,34 +1,49 @@
 import { IoClose } from "react-icons/io5";
 import Button from "../../../Button/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
 import { useContext } from "react";
 import { AppContext } from "../../../../context/AppContext";
+import { LoaderContext } from "../../../../context/LoaderContext";
 import { uploadEventImage } from "../../../../services/storage.service";
 import { uploadEvent, updateEvent } from "../../../../services/events.service";
+import { toast } from "react-toastify";
+import {
+  MIN_EVENT_TITLE_LENGTH,
+  MAX_EVENT_TITLE_LENGTH,
+  MIN_EVENT_DESCRIPTION_LENGTH,
+  MAX_EVENT_DESCRIPTION_LENGTH,
+} from "../../../../common/constants";
+import moment from "moment";
 
 function CreateEventForm({ showModal, setShowModal = () => {} }) {
   const { userData } = useContext(AppContext);
+  const { setLoading } = useContext(LoaderContext);
 
+  const [isDateProcessed, setIsDateProcessed] = useState({});
   const [isRecurring, setIsRecurring] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
   const [canOthersInvite, setCanOthersInvite] = useState(false);
   const [imageUpload, setImageUpload] = useState(null);
   const [invitees, setInvitees] = useState([]);
-
-  let inputProps = {
-    placeholder: "Select date and time",
-    className: "input input-bordered w-full",
-  };
-
   const [eventData, setEventData] = useState({
     title: null,
     description: null,
     image: null,
     startDateTime: null,
     endDateTime: null,
-    //TODO: location
+
+    location: {
+      country: null,
+      city: null,
+      address: null,
+    },
+
+    creator: userData.username,
+    participants: {
+      [userData.username]: true,
+    },
 
     isRecurring: isRecurring,
     recurringFrequency: null,
@@ -40,13 +55,158 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
     invitees: invitees,
   });
 
+  console.log(typeof eventData.startDateTime);
+
+  useEffect(() => {
+    if (!isRecurring) {
+      setEventData((prevState) => ({ ...prevState, lastRecurringDate: null }));
+      setEventData((prevState) => ({ ...prevState, recurringFrequency: null }));
+    }
+  }, [isRecurring]);
+
+  let inputProps = {
+    placeholder: "Select date and time",
+    className: "input input-bordered w-full",
+  };
+
   const updateForm = (prop) => (e) => {
-    setEventData({ ...eventData, [prop]: e.target.value });
+    if (prop.includes(".")) {
+      const [objName, objProp] = prop.split(".");
+      setEventData((prevState) => ({
+        ...prevState,
+        [objName]: {
+          ...prevState[objName],
+          [objProp]: e.target.value,
+        },
+      }));
+    } else {
+      setEventData((prevState) => ({ ...prevState, [prop]: e.target.value }));
+    }
+  };
+
+  const dateValueToObject = (date) => {
+    try {
+      const newDate = moment.isMoment(date) ? date.toDate() : date;
+
+      let day = newDate?.getDate();
+      let month = newDate?.getMonth() + 1;
+      let hours = newDate?.getHours();
+      let minutes = newDate?.getMinutes();
+
+      if (day < 10) {
+        day = `0${day}`;
+      }
+
+      if (month < 10) {
+        month = `0${month}`;
+      }
+
+      if (hours < 10) {
+        hours = `0${hours}`;
+      }
+
+      if (minutes < 10) {
+        minutes = `0${minutes}`;
+      }
+
+      return {
+        day: day.toString(),
+        month: month.toString(),
+        year: newDate?.getFullYear().toString(),
+        hours: hours.toString(),
+        minutes: minutes.toString(),
+      };
+    } catch (error) {
+      console.error("Error in CreateEventForm.jsx > dateValueToObject", error);
+      throw error;
+    }
+  };
+
+  const fieldsValidation = () => {
+    if (!eventData.title) {
+      toast.error("Please provide a title for your event.");
+      return false;
+    }
+
+    if (
+      eventData.title.length < MIN_EVENT_TITLE_LENGTH ||
+      eventData.title.length > MAX_EVENT_TITLE_LENGTH
+    ) {
+      toast.error(
+        `Event title should be between ${MIN_EVENT_TITLE_LENGTH} and ${MAX_EVENT_TITLE_LENGTH} characters.`
+      );
+      return false;
+    }
+    if (!eventData.description) {
+      toast.error("Please provide a description for your event.");
+      return false;
+    }
+    if (
+      eventData.description.length < MIN_EVENT_DESCRIPTION_LENGTH ||
+      eventData.description.length > MAX_EVENT_DESCRIPTION_LENGTH
+    ) {
+      toast.error(
+        `Event description should be between ${MIN_EVENT_DESCRIPTION_LENGTH} and ${MAX_EVENT_DESCRIPTION_LENGTH} characters.`
+      );
+      return false;
+    }
+    if (!eventData.image) {
+      toast.error("Please provide an image for your event.");
+      return false;
+    }
+    if (!eventData.startDateTime) {
+      toast.error("Please provide a start date and time for your event.");
+      return false;
+    }
+    if (!eventData.endDateTime) {
+      toast.error("Please provide an end date and time for your event.");
+      return false;
+    }
+    if (isRecurring && !eventData.recurringFrequency) {
+      toast.error("Please provide a recurring frequency for your event.");
+      return false;
+    }
+    if (isRecurring && !eventData.lastRecurringDate) {
+      toast.error("Please provide a last recurring date for your event.");
+      return false;
+    }
+    if (typeof eventData.startDateTime !== "object") {
+      toast.error(
+        "Please provide a valid start date and time for your event. A valid date and time looks like this: 01/01/2022 12:00."
+      );
+      return false;
+    }
+    if (typeof eventData.endDateTime !== "object") {
+      toast.error(
+        "Please provide a valid end date and time for your event. A valid date and time looks like this: 01/01/2022 12:00."
+      );
+      return false;
+    }
+    if (isRecurring && typeof eventData.lastRecurringDate !== "object") {
+      toast.error(
+        "Please provide a valid last recurring date for your event. A valid date looks like this: 01/01/2022."
+      );
+      return false;
+    }
   };
 
   const handleEventCreation = async () => {
     try {
-      setIsLoading(true);
+      if (fieldsValidation() === false) return;
+
+      setLoading(true);
+
+      //TODO: Add validation for the form fields
+
+      eventData.startDateTime = dateValueToObject(eventData.startDateTime);
+      eventData.endDateTime = dateValueToObject(eventData.endDateTime);
+
+      if (isRecurring) {
+        eventData.lastRecurringDate = dateValueToObject(
+          eventData.lastRecurringDate
+        );
+      }
+
       const eventId = await uploadEvent(eventData);
       const imageId = await uploadEventImage(imageUpload, eventId);
 
@@ -56,9 +216,14 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
       setShowModal(false);
       // TODO: Transfer the user to the event page
       // TODO: history.push(`/events/${event.id}`);
-      setIsLoading(false);
+      setLoading(false);
     } catch (error) {
-      console.error("Error uploading event:", error);
+      setLoading(false);
+      console.error(
+        "Error in CreateEventForm.jsx > handleEventCreation:",
+        error
+      );
+      throw error;
     }
   };
 
@@ -91,7 +256,9 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
               <div className="form-title-row flex gap-8">
                 <label className="form-control w-8/12">
                   <div className="label">
-                    <span className="label-text text-lg">Event title</span>
+                    <span className="label-text text-lg">
+                      Event title<span className="text-red-500"> *</span>
+                    </span>
                   </div>
                   <input
                     type="text"
@@ -133,7 +300,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                 <label className="form-control w-8/12">
                   <div className="label">
                     <span className="label-text text-lg">
-                      Event description
+                      Event description <span className="text-red-500"> *</span>
                     </span>
                   </div>
                   <textarea
@@ -149,7 +316,8 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                   <label className="form-control">
                     <div className="label">
                       <span className="label-text text-lg">
-                        Select event cover image
+                        Event cover image{" "}
+                        <span className="text-red-500"> *</span>
                       </span>
                     </div>
                     <input
@@ -159,6 +327,10 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                       id="event-image"
                       onChange={(e) => {
                         setImageUpload(e.target.files[0]);
+                        setEventData({
+                          ...eventData,
+                          image: e.target.files[0] ? true : null,
+                        });
                       }}
                     />
                     <div className="label">
@@ -186,12 +358,60 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
 
               <hr className="border-dashed mt-5" />
 
+              <div className="form-address-row flex flex-row gap-8">
+                <label className="form-control w-3/12">
+                  <div className="label">
+                    <span className="label-text text-lg">Event country</span>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Place country of the event"
+                    className="input input-bordered w-full "
+                    name="event-country"
+                    id="event-country"
+                    value={eventData.location.country}
+                    onChange={updateForm("location.country")}
+                  />
+                </label>
+                <label className="form-control w-3/12">
+                  <div className="label">
+                    <span className="label-text text-lg">Event city</span>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Place city of the event"
+                    className="input input-bordered w-full "
+                    name="event-city"
+                    id="event-city"
+                    value={eventData.location.city}
+                    onChange={updateForm("location.city")}
+                  />
+                </label>
+                <label className="form-control w-6/12">
+                  <div className="label">
+                    <span className="label-text text-lg">Event address</span>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Place the street address of the event"
+                    className="input input-bordered w-full "
+                    name="event-country"
+                    id="event-country"
+                    value={eventData.location.address}
+                    onChange={updateForm("location.address")}
+                  />
+                </label>
+              </div>
+
+              <hr className="border-dashed mt-5" />
+
               <div className="form-date-row flex gap-8">
                 <div className="event-datetime__start flex w-3/12 ">
                   <label class="form-control w-full">
                     <div class="label">
                       <span class="label-text text-lg">
-                        Start event date & time
+                        Start event date & time{" "}
+                        <span className="text-red-500"> *</span>
                       </span>
                     </div>
                     <Datetime
@@ -201,7 +421,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                       onChange={(date) => {
                         setEventData({
                           ...eventData,
-                          startDateTime: date.toDate(),
+                          startDateTime: date,
                         });
                       }}
                     />
@@ -212,6 +432,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                     <div class="label">
                       <span class="label-text text-lg">
                         End event date & time
+                        <span className="text-red-500"> *</span>
                       </span>
                     </div>
                     <Datetime
@@ -221,7 +442,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                       onChange={(date) => {
                         setEventData({
                           ...eventData,
-                          endDateTime: date.toDate(),
+                          endDateTime: date,
                         });
                       }}
                     />
@@ -235,6 +456,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                           <div className="label">
                             <span className="label-text text-lg">
                               Recurring event frequency
+                              <span className="text-red-500"> *</span>
                             </span>
                           </div>
                           <select
@@ -260,6 +482,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                           <div class="label">
                             <span class="label-text text-lg">
                               Last recurring event date
+                              <span className="text-red-500"> *</span>
                             </span>
                           </div>
                           <Datetime
@@ -269,7 +492,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                             onChange={(date) => {
                               setEventData({
                                 ...eventData,
-                                lastRecurringDate: date.toDate(),
+                                lastRecurringDate: date,
                               });
                             }}
                           />
@@ -316,8 +539,8 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                     type="text"
                     placeholder="Leave empty if you don't want to invite anyone"
                     className="input input-bordered w-full "
-                    name="event-title"
-                    id="event-title"
+                    name="event-invitees"
+                    id="event-invitees"
                   />
                 </label>
                 <div className="can-others-invite flex flex-col gap-2 w-4/12 p-3 bg-base-100 rounded-md">
@@ -329,8 +552,8 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                     <input
                       type="checkbox"
                       className="toggle"
-                      name="private-event"
-                      id="private-event"
+                      name="can-others-invite-to-event"
+                      id="can-others-invite-to-event"
                       onClick={() => {
                         setCanOthersInvite(!canOthersInvite);
                         setEventData({
