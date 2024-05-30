@@ -1,27 +1,44 @@
 import Button from "../../components/Button/Button";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext";
-import {   
+import {
   MIN_USERNAME_LENGTH,
   MAX_USERNAME_LENGTH,
   isValidEmail,
   isValidPhoneNumber,
   isValidPassword,
-  isValidName, 
+  isValidName,
 } from "../../common/constants";
-import { updateUser } from "../../services/users.service";
+import { changeCanBeInvitedStatus, updateUser } from "../../services/users.service";
 import { toast } from "react-toastify";
+import { set } from "firebase/database";
+import { uploadAvatar } from "../../services/storage.service";
 
 function Profile() {
   const { userData, setAppState } = useContext(AppContext);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isEditingAvatar, setIsEditingAvatar] = useState(false);
   const [newUserData, setNewUserData] = useState({ ...userData });
+  const [canBeInvited, setCanBeInvited] = useState(userData.canBeInvited);
+  const [avatarUpload, setAvatarUpload] = useState(null);
 
   const updateForm = (prop) => (e) => {
     setNewUserData({
       ...newUserData,
       [prop]: e.target.value,
     });
+  };
+
+  const canBeInvitedHandler = async (e) => {
+    console.log(userData.canBeInvited, e.target.checked)
+    setCanBeInvited(e.target.checked);
+    console.log(e.target.checked);
+    setAppState((prevState) => ({
+      ...prevState,
+      userData: { ...userData, canBeInvited: e.target.checked },
+    }));
+
+    await changeCanBeInvitedStatus(userData.username, e.target.checked);
   };
 
   const saveChanges = async () => {
@@ -50,35 +67,95 @@ function Profile() {
       return;
     }
 
-    setIsEditing(false);
+    setIsEditingProfile(false);
     await updateUser(userData.username, newUserData);
     setAppState((prevState) => ({ ...prevState, userData: newUserData }));
   };
 
-
   const cancelChanges = () => {
-    setIsEditing(false);
+    setIsEditingProfile(false);
     setNewUserData(userData);
+  };
+
+  const handleAvatarUpload = async () => {
+    const avatarId = await uploadAvatar(avatarUpload, userData);
+
+    setAppState((prevState) => ({
+      ...prevState,
+      userData: { ...userData, avatar: avatarId },
+    }));
+
+    setIsEditingAvatar(false)
   };
 
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-5">Profile</h1>
       <div className="__container bg-base-200 flex flex-row w-full h-full p-20 gap-10 rounded-2xl">
-        <div className="inner__container bg-base-100 w-1/3 min-w-1/2 p-20 rounded-3xl  ">
-          <div className="avatar">
-            <div className="w-64 rounded-xl">
-              <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-            </div>
-          </div>
-          <div className="form-upload-avatar-row flex gap-8 justify-between mt-5">
-            <Button>Change Avatar</Button>
-          </div>
+        <div className="inner__container bg-base-100 w-1/3 min-w-1/2 p-10 rounded-3xl  ">
+          {!isEditingAvatar ? (
+            <>
+              <div className="avatar">
+                <div className="w-64 rounded-xl">
+                  {!userData?.avatar ? (
+                    <>
+                      <h2 className="text-lg font-semibold px-3 pt-2 pb-2 border-b-2 mb-1">
+                        {"Hi, " + userData?.firstName + " " + userData?.lastName}
+                      </h2>
+                      <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXu0uM0MmYsVPFaV2PqrkyuFqvK5k3RPt-g1NYd-vgpUGBSoyb4UXNG9MbUZn4hcPFoLk&usqp=CAU"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <h2 className="text-lg font-semibold px-3 pt-2 pb-2 mb-1">
+                        {"Hi " + userData?.firstName + " " + userData?.lastName + ","}
+                      </h2>
+                      <img className="avatar-img"
+                        src={userData.avatar}
+                      />
+                    </>
+                  )}
+                </div>
+              </div>
+              <div className="form-update-row flex gap-8 justify-between mt-5">
+
+              <Button onClick={() => setIsEditingAvatar(true)}>Change Avatar</Button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl font-semibold px-3 pt-2 pb-2 mb-1">
+                    Upload Avatar   
+              </h2>
+              <div className="form-upload-avatar-row flex flex-col gap-2 justify-between mt-5">
+                <input
+                  type="file"
+                  className="file-input file-input-bordered w-full"
+                  name="event-image"
+                  id="event-image"
+                  onChange={(e) => {
+                    setAvatarUpload(e.target.files[0]);
+                  }}
+                />
+                <div className="form-update-row flex gap-8 justify-between mt-5">
+
+                  <Button
+                    onClick={() => handleAvatarUpload()}
+                  >Save Avatar</Button>
+                  <button
+                    className="btn text-lg"
+                    onClick={() => setIsEditingAvatar(false)}
+                  >Cancel</button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
         <div className="inner__container bg-base-100 w-2/3 min-w-1/2 p-20 rounded-3xl">
-          {!isEditing ? (
+          {!isEditingProfile ? (
             <>
-              <h1 className="text-2xl pb-3 font-semibold b-2">Profile information</h1>
+              <h2 className="text-2xl pb-3 font-semibold b-2">Profile information</h2>
               <label className="label text-lg ">First name: {userData?.firstName}</label>
               <label className="label text-lg ">Last name: {userData?.lastName}</label>
               <label className="label text-lg ">Username: {userData?.username}</label>
@@ -88,7 +165,7 @@ function Profile() {
                 <label className="label text-lg ">Address: {userData?.address}</label>
               )}
               <div className="form-upload-row flex gap-8 justify-between mt-5">
-                <Button onClick={() => setIsEditing(true)}>Update Profile</Button>
+                <Button onClick={() => setIsEditingProfile(true)}>Update Profile</Button>
               </div>
             </>
           ) : (
@@ -150,42 +227,39 @@ function Profile() {
               </div>
               <div className="form-update-row flex gap-8 justify-between mt-5">
                 <Button
-                onClick={() => saveChanges()}
+                  onClick={() => saveChanges()}
                 >Save Changes</Button>
                 <button
-                className="btn text-lg"
-                onClick={() => cancelChanges()}
+                  className="btn text-lg"
+                  onClick={() => cancelChanges()}
                 >Cancel</button>
               </div>
             </>
           )}
         </div>
+        <div className="inner__container bg-base-100 w-1/3 min-w-1/2 p-10 rounded-3xl">
+          <div className="can-be-invited flex flex-col gap-2 bg-base-100 rounded-md">
+            <div className="private-checkbox flex gap-4 items-center">
+              <span className="label-text text-lg font-semibold">
+                Allow others to invite me to events
+              </span>
+              <input
+                type="checkbox"
+                className="toggle"
+                name="can-be-invited-to-events"
+                id="private-event"
+                checked={canBeInvited}
+                onChange={(e) => { canBeInvitedHandler(e) }}
+              />
+            </div>
+            <span className="label-text-alt">
+              * You have the option to opt-out of event invitations.
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
-
-  // (
-  //   <div>
-  //     <h2 className="text-3xl font-bold mb-5">Profile</h2>
-      // <div className="is-private flex flex-col gap-2 w-4/12 p-3 bg-base-100 rounded-md">
-      //   <div className="private-checkbox flex gap-4 items-center">
-      //     <span className="label-text text-lg font-semibold">
-      //       Allow others to invite me to events
-      //     </span>
-
-      //     <input
-      //       type="checkbox"
-      //       className="toggle"
-      //       name="private-event"
-      //       id="private-event"
-      //     />
-      //   </div>
-      //   <span className="label-text-alt">
-      //     * You have the option to opt-out of events invitations.
-      //   </span>
-      // </div>
-  //   </div>
-  // )
 }
 
 export default Profile;

@@ -8,7 +8,7 @@ export const uploadEventImage = async (file, eventId) => {
     const fileRef = ref(storage, `events/${eventId}.png`);
 
     await uploadBytes(fileRef, file);
-    const photoURL = getDownloadURL(fileRef);
+    const photoURL = await getDownloadURL(fileRef);
 
     return photoURL;
   } catch (error) {
@@ -25,24 +25,19 @@ export const getEventImage = async (eventId) => {
   }
 };
 
-// TODO: This is not working. To be fixed.
-// export const uploadAvatar = async (file, user, setLoading) => {
-//   try {
-//     const fileRef = ref(storage, user.uid + ".png");
+export const uploadAvatar = async (file, user) => {
+  try {
+    const fileRef = ref(storage, `avatars/${user.uid}.png`);
 
-//     // setLoading(true);
+    await uploadBytes(fileRef, file);
 
-//     await uploadBytes(fileRef, file);
-//     const photoURL = getDownloadURL(fileRef);
+    const photoURL = await getDownloadURL(fileRef);
+    await updateUserAvatar(user.username, photoURL);
 
-//     await updateProfile(user, { photoURL });
-//     await updateUserAvatar(user.username, photoURL);
-
-//     // setLoading(false);
-
-//     return photoURL;
-//   } catch (error) {
-//     console.error("Error uploading user avatar:", error.message);
-//     throw error; //should we do that?
-//   }
-// };
+    return photoURL;
+  } 
+  catch (error) {
+    console.error("Error uploading user avatar:", error.message);
+    throw error;
+  }
+};
