@@ -6,10 +6,11 @@ export const getUserByUsername = async (username) => {
         return await get(ref(db, `users/${username}`));
     } catch (error) {
         console.error('Error getting user data by username: ' + error)
+        throw error;
     }
 };
 
-export const createUser = async (username, uid, email, phoneNumber, firstName, lastName, address) => {
+export const createUser = async (username, uid, email, phoneNumber, firstName, lastName) => {
     try {
         return await set(ref(db, `users/${username}`), {
             username,
@@ -18,7 +19,7 @@ export const createUser = async (username, uid, email, phoneNumber, firstName, l
             phoneNumber,
             firstName,
             lastName,
-            canBeInvited: false,
+            canBeInvited: true,
             isAdmin: false,
             isBanned: false,
             createdOn: Date.now()
@@ -80,10 +81,8 @@ export const changeBanStatus = async (username, status) => {
 //Check if there is another way to do it
 export const updateUserAvatar = async (username, avatarURL) => {
     try {
-        const changeAvatar = {};
-        changeAvatar[`users/${username}/avatarURL`] = avatarURL;
-    
-        await update(ref(db), changeAvatar);
+        const userRef = ref(db, `users/${username}`);
+        await update(userRef, { avatar: avatarURL});
     } catch (error) {
         console.error('Error updating avatar' + error);
     }
