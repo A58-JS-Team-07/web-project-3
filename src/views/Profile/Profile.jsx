@@ -8,7 +8,6 @@ import {
   isValidPhoneNumber,
   isValidPassword,
   isValidName,
-  isValidName,
 } from "../../common/constants";
 import { changeCanBeInvitedStatus, updateUser } from "../../services/users.service";
 import { toast } from "react-toastify";
