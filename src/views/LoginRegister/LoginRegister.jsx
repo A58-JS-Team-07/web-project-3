@@ -85,7 +85,7 @@ function LoginRegister() {
 
     if (form.username.length < MIN_USERNAME_LENGTH ||
       form.username.length > MAX_USERNAME_LENGTH) {
-      toast.error("Username must be between 3 and 30 characters!");
+      toast.error("Username must be between 3 and 30 characters and contain only letters and numbers!");
       return;
     }
 
@@ -109,7 +109,7 @@ function LoginRegister() {
       setLoading(true);
 
       const snapshot = await getUserByUsername(form.username);
-      if (snapshot.exists()) {
+      if (snapshot?.exists()) {
         toast.error("Username already exists!");
         setLoading(false);
         return;
@@ -129,7 +129,7 @@ function LoginRegister() {
       await updateProfile(auth.currentUser, { displayName: form.username }); // Update the user's display name with the provided username
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
-        console.error("Email has already been used!");
+        toast.error("Email has already been used!");
       } else if (error.code === "auth/weak-password") {
         console.error(
           "Password must be between 8 and 30 characters and must include at least one number and one symbol!"
@@ -140,9 +140,9 @@ function LoginRegister() {
         toast.error("Please enter valid credentials!");
       } else if (error.code === "auth/too-many-requests") {
         toast.error("You have made too many requests for this account. Please try again later.");
-      } else
-      {
+      } else {
         console.error(`${error.message}`);
+        toast.error(`${"Username must be between 3 and 30 characters and contain only letters and numbers!"}`);
       }
     }
 
@@ -167,11 +167,6 @@ function LoginRegister() {
     } catch (error) {
       console.error(error.message);
     }
-
-    // setTimeout(() => {
-    //   setLoading(false);
-    
-    // }, 10000);
 
     setLoading(false);
   };
