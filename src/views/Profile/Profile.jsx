@@ -8,6 +8,7 @@ import {
   isValidPhoneNumber,
   isValidPassword,
   isValidName,
+  isValidName,
 } from "../../common/constants";
 import { changeCanBeInvitedStatus, updateUser } from "../../services/users.service";
 import { toast } from "react-toastify";
@@ -43,12 +44,16 @@ function Profile() {
 
   const saveChanges = async () => {
     if (!isValidName(newUserData.firstName)) {
-      toast.error("First name must be between 1 and 30 characters and contain only letters!");
+      toast.error(
+        "First name must be between 1 and 30 characters and contain only letters!"
+      );
       return;
     }
 
     if (!isValidName(newUserData.lastName)) {
-      toast.error("Last name must be between 1 and 30 characters and contain only letters!");
+      toast.error(
+        "Last name must be between 1 and 30 characters and contain only letters!"
+      );
       return;
     }
 
@@ -61,8 +66,10 @@ function Profile() {
       toast.error("Please enter a valid email address!");
     }
 
-    if (newUserData.username.length < MIN_USERNAME_LENGTH ||
-      newUserData.username.length > MAX_USERNAME_LENGTH) {
+    if (
+      newUserData.username.length < MIN_USERNAME_LENGTH ||
+      newUserData.username.length > MAX_USERNAME_LENGTH
+    ) {
       toast.error("Username must be between 3 and 30 characters!");
       return;
     }
@@ -152,78 +159,103 @@ function Profile() {
             </>
           )}
         </div>
-        <div className="inner__container bg-base-100 w-2/3 min-w-1/2 p-20 rounded-3xl">
+        <div className="inner__container bg-base-100 w-2/3 min-w-1/2 p-12 rounded-3xl flex flex-col justify-between">
           {!isEditingProfile ? (
             <>
-              <h2 className="text-2xl pb-3 font-semibold b-2">Profile information</h2>
-              <label className="label text-lg ">First name: {userData?.firstName}</label>
-              <label className="label text-lg ">Last name: {userData?.lastName}</label>
-              <label className="label text-lg ">Username: {userData?.username}</label>
-              <label className="label text-lg ">Email: {userData?.email}</label>
-              <label className="label text-lg ">Phone: {userData?.phoneNumber}</label>
-              {userData?.address && (
-                <label className="label text-lg ">Address: {userData?.address}</label>
-              )}
+              <div>
+                <h2 className="text-3xl pb-3 font-semibold mb-2">
+                  Profile information
+                </h2>
+                <div className="profile__info text-xl max-h-[500px] flex flex-col gap-1">
+                  <label className="label ">
+                    First name: {userData?.firstName}
+                  </label>
+                  <label className="label">
+                    Last name: {userData?.lastName}
+                  </label>
+                  <label className="label ">
+                    Username: {userData?.username}
+                  </label>
+                  <label className="label">Email: {userData?.email}</label>
+                  <label className="label ">
+                    Phone: {userData?.phoneNumber}
+                  </label>
+                  {userData?.address && (
+                    <label className="label">
+                      Address: {userData?.address}
+                    </label>
+                  )}
+                </div>
+              </div>
               <div className="form-upload-row flex gap-8 justify-between mt-5">
-                <Button onClick={() => setIsEditingProfile(true)}>Update Profile</Button>
+                <Button onClick={() => setIsEditingProfile(true)}>
+                  Update Profile
+                </Button>
               </div>
             </>
           ) : (
             <>
-              <div className="flex flex-col gap-2 p-3">
-                <input
-                  className="input input-bordered"
-                  value={newUserData.firstName}
-                  onChange={updateForm("firstName")}
-                  placeholder="First Name"
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                />
-              </div>
-              <div className="flex flex-col gap-2 p-3">
-                <input
-                  className="input input-bordered"
-                  value={newUserData.lastName}
-                  onChange={updateForm("lastName")}
-                  placeholder="Last Name"
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                />
-              </div>
-              <div className="flex flex-col gap-2 p-3">
-                <input
-                  className="input input-bordered"
-                  value={newUserData.email}
-                  onChange={updateForm("email")}
-                  placeholder="Email"
-                  type="text"
-                  id="email"
-                  name="email"
-                />
-              </div>
-              <div className="flex flex-col gap-2 p-3">
-                <input
-                  className="input input-bordered"
-                  value={newUserData.phoneNumber}
-                  onChange={updateForm("phoneNumber")}
-                  placeholder="Phone number"
-                  type="text"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                />
-              </div>
-              <div className="flex flex-col gap-2 p-3">
-                <input
-                  className="input input-bordered"
-                  value={newUserData.address}
-                  onChange={updateForm("address")}
-                  placeholder="City, Country"
-                  type="text"
-                  id="address"
-                  name="address"
-                />
+              <div>
+                <h2 className="text-3xl pb-3 font-semibold mb-2 ">
+                  Edit profile information
+                </h2>
+                <div className="profile__edit flex flex-col gap-4">
+                  <div className="flex flex-col gap-2 ">
+                    <input
+                      className="input input-bordered"
+                      value={newUserData.firstName}
+                      onChange={updateForm("firstName")}
+                      placeholder="First Name"
+                      type="text"
+                      id="firstName"
+                      name="firstName"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      className="input input-bordered"
+                      value={newUserData.lastName}
+                      onChange={updateForm("lastName")}
+                      placeholder="Last Name"
+                      type="text"
+                      id="lastName"
+                      name="lastName"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      className="input input-bordered"
+                      value={newUserData.email}
+                      onChange={updateForm("email")}
+                      placeholder="Email"
+                      type="text"
+                      id="email"
+                      name="email"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      className="input input-bordered"
+                      value={newUserData.phoneNumber}
+                      onChange={updateForm("phoneNumber")}
+                      placeholder="Phone number"
+                      type="text"
+                      id="phoneNumber"
+                      name="phoneNumber"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      className="input input-bordered"
+                      value={newUserData.address}
+                      onChange={updateForm("address")}
+                      placeholder="City, Country"
+                      type="text"
+                      id="address"
+                      name="address"
+                    />
+                  </div>
+                </div>
               </div>
               <div className="form-update-row flex gap-8 justify-between mt-5">
                 <Button
