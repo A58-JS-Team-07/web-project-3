@@ -54,10 +54,19 @@ function Header() {
                 className="btn btn-ghost btn-circle avatar"
               >
                 <div className="w-10 rounded-full">
-                  <img
+                {!userData?.avatar ? (
+                    <img
                     alt="Tailwind CSS Navbar component"
-                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                  />
+
+                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXu0uM0MmYsVPFaV2PqrkyuFqvK5k3RPt-g1NYd-vgpUGBSoyb4UXNG9MbUZn4hcPFoLk&usqp=CAU"
+                    />
+                  ) : (
+                    <img
+                    alt="Tailwind CSS Navbar component"
+
+                      src={userData.avatar}
+                    />
+                  )}
                 </div>
               </div>
               <ul
