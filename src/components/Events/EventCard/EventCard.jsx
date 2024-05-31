@@ -8,10 +8,12 @@ import EventLocation from "../EventMeta/EventLocation";
 function EventCard({ event }) {
   return (
     <div className="event w-1/3 bg-base-200 rounded-xl overflow-hidden shadow-lg">
-      <div className="event__image">
+      <div className="event__image ">
         <img
           src={event.image}
           alt={event.title}
+          height="1200px"
+          width="630px"
           className="rounded-xl aspect-40/21 object-cover"
         />
       </div>
