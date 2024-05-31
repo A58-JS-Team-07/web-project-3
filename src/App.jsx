@@ -60,7 +60,14 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/login" element={<LoginRegister />} />
                   <Route path="/events" element={<AllEvents />} />
-                  {/* <Route path="/events/:id" element={<Authenticated><SingleEvent /></Authenticated>} /> */}
+                  <Route
+                    path="/events/:id"
+                    element={
+                      <Authenticated>
+                        <SingleEvent />
+                      </Authenticated>
+                    }
+                  />
                   <Route
                     path="/my-calendar"
                     element={

@@ -1,18 +1,23 @@
 import { useEffect, useState } from "react";
 import { getAllEvents } from "../../../services/events.service";
 import EventCard from "../../../components/Events/EventCard/EventCard";
+import { LoaderContext } from "../../../context/LoaderContext";
+import { useContext } from "react";
 
 function AllEvents() {
   const [events, setEvents] = useState([]);
+  const { setLoading } = useContext(LoaderContext);
 
   useEffect(() => {
+    setLoading(true);
     const fetchEvents = async () => {
       try {
         const events = await getAllEvents();
-        console.log(events);
         setEvents(events);
+        setLoading(false);
       } catch (error) {
         console.error("Error in AllEvents > fetchEvents:", error);
+        setLoading(false);
       }
     };
 
