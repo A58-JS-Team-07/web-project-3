@@ -9,6 +9,7 @@ import {
   equalTo,
 } from "firebase/database";
 import { db } from "../config/firebase-config.js";
+import { createDeleteEventFromUser } from "./users.service";
 
 export const getAllEvents = async () => {
   try {
@@ -48,12 +49,21 @@ export const getEventById = async (eventId) => {
   }
 };
 
-export const uploadEvent = async (eventData) => {
+export const createEvent = async (eventData) => {
   try {
     const eventRef = await push(ref(db, "events"), eventData);
+
+    await set(ref(db, `events/${eventRef.key}`), {
+      ...eventData,
+      createdOn: Date.now(),
+      eid: eventRef.key,
+    });
+
+    await createDeleteEventFromUser(eventData.creator, eventRef.key, true);
+
     return eventRef.key;
   } catch (error) {
-    console.error("Error in events.services > uploadEvent:", error);
+    console.error("Error in events.services > createEvent:", error);
     throw error;
   }
 };
@@ -64,6 +74,17 @@ export const updateEvent = async (eventId, eventData) => {
     await update(eventRef, eventData);
   } catch (error) {
     console.error("Error in events.services > updateEvent", error);
+    throw error;
+  }
+};
+
+export const deleteEvent = async (eventData) => {
+  try {
+    const eventRef = ref(db, `events/${eventData.eid}`);
+    await set(eventRef, null);
+    await createDeleteEventFromUser(eventData.creator, eventData.eid, null);
+  } catch (error) {
+    console.error("Error in events.services > deleteEvent", error);
     throw error;
   }
 };

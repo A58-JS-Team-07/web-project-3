@@ -94,6 +94,17 @@ export const updateUser = async (username, updatedData) => {
   }
 };
 
+export const createDeleteEventFromUser = async (username, eventId, status) => {
+  try {
+    await update(ref(db, `users/${username}/createdEvents`), {
+      [eventId]: status,
+    });
+  } catch (error) {
+    console.error("Error users.events > updateUserEvents:" + error);
+    throw error;
+  }
+};
+
 export const changeCanBeInvitedStatus = async (username, status) => {
   try {
     await set(ref(db, `users/${username}/canBeInvited`), status);

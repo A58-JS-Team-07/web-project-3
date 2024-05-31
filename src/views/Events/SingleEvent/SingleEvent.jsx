@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getEventById } from "../../../services/events.service";
+import { getEventById, deleteEvent } from "../../../services/events.service";
 import {
   getUserByUsernameSnapshot,
   getAllUsersArray,
@@ -13,11 +13,13 @@ import EventEndDateTime from "../../../components/Events/EventMeta/EventEndDateT
 import EventStartDateTime from "../../../components/Events/EventMeta/EventStartDateTime";
 import EventLocation from "../../../components/Events/EventMeta/EventLocation";
 import UserSnippet from "../../../components/UserSnippet/UserSnippet";
-import { getAll } from "firebase/remote-config";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function SingleEvent() {
-  const { setLoaderState } = useContext(LoaderContext);
+  const { setLoading } = useContext(LoaderContext);
   const { userData } = useContext(AppContext);
+  const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [creator, setCreator] = useState(null);
   const [participants, setParticipants] = useState([]);
@@ -35,6 +37,7 @@ function SingleEvent() {
 
   useEffect(() => {
     if (event) {
+      setLoading(true);
       getUserByUsernameSnapshot(event.creator)
         .then((creator) => {
           setCreator(creator);
@@ -52,22 +55,69 @@ function SingleEvent() {
         });
         setParticipants(participants);
       });
+      setLoading(false);
     }
   }, [event]);
+
+  const handleDeleteEvent = async () => {
+    if (!window.confirm("Are you sure you want to delete this event?")) return;
+
+    try {
+      console.log("key: ", event.eid);
+      console.log("event: ", event);
+
+      await deleteEvent(event);
+      navigate("/events");
+      toast.success(`You've successfully deleted event: ${event.title}`);
+    } catch (error) {
+      console.error("Error in SingleEvent.jsx > handleDeleteEvent:", error);
+      throw error;
+    }
+  };
 
   return (
     <div className="single-event m-8 flex flex-row gap-8">
       <div className="single-event__left w-2/3 bg-base-200 py-6 px-8  rounded-3xl">
-        {event?.creator === userData?.username && (
-          <div className="event-edit-delete flex justify-end gap-4">
-            <span className="underline hover:no-underline cursor-pointer">
-              Edit
+        {/*TODO: Add edit and delete functionality for ADMINS logic too*/}
+        <div className="event-created-updated-date-and-edit-delete flex flex-row justify-between mb-3">
+          <div className="event-created-updated flex gap-4 text-gray-300">
+            <span>
+              Created on:{" "}
+              {event?.createdOn &&
+                new Date(event.createdOn).toLocaleDateString("en-GB") +
+                  " at " +
+                  new Date(event.createdOn).toLocaleTimeString("en-GB", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}{" "}
             </span>
-            <span className="text-red-500 underline hover:no-underline cursor-pointer">
-              Delete
-            </span>
+            {event?.updatedOn && (
+              <span>
+                Updated on:{" "}
+                {event?.updatedOn &&
+                  new Date(event.updatedOn).toLocaleDateString("en-GB") +
+                    " " +
+                    new Date(event.updatedOn).toLocaleTimeString("en-GB", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}{" "}
+              </span>
+            )}
           </div>
-        )}
+          {event?.creator === userData?.username && (
+            <div className="event-edit-delete flex justify-end gap-4">
+              <span className="underline hover:no-underline cursor-pointer">
+                Edit
+              </span>
+              <span
+                onClick={handleDeleteEvent}
+                className="text-red-500 underline hover:no-underline cursor-pointer"
+              >
+                Delete
+              </span>
+            </div>
+          )}
+        </div>
         <h1 className="text-3xl font-bold uppercase mb-4">{event?.title}</h1>
         <img
           src={event?.image}
