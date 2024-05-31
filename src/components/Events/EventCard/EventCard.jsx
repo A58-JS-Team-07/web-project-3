@@ -9,7 +9,11 @@ function EventCard({ event }) {
   return (
     <div className="event w-1/3 bg-base-200 rounded-xl overflow-hidden shadow-lg">
       <div className="event__image">
-        <img src={event.image} alt={event.title} className="rounded-xl" />
+        <img
+          src={event.image}
+          alt={event.title}
+          className="rounded-xl aspect-40/21 object-cover"
+        />
       </div>
       <div className="event__content p-6">
         <h2 className="font-bold text-2xl mb-3">{event.title}</h2>

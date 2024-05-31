@@ -73,7 +73,7 @@ function SingleEvent() {
           src={event?.image}
           alt={event?.title}
           width="100%"
-          className="rounded-2xl mb-4"
+          className="rounded-2xl mb-4 aspect-40/21 object-cover"
         />
         <p className="text-lg">{event?.description}</p>
 
