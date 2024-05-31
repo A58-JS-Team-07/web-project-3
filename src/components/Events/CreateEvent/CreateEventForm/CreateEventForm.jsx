@@ -16,12 +16,11 @@ import {
   MAX_EVENT_DESCRIPTION_LENGTH,
 } from "../../../../common/constants";
 import moment from "moment";
+import PropTypes from "prop-types";
 
 function CreateEventForm({ showModal, setShowModal = () => {} }) {
   const { userData } = useContext(AppContext);
   const { setLoading } = useContext(LoaderContext);
-
-  const [isDateProcessed, setIsDateProcessed] = useState({});
   const [isRecurring, setIsRecurring] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
   const [canOthersInvite, setCanOthersInvite] = useState(false);
@@ -407,9 +406,9 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
 
               <div className="form-date-row flex gap-8">
                 <div className="event-datetime__start flex w-3/12 ">
-                  <label class="form-control w-full">
-                    <div class="label">
-                      <span class="label-text text-lg">
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="label-text text-lg">
                         Start event date & time{" "}
                         <span className="text-red-500"> *</span>
                       </span>
@@ -428,9 +427,9 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                   </label>
                 </div>
                 <div className="event-datetime__end flex w-3/12">
-                  <label class="form-control w-full">
-                    <div class="label">
-                      <span class="label-text text-lg">
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="label-text text-lg">
                         End event date & time
                         <span className="text-red-500"> *</span>
                       </span>
@@ -478,9 +477,9 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                         </label>
                       </div>
                       <div className="recurring__end w-1/2">
-                        <label class="form-control w-full">
-                          <div class="label">
-                            <span class="label-text text-lg">
+                        <label className="form-control w-full">
+                          <div className="label">
+                            <span className="label-text text-lg">
                               Last recurring event date
                               <span className="text-red-500"> *</span>
                             </span>
@@ -583,5 +582,10 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
     </div>
   );
 }
+
+CreateEventForm.propTypes = {
+  showModal: PropTypes.bool.isRequired,
+  setShowModal: PropTypes.func.isRequired,
+};
 
 export default CreateEventForm;
