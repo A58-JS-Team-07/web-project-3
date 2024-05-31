@@ -36,38 +36,38 @@ export const isValidName = (name) => {
 
 export const eventStartDate = (event) => {
   return (
-    event.startDateTime.day +
+    event?.startDateTime?.day +
     "/" +
-    event.startDateTime.month +
+    event?.startDateTime?.month +
     "/" +
-    event.startDateTime.year
+    event?.startDateTime?.year
   );
 };
 
 export const eventEndDate = (event) => {
   return (
-    event.endDateTime.day +
+    event?.endDateTime?.day +
     "/" +
-    event.endDateTime.month +
+    event?.endDateTime?.month +
     "/" +
-    event.endDateTime.year
+    event?.endDateTime?.year
   );
 };
 
 export const eventStartTime = (event) => {
-  return event.startDateTime.hours + ":" + event.startDateTime.minutes;
+  return event?.startDateTime?.hours + ":" + event?.startDateTime?.minutes;
 };
 
 export const eventEndTime = (event) => {
-  return event.endDateTime.hours + ":" + event.endDateTime.minutes;
+  return event?.endDateTime?.hours + ":" + event?.endDateTime?.minutes;
 };
 
 export const eventLocation = (event) => {
   return (
-    event.location.address +
+    event?.location?.address +
     ", " +
-    event.location.city +
+    event?.location?.city +
     ", " +
-    event.location.country
+    event?.location?.country
   );
 };
