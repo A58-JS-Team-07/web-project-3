@@ -7,7 +7,7 @@ import { useContext } from "react";
 import { AppContext } from "../../../../context/AppContext";
 import { LoaderContext } from "../../../../context/LoaderContext";
 import { uploadEventImage } from "../../../../services/storage.service";
-import { uploadEvent, updateEvent } from "../../../../services/events.service";
+import { createEvent, updateEvent } from "../../../../services/events.service";
 import { toast } from "react-toastify";
 import {
   MIN_EVENT_TITLE_LENGTH,
@@ -17,10 +17,12 @@ import {
 } from "../../../../common/constants";
 import moment from "moment";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
 function CreateEventForm({ showModal, setShowModal = () => {} }) {
   const { userData } = useContext(AppContext);
   const { setLoading } = useContext(LoaderContext);
+  const navigate = useNavigate();
   const [isRecurring, setIsRecurring] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
   const [canOthersInvite, setCanOthersInvite] = useState(false);
@@ -53,8 +55,6 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
     canOthersInvite: canOthersInvite,
     invitees: invitees,
   });
-
-  console.log(typeof eventData.startDateTime);
 
   useEffect(() => {
     if (!isRecurring) {
@@ -216,16 +216,15 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
         );
       }
 
-      const eventId = await uploadEvent(eventData);
+      const eventId = await createEvent(eventData);
       const imageId = await uploadEventImage(imageUpload, eventId);
 
       await updateEvent(eventId, { image: imageId });
 
       console.log("Event uploaded successfully");
       setShowModal(false);
-      // TODO: Transfer the user to the event page
-      // TODO: history.push(`/events/${event.id}`);
       setLoading(false);
+      navigate(`/events/${eventId}`);
     } catch (error) {
       setLoading(false);
       console.error(
@@ -235,8 +234,6 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
       throw error;
     }
   };
-
-  console.log(eventData);
 
   function closeModal() {
     if (
