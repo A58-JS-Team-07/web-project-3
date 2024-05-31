@@ -153,6 +153,18 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
       toast.error("Please provide an image for your event.");
       return false;
     }
+    if (!eventData.location.country) {
+      toast.error("Please provide a country for your event.");
+      return false;
+    }
+    if (!eventData.location.city) {
+      toast.error("Please provide a city for your event.");
+      return false;
+    }
+    if (!eventData.location.address) {
+      toast.error("Please provide an address for your event.");
+      return false;
+    }
     if (!eventData.startDateTime) {
       toast.error("Please provide a start date and time for your event.");
       return false;
@@ -194,8 +206,6 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
       if (fieldsValidation() === false) return;
 
       setLoading(true);
-
-      //TODO: Add validation for the form fields
 
       eventData.startDateTime = dateValueToObject(eventData.startDateTime);
       eventData.endDateTime = dateValueToObject(eventData.endDateTime);
@@ -360,7 +370,9 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
               <div className="form-address-row flex flex-row gap-8">
                 <label className="form-control w-3/12">
                   <div className="label">
-                    <span className="label-text text-lg">Event country</span>
+                    <span className="label-text text-lg">
+                      Event country <span className="text-red-500"> *</span>
+                    </span>
                   </div>
                   <input
                     type="text"
@@ -374,7 +386,9 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                 </label>
                 <label className="form-control w-3/12">
                   <div className="label">
-                    <span className="label-text text-lg">Event city</span>
+                    <span className="label-text text-lg">
+                      Event city <span className="text-red-500"> *</span>
+                    </span>
                   </div>
                   <input
                     type="text"
@@ -388,7 +402,9 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                 </label>
                 <label className="form-control w-6/12">
                   <div className="label">
-                    <span className="label-text text-lg">Event address</span>
+                    <span className="label-text text-lg">
+                      Event address <span className="text-red-500"> *</span>
+                    </span>
                   </div>
                   <input
                     type="text"
