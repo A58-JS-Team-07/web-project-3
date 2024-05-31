@@ -30,7 +30,7 @@ export const getAllEvents = async () => {
   }
 };
 
-export const getEvent = async (eventId) => {
+export const getEventById = async (eventId) => {
   try {
     const eventRef = ref(db, `events/${eventId}`);
     const snapshot = await get(eventRef);
@@ -38,7 +38,9 @@ export const getEvent = async (eventId) => {
     if (snapshot.exists()) {
       return snapshot.val();
     } else {
-      console.error("No such event found");
+      console.error(
+        "Error in events.services > getEvent > No such event found"
+      );
     }
   } catch (error) {
     console.error("Error in events.services > getEvent:", error);

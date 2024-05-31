@@ -1,17 +1,9 @@
 import propTypes from "prop-types";
-import {
-  IoCalendarOutline,
-  IoTimeOutline,
-  IoLocationOutline,
-} from "react-icons/io5";
-import {
-  eventStartDate,
-  eventEndDate,
-  eventStartTime,
-  eventEndTime,
-  eventLocation,
-} from "../../../common/constants";
 import Button from "../../Button/Button";
+import { Link } from "react-router-dom";
+import EventEndDateTime from "../EventMeta/EventEndDateTime";
+import EventStartDateTime from "../EventMeta/EventStartDateTime";
+import EventLocation from "../EventMeta/EventLocation";
 
 function EventCard({ event }) {
   return (
@@ -26,40 +18,21 @@ function EventCard({ event }) {
         </p>
         <div className="event__content__meta flex flex-col mt-3 gap-2 mb-4">
           <div className="event__content__meta__start-end flex flex-row gap-4">
-            <div className="event__start flex flex-col bg-base-100 px-3 py-2 rounded-lg w-full">
-              <span className="font-semibold mb-1">Start:</span>
-              <div className="event__start__date flex flex-row gap-2 items-center">
-                <IoCalendarOutline className="text-lg fill-secondary text-secondary" />
-                {eventStartDate(event)}
-              </div>
-              <div className="event__start__date flex flex-row gap-2 items-center">
-                <IoTimeOutline className="text-lg fill-secondary text-secondary" />
-                {eventStartTime(event)}
-              </div>
-            </div>
-            <div className="event__end flex flex-col bg-base-100 px-3 py-2 rounded-lg w-full">
-              <span className="font-semibold mb-1">End:</span>
-              <div className="event__start__date flex flex-row gap-2 items-center">
-                <IoCalendarOutline className="text-lg fill-secondary text-secondary" />
-                {eventEndDate(event)}
-              </div>
-              <div className="event__start__date flex flex-row gap-2 items-center">
-                <IoTimeOutline className="text-lg fill-secondary text-secondary" />
-                {eventEndTime(event)}
-              </div>
-            </div>
+            <EventStartDateTime event={event} />
+            <EventEndDateTime event={event} />
           </div>
-          <div className="event__location flex flex-col bg-base-100 px-3 py-2 rounded-lg">
-            <div className="event__start__date flex flex-row gap-2 items-center">
-              <IoLocationOutline className="text-lg fill-secondary text-secondary" />
-              {eventLocation(event)}
-            </div>
-          </div>
+          <EventLocation event={event} />
         </div>
-        <Button>View Event</Button>
+        <Link to={`/events/${event.id}`}>
+          <Button>View Event</Button>
+        </Link>
       </div>
     </div>
   );
 }
+
+EventCard.propTypes = {
+  event: propTypes.object.isRequired,
+};
 
 export default EventCard;
