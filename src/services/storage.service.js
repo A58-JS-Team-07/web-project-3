@@ -1,6 +1,11 @@
 import { updateProfile } from "firebase/auth";
 import { updateUserAvatar } from "./users.service";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  deleteObject,
+} from "firebase/storage";
 import { storage } from "../config/firebase-config";
 
 export const uploadEventImage = async (file, eventId) => {
@@ -27,6 +32,16 @@ export const getEventImage = async (eventId) => {
   }
 };
 
+export const deleteEventImage = async (eventId) => {
+  try {
+    const fileRef = ref(storage, `events/${eventId}.png`);
+    await deleteObject(fileRef);
+  } catch (error) {
+    console.error("Error storage.services > deleteEventImage:", error.message);
+    throw error;
+  }
+};
+
 export const uploadAvatar = async (file, user) => {
   try {
     const fileRef = ref(storage, `avatars/${user.uid}.png`);
@@ -37,8 +52,7 @@ export const uploadAvatar = async (file, user) => {
     await updateUserAvatar(user.username, photoURL);
 
     return photoURL;
-  } 
-  catch (error) {
+  } catch (error) {
     console.error("Error uploading user avatar:", error.message);
     throw error;
   }

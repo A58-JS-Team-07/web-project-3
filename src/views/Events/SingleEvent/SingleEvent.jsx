@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import EditEventForm from "../../../components/Events/EditEvent/EditEventForm/EditEventForm";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
+import { deleteEventImage } from "../../../services/storage.service";
 
 function SingleEvent() {
   const { setLoading } = useContext(LoaderContext);
@@ -70,6 +71,7 @@ function SingleEvent() {
       console.log("event: ", event);
 
       await deleteEvent(event);
+      await deleteEventImage(event.eid);
       navigate("/events");
       toast.success(`You've successfully deleted event: ${event.title}`);
     } catch (error) {
