@@ -125,14 +125,13 @@ function Profile() {
                 </div>
               </div>
               <div className="form-update-row flex gap-8 justify-between mt-5">
-
-              <Button onClick={() => setIsEditingAvatar(true)}>Change Avatar</Button>
+                <Button onClick={() => setIsEditingAvatar(true)}>Change Avatar</Button>
               </div>
             </>
           ) : (
             <>
               <h2 className="text-2xl font-semibold px-3 pt-2 pb-2 mb-1">
-                    Upload Avatar   
+                Upload Avatar
               </h2>
               <div className="form-upload-avatar-row flex flex-col gap-2 justify-between mt-5">
                 <input
