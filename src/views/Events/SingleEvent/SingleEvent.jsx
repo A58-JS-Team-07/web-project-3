@@ -15,6 +15,8 @@ import EventLocation from "../../../components/Events/EventMeta/EventLocation";
 import UserSnippet from "../../../components/UserSnippet/UserSnippet";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import EditEventForm from "../../../components/Events/EditEvent/EditEventForm/EditEventForm";
+import { IoShieldCheckmarkOutline } from "react-icons/io5";
 
 function SingleEvent() {
   const { setLoading } = useContext(LoaderContext);
@@ -24,6 +26,7 @@ function SingleEvent() {
   const [creator, setCreator] = useState(null);
   const [participants, setParticipants] = useState([]);
   const { id } = useParams();
+  const [editEventModal, setEditEventModal] = useState(false);
 
   useEffect(() => {
     getEventById(id)
@@ -106,9 +109,19 @@ function SingleEvent() {
           </div>
           {event?.creator === userData?.username && (
             <div className="event-edit-delete flex justify-end gap-4">
-              <span className="underline hover:no-underline cursor-pointer">
+              <span
+                onClick={() => setEditEventModal(!editEventModal)}
+                className="underline hover:no-underline cursor-pointer"
+              >
                 Edit
               </span>
+              {editEventModal && (
+                <EditEventForm
+                  event={event}
+                  setEvent={setEvent}
+                  setEditEventModal={setEditEventModal}
+                />
+              )}
               <span
                 onClick={handleDeleteEvent}
                 className="text-red-500 underline hover:no-underline cursor-pointer"
@@ -139,10 +152,17 @@ function SingleEvent() {
         </div>
       </div>
       <div className="single-event__right w-1/3 flex flex-col gap-6">
-        <div className="buttons flex gap-6">
+        <div className="buttons flex gap-6 items-center">
           <Button>Add to Calendar</Button>
           <Button>Invite friends</Button>
+          {event?.isPrivate && (
+            <div className="private-event flex flex-col items-center rounded-full bg-base-200 p-3 mb-[-10px]">
+              <IoShieldCheckmarkOutline className="text-3xl text-green-500" />
+              <span className="text-xs uppercase">Private</span>
+            </div>
+          )}
         </div>
+
         <div className="event-date-location flex flex-col gap-5 rounded-2xl bg-base-200 p-5">
           <h3 className="text-xl font-semibold my-[-5px]">
             Date, time and location:
