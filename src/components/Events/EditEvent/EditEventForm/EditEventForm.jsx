@@ -159,7 +159,6 @@ function EditEventForm({ event, setEvent, setEditEventModal }) {
 
       await updateEvent(eventData.eid, {
         ...eventData,
-        updatedOn: Date.now(),
       });
 
       if (imageUpload) {
@@ -169,7 +168,7 @@ function EditEventForm({ event, setEvent, setEditEventModal }) {
           image: newImageUrl,
           updatedOn: Date.now(),
         }));
-        setEvent({ ...eventData, updatedOn: Date.now() });
+        setEvent({ ...eventData, image: newImageUrl, updatedOn: Date.now() });
       } else {
         setEvent({ ...eventData, updatedOn: Date.now() });
       }

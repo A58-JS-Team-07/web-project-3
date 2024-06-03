@@ -30,46 +30,61 @@ function SingleEvent() {
   const [editEventModal, setEditEventModal] = useState(false);
 
   useEffect(() => {
-    getEventById(id)
-      .then((event) => {
-        setEvent(event);
-      })
-      .catch((error) =>
-        console.error("Error in SingleEvent.jsx > useEffect (getEvent):", error)
-      );
+    try {
+      getEventById(id)
+        .then((event) => {
+          setEvent(event);
+        })
+        .catch((error) =>
+          console.error(
+            "Error in SingleEvent.jsx > useEffect (getEvent):",
+            error
+          )
+        );
+    } catch (error) {
+      console.error("Error in SingleEvent.jsx > useEffect (getEvent):", error);
+      throw error;
+    }
   }, [id]);
 
   useEffect(() => {
     if (event) {
-      setLoading(true);
-      getUserByUsernameSnapshot(event.creator)
-        .then((creator) => {
-          setCreator(creator);
-        })
-        .catch((error) =>
-          console.error(
-            "Error in SingleEvent.jsx > useEffect (getCreator):",
-            error
-          )
-        );
-      //TODO: get participants and set them in state
-      getAllUsersArray().then((users) => {
-        const participants = users.filter((user) => {
-          return event.participants[user.username];
+      try {
+        setLoading(true);
+        getUserByUsernameSnapshot(event.creator)
+          .then((creator) => {
+            setCreator(creator);
+          })
+          .catch((error) =>
+            console.error(
+              "Error in SingleEvent.jsx > useEffect (getCreator):",
+              error
+            )
+          );
+        //TODO: get participants and set them in state
+        getAllUsersArray().then((users) => {
+          const participants = users.filter((user) => {
+            return event.participants[user.username];
+          });
+          setParticipants(participants);
         });
-        setParticipants(participants);
-      });
-      setLoading(false);
+        console.log("log");
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error(
+          "Error in SingleEvent.jsx > useEffect (getParticipants):",
+          error
+        );
+        throw error;
+      }
     }
-  }, [event]);
+  }, [event, setLoading]);
 
   const handleDeleteEvent = async () => {
     if (!window.confirm("Are you sure you want to delete this event?")) return;
 
     try {
-      console.log("key: ", event.eid);
-      console.log("event: ", event);
-
       await deleteEvent(event);
       await deleteEventImage(event.eid);
       navigate("/events");
