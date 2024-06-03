@@ -2,6 +2,7 @@ import {
   get,
   set,
   update,
+  remove,
   ref,
   query,
   orderByChild,
@@ -94,16 +95,73 @@ export const updateUser = async (username, updatedData) => {
   }
 };
 
-export const createDeleteEventFromUser = async (username, eventId, status) => {
+//USERS AND EVENTS START
+export const createEventToUser = async (username, eventId) => {
   try {
     await update(ref(db, `users/${username}/createdEvents`), {
-      [eventId]: status,
+      [eventId]: true,
+    });
+    await update(ref(db, `users/${username}/participatingEvents`), {
+      [eventId]: true,
     });
   } catch (error) {
     console.error("Error users.events > updateUserEvents:" + error);
     throw error;
   }
 };
+
+export const deleteEventFromUser = async (username, eventId) => {
+  try {
+    const userData = await getUserByUsernameSnapshot(username);
+
+    if (userData.createdEvents) {
+      await remove(ref(db, `users/${username}/createdEvents/${eventId}`));
+    }
+
+    if (userData.participatingEvents) {
+      await remove(ref(db, `users/${username}/participatingEvents/${eventId}`));
+    }
+
+    if (userData.isInviting) {
+      const invitedUsers = Object.keys(userData.isInviting[eventId]);
+      console.log("DeleteEventFromUser > invitedUsers: ", invitedUsers);
+      invitedUsers.forEach(async (invitedUser) => {
+        await remove(
+          ref(db, `users/${invitedUser}/beingInvited/${eventId}/${username}`)
+        );
+      });
+    }
+  } catch (error) {
+    console.error("Error users.events > DeleteEventFromUser:" + error);
+    throw error;
+  }
+};
+
+export const joinEventUser = async (username, eventId) => {
+  try {
+    await update(ref(db, `users/${username}/participatingEvents`), {
+      [eventId]: true,
+    });
+    await update(ref(db, `events/${eventId}/participants`), {
+      [username]: true,
+    });
+  } catch (error) {
+    console.error("Error in users.services > joinEvent", error);
+    throw error;
+  }
+};
+
+export const leaveEventUser = async (username, eventId) => {
+  try {
+    await remove(ref(db, `users/${username}/participatingEvents/${eventId}`));
+    await remove(ref(db, `events/${eventId}/participants/${username}`));
+  } catch (error) {
+    console.error("Error in users.services > leaveEvent", error);
+    throw error;
+  }
+};
+
+//USERS AND EVENTS END
 
 export const changeCanBeInvitedStatus = async (username, status) => {
   try {
@@ -140,6 +198,7 @@ export const updateUserAvatar = async (username, avatarURL) => {
 };
 
 //Transfer these 3 functions to event services and test them to see if they work as expected
+//IVO: I don't use this. Delete if not needed
 export const addUserCreatedEvent = async (username, eid) => {
   try {
     await set(ref(db, `users/${username}/createdEvents/${eid}`));
@@ -148,6 +207,7 @@ export const addUserCreatedEvent = async (username, eid) => {
   }
 };
 
+//IVO: I don't use this. Delete if not needed
 export const addUserInvitedEvent = async (username, eid) => {
   try {
     await set(ref(db, `users/${username}/invitedEvents/${eid}`));
@@ -156,6 +216,7 @@ export const addUserInvitedEvent = async (username, eid) => {
   }
 };
 
+//IVO: I don't use this. Delete if not needed
 export const addUserParticipatedEvent = async (username, eid) => {
   try {
     await set(ref(db, `users/${username}/participatedEvents/${eid}`));

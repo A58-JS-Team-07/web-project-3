@@ -4,12 +4,16 @@ import {
   update,
   ref,
   push,
+  remove,
   query,
   orderByChild,
   equalTo,
 } from "firebase/database";
 import { db } from "../config/firebase-config.js";
-import { createDeleteEventFromUser } from "./users.service";
+import { createEventToUser } from "./users.service";
+import { deleteEventFromUser } from "./users.service";
+import { deleteEventImage } from "./storage.service";
+import { deleteInvite } from "./invites.service";
 
 export const getAllEvents = async () => {
   try {
@@ -59,7 +63,7 @@ export const createEvent = async (eventData) => {
       eid: eventRef.key,
     });
 
-    await createDeleteEventFromUser(eventData.creator, eventRef.key, true);
+    await createEventToUser(eventData.creator, eventRef.key);
 
     return eventRef.key;
   } catch (error) {
@@ -78,13 +82,50 @@ export const updateEvent = async (eventId, eventData) => {
   }
 };
 
+//TODO: when delete as admin get event by ID first and pass it to deleteEvent
 export const deleteEvent = async (eventData) => {
   try {
-    const eventRef = ref(db, `events/${eventData.eid}`);
-    await set(eventRef, null);
-    await createDeleteEventFromUser(eventData.creator, eventData.eid, null);
+    const participants = Object.keys(eventData.participants);
+    console.log("participants: ", participants);
+    console.log(typeof participants, participants.length);
+
+    participants.forEach(async (participant) => {
+      console.log("participant: ", participant);
+      deleteEventFromUser(participant, eventData.eid);
+    });
+
+    await set(ref(db, `events/${eventData.eid}`), null);
+    await deleteEventImage(eventData.eid);
   } catch (error) {
     console.error("Error in events.services > deleteEvent", error);
+    throw error;
+  }
+};
+
+export const joinEvent = async (username, eventId) => {
+  try {
+    await update(ref(db, `users/${username}/participatingEvents`), {
+      [eventId]: true,
+    });
+    await update(ref(db, `events/${eventId}/participants`), {
+      [username]: true,
+    });
+  } catch (error) {
+    console.error("Error in users.services > joinEvent", error);
+    throw error;
+  }
+};
+
+export const leaveEvent = async (username, eventId, invitedUsers) => {
+  try {
+    await remove(ref(db, `users/${username}/participatingEvents/${eventId}`));
+    await remove(ref(db, `events/${eventId}/participants/${username}`));
+
+    invitedUsers.forEach(async (invitedUser) => {
+      await deleteInvite(eventId, username, invitedUser);
+    });
+  } catch (error) {
+    console.error("Error in users.services > leaveEvent", error);
     throw error;
   }
 };

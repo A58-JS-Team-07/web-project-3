@@ -17,12 +17,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import EditEventForm from "../../../components/Events/EditEvent/EditEventForm/EditEventForm";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
-import { deleteEventImage } from "../../../services/storage.service";
+import { joinEvent, leaveEvent } from "../../../services/events.service";
 
 function SingleEvent() {
   const { setLoading } = useContext(LoaderContext);
-  const { userData } = useContext(AppContext);
+  const { userData, setAppState } = useContext(AppContext);
   const navigate = useNavigate();
+  const [reRender, setReRender] = useState(false);
   const [event, setEvent] = useState(null);
   const [creator, setCreator] = useState(null);
   const [participants, setParticipants] = useState([]);
@@ -61,14 +62,12 @@ function SingleEvent() {
               error
             )
           );
-        //TODO: get participants and set them in state
         getAllUsersArray().then((users) => {
           const participants = users.filter((user) => {
             return event.participants[user.username];
           });
           setParticipants(participants);
         });
-        console.log("log");
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -86,11 +85,76 @@ function SingleEvent() {
 
     try {
       await deleteEvent(event);
-      await deleteEventImage(event.eid);
       navigate("/events");
       toast.success(`You've successfully deleted event: ${event.title}`);
     } catch (error) {
       console.error("Error in SingleEvent.jsx > handleDeleteEvent:", error);
+      throw error;
+    }
+  };
+
+  const handleJoinEvent = async () => {
+    try {
+      await joinEvent(userData.username, event.eid);
+      setAppState((prevState) => ({
+        ...prevState,
+        userData: {
+          ...prevState.userData,
+          participatingEvents: {
+            ...prevState.userData.participatingEvents,
+            [event.eid]: true,
+          },
+        },
+      }));
+      setParticipants([...participants, userData]);
+      setEvent((prevState) => ({
+        ...prevState,
+        participants: {
+          ...prevState.participants,
+          [userData.username]: true,
+        },
+      }));
+      setReRender(!reRender);
+      toast.success(`You've successfully joined the event: ${event.title}`);
+    } catch (error) {
+      console.error("Error in SingleEvent.jsx > handleJoinEvent:", error);
+      throw error;
+    }
+  };
+
+  // console.log("participants: ", participants);
+  // console.log("userData: ", userData);
+  // console.log("part + userdata: ", [...participants, userData]);
+  // console.log(userData?.username, event?.eid);
+
+  const handleLeaveEvent = async () => {
+    try {
+      await leaveEvent(userData.username, event.eid);
+      setAppState((prevState) => ({
+        ...prevState,
+        userData: {
+          ...prevState.userData,
+          participatingEvents: {
+            ...prevState.userData.participatingEvents,
+            [event.eid]: false,
+          },
+        },
+      }));
+      setParticipants(
+        participants.filter((participant) => participant !== userData)
+      );
+      setEvent((prevState) => {
+        const updatedParticipants = { ...prevState.participants };
+        delete updatedParticipants[userData.username];
+        return {
+          ...prevState,
+          participants: updatedParticipants,
+        };
+      });
+      setReRender(!reRender);
+      toast.success(`You've successfully left the event: ${event.title}`);
+    } catch (error) {
+      console.error("Error in SingleEvent.jsx > handleLeaveEvent:", error);
       throw error;
     }
   };
@@ -169,9 +233,19 @@ function SingleEvent() {
         </div>
       </div>
       <div className="single-event__right w-1/3 flex flex-col gap-6">
-        <div className="buttons flex gap-6 items-center">
-          <Button>Add to Calendar</Button>
-          <Button>Invite friends</Button>
+        <div className="buttons-private flex gap-6 items-center justify-between">
+          <div className="buttons-private__buttons flex gap-5">
+            {!event?.participants[userData?.username] ? (
+              <Button onClick={handleJoinEvent}>Join Event</Button>
+            ) : (
+              <>
+                {event?.creator !== userData?.username && (
+                  <Button onClick={handleLeaveEvent}>Leave Event</Button>
+                )}
+                <Button>Invite Participant</Button>
+              </>
+            )}
+          </div>
           {event?.isPrivate && (
             <div className="private-event flex flex-col items-center rounded-full bg-base-200 p-3 mb-[-10px]">
               <IoShieldCheckmarkOutline className="text-3xl text-green-500" />
@@ -191,13 +265,13 @@ function SingleEvent() {
                 <EventEndDateTime event={event} />
               </div>
               <EventLocation event={event} />
-              <iframe
+              {/* <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2933.253718515032!2d23.285919675242468!3d42.677167615010056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40aa85da9bb2b5ed%3A0xc5eefb71463a0602!2sg.k.%20Belite%20brezi%2C%20ul.%20%22Vorino%22%2019%2C%201612%20Sofia!5e0!3m2!1sen!2sbg!4v1717081103473!5m2!1sen!2sbg"
                 width=""
                 height="200"
                 loading="lazy"
                 className="rounded-xl"
-              ></iframe>
+              ></iframe> */}
             </>
           )}
         </div>
@@ -217,9 +291,10 @@ function SingleEvent() {
             </div>
           </div>
         </div>
-        <div className="event-weather flex flex-col gap-5 rounded-2xl bg-base-200 p-5">
+        {/*TODO: Add weather API here if time*/}
+        {/* <div className="event-weather flex flex-col gap-5 rounded-2xl bg-base-200 p-5">
           <h3 className="text-xl font-semibold">Expected weather:</h3>
-        </div>
+        </div> */}
       </div>
     </div>
   );
