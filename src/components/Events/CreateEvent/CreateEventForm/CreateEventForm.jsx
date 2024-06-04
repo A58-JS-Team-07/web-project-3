@@ -25,7 +25,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
   const navigate = useNavigate();
   const [isRecurring, setIsRecurring] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
-  const [canOthersInvite, setCanOthersInvite] = useState(false);
+  const [canOthersInvite, setCanOthersInvite] = useState(true);
   const [imageUpload, setImageUpload] = useState(null);
   const [invitees, setInvitees] = useState([]);
   const [eventData, setEventData] = useState({
@@ -566,6 +566,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                       className="toggle"
                       name="can-others-invite-to-event"
                       id="can-others-invite-to-event"
+                      checked={canOthersInvite}
                       onClick={() => {
                         setCanOthersInvite(!canOthersInvite);
                         setEventData({

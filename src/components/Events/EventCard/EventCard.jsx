@@ -4,11 +4,18 @@ import { Link } from "react-router-dom";
 import EventEndDateTime from "../EventMeta/EventEndDateTime";
 import EventStartDateTime from "../EventMeta/EventStartDateTime";
 import EventLocation from "../EventMeta/EventLocation";
+import { IoShieldCheckmarkOutline } from "react-icons/io5";
 
 function EventCard({ event }) {
   return (
-    <div className="event w-full bg-base-200 rounded-xl overflow-hidden shadow-lg">
+    <div className="event w-full bg-base-200 rounded-xl overflow-hidden shadow-lg relative">
       <div className="event__image ">
+        {event?.isPrivate && (
+          <div className="private-event flex flex-col items-center rounded-full bg-base-200 p-3 mb-[-10px] absolute right-4 top-3 shadow-sm">
+            <IoShieldCheckmarkOutline className="text-2xl text-green-500" />
+            <span className="text-[10px] uppercase">Private</span>
+          </div>
+        )}
         <img
           src={event.image}
           alt={event.title}

@@ -247,9 +247,18 @@ function SingleEvent() {
                 {event?.creator !== userData?.username && (
                   <Button onClick={handleLeaveEvent}>Leave Event</Button>
                 )}
-                <Button onClick={() => setInvitingModal(!invitingModal)}>
-                  Invite Participant
-                </Button>
+                {event?.creator === userData?.username ? (
+                  <Button onClick={() => setInvitingModal(!invitingModal)}>
+                    Invite Participant
+                  </Button>
+                ) : (
+                  event.canOthersInvite &&
+                  event?.creator !== userData?.username && (
+                    <Button onClick={() => setInvitingModal(!invitingModal)}>
+                      Invite Participant
+                    </Button>
+                  )
+                )}
                 {invitingModal && (
                   <InvitedToEvent
                     eventId={event?.eid}
