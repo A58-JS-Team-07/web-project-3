@@ -121,9 +121,12 @@ export const leaveEvent = async (username, eventId, invitedUsers) => {
     await remove(ref(db, `users/${username}/participatingEvents/${eventId}`));
     await remove(ref(db, `events/${eventId}/participants/${username}`));
 
-    invitedUsers.forEach(async (invitedUser) => {
-      await deleteInvite(eventId, username, invitedUser);
-    });
+    if (invitedUsers[eventId]) {
+      Object.keys(invitedUsers[eventId]).forEach(async (invitedUser) => {
+        console.log("deleteInvite: ", invitedUser);
+        await deleteInvite(eventId, username, invitedUser);
+      });
+    }
   } catch (error) {
     console.error("Error in users.services > leaveEvent", error);
     throw error;

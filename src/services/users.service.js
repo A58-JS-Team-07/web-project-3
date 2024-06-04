@@ -137,30 +137,6 @@ export const deleteEventFromUser = async (username, eventId) => {
   }
 };
 
-export const joinEventUser = async (username, eventId) => {
-  try {
-    await update(ref(db, `users/${username}/participatingEvents`), {
-      [eventId]: true,
-    });
-    await update(ref(db, `events/${eventId}/participants`), {
-      [username]: true,
-    });
-  } catch (error) {
-    console.error("Error in users.services > joinEvent", error);
-    throw error;
-  }
-};
-
-export const leaveEventUser = async (username, eventId) => {
-  try {
-    await remove(ref(db, `users/${username}/participatingEvents/${eventId}`));
-    await remove(ref(db, `events/${eventId}/participants/${username}`));
-  } catch (error) {
-    console.error("Error in users.services > leaveEvent", error);
-    throw error;
-  }
-};
-
 //USERS AND EVENTS END
 
 export const changeCanBeInvitedStatus = async (username, status) => {

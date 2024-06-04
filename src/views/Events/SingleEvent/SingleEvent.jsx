@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import EditEventForm from "../../../components/Events/EditEvent/EditEventForm/EditEventForm";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { joinEvent, leaveEvent } from "../../../services/events.service";
+import InvitedToEvent from "../../../components/Events/InviteToEvent/InviteToEvent";
 
 function SingleEvent() {
   const { setLoading } = useContext(LoaderContext);
@@ -29,6 +30,7 @@ function SingleEvent() {
   const [participants, setParticipants] = useState([]);
   const { id } = useParams();
   const [editEventModal, setEditEventModal] = useState(false);
+  const [invitingModal, setInvitingModal] = useState(false);
 
   useEffect(() => {
     try {
@@ -94,6 +96,7 @@ function SingleEvent() {
   };
 
   const handleJoinEvent = async () => {
+    //TODO: Add logic where if user is invited and joins the event, the invite is deleted
     try {
       await joinEvent(userData.username, event.eid);
       setAppState((prevState) => ({
@@ -122,14 +125,16 @@ function SingleEvent() {
     }
   };
 
-  // console.log("participants: ", participants);
-  // console.log("userData: ", userData);
-  // console.log("part + userdata: ", [...participants, userData]);
-  // console.log(userData?.username, event?.eid);
-
   const handleLeaveEvent = async () => {
     try {
-      await leaveEvent(userData.username, event.eid);
+      if (
+        !window.confirm(
+          "Are you sure you want to leave the event? All participant invitations will be canceled if you do."
+        )
+      )
+        return;
+
+      await leaveEvent(userData.username, event.eid, userData.isInviting);
       setAppState((prevState) => ({
         ...prevState,
         userData: {
@@ -242,7 +247,17 @@ function SingleEvent() {
                 {event?.creator !== userData?.username && (
                   <Button onClick={handleLeaveEvent}>Leave Event</Button>
                 )}
-                <Button>Invite Participant</Button>
+                <Button onClick={() => setInvitingModal(!invitingModal)}>
+                  Invite Participant
+                </Button>
+                {invitingModal && (
+                  <InvitedToEvent
+                    eventId={event?.eid}
+                    invitingUsername={userData?.username}
+                    invitingModal={invitingModal}
+                    setInvitingModal={setInvitingModal}
+                  />
+                )}
               </>
             )}
           </div>
@@ -299,7 +314,5 @@ function SingleEvent() {
     </div>
   );
 }
-
-// {creator && <UserSnippet user={creator} />}
 
 export default SingleEvent;
