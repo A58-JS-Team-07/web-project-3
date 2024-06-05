@@ -11,7 +11,6 @@ function InviteToEvent({
 
   function updateForm(e) {
     setFormName(e.target.value);
-    console.log("formName: ", formName);
   }
 
   function handleInviteUser() {
