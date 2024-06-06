@@ -1,20 +1,27 @@
-import { useState, useEffect } from "react";
-import { useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { getAllContactsListsByUser, createContactsList } from "../../services/contactsLists.services";
 import AddNewContactsListModal from "../../components/ContactsLists/AddNewContactsListModal/AddNewContactsListModal";
 import { AppContext } from "../../context/AppContext";
 import ContactsListSnippet from "../../components/ContactsLists/ContactsListSnippet/ContactsListSnippet";
+import SingleContactList from "../../components/ContactsLists/SingleContactList/SingleContactList";
+import { getContactsFromList } from "../../services/contactsLists.services";
+import { ref, onValue, set } from "firebase/database";
+import { db } from "../../config/firebase-config";
 
 function ContactsLists() {
   const { userData } = useContext(AppContext);
   const [contacts, setContacts] = useState(null);
   const [contactsLists, setContactsLists] = useState([]);
+  const [listClicked, setListClicked] = useState(false);
+  const [contactsList, setContactsList] = useState(null);
 
   useEffect(() => {
     const fetchContactsLists = async () => {
       try {
         const contactsListsValues = await getAllContactsListsByUser(userData.username);
-        console.log(contactsListsValues);
+        // setListClicked(!listClicked);
+        setContactsList(contactsList);
+        console.log("contactsListsValues",contactsListsValues);
         setContactsLists(contactsListsValues);
       } catch (error) {
         console.error("Error in ContactsLists > fetchContactsLists:", error);
@@ -24,25 +31,66 @@ function ContactsLists() {
     fetchContactsLists();
   }, []);
 
-  // const getAllContactsLists = () => {
-  //   const contactsListsRef = ref(db, "contactsLists");
+  useEffect(() => {
+    try {
+      const contactsListsRef = ref(db, `contactsLists`);
+      return onValue(contactsListsRef, (snapshot) => {
+        const contactsListsValues = snapshot.val();
+        const contactsLists = Object.values(contactsListsValues)
+          .filter((contactsList) => contactsList.owner === userData.username)
+          .map((contactsList) => { contactsList.clid = contactsList.id; return contactsList.listName; });
+        console.log("contactsLists", contactsLists);
+        setContactsLists(contactsLists);
+        console.log("CL", contactsLists);
+      });
 
-  //   return onValue(contactsListsRef, (snapshot) => {
-  //     const data = snapshot.val();
-  //     const contactsLists = data ? Object.keys(data).map((key) => ({ clid: key, ...data[key] })) : [];
-  //     setContactsLists(contactsLists);
-  //   });
-  // };
+    } catch (error) {
+      console.error("Error in ContactsLists > useEffect:", error);
+    }
+    
+  }, []);
 
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        // console.log("contactsList?.clid", contactsList);
+        const contactsValues = await getContactsFromList(contactsList?.clid);
+        // console.log('CONTACTS LIST', contactsList);
+        // console.log('CONTACTS VALUES', contactsValues);
+        setContacts(contactsValues);
+        // console.log("contacts", contacts);
+        setContactsList(contactsList);
+        console.log("contactsList", contactsList);
+      } catch (error) {
+        console.error("Error in Contacts > fetchContacts:", error);
+      }
+    };
+
+    fetchContacts();
+  }, [listClicked]);
+
+  const handleListClick = (contactsList) => {
+    // console.log("List Clicked1", listClicked);
+    setListClicked(!listClicked);
+    setContactsList(contactsList);
+    // console.log("List", contactsList);
+    console.log("List Clicked2", listClicked);
+  };
+
+  // console.log("ContactsList", contactsList);
   return (
     <div>
-      <div className="p-6">
-        <h1 className="text-3xl font-bold mb-5">Contacts Lists</h1>
+      <h1 className="text-3xl font-bold mb-5 p-6">Contacts Lists</h1>
+      <div className="flex gap-10 p-6">
         <div className="inner__container bg-base-200 w-1/3 min-w-1/2 p-10 rounded-3xl ">
           {contactsLists?.length > 0 ? (
             <div className="flex flex-col gap-10">
               {contactsLists.map((contactsList) => (
-                <ContactsListSnippet key={contactsList?.clid} contactsList={contactsList} />
+                <ContactsListSnippet
+                  key={contactsList?.clid}
+                  contactsList={contactsList}
+                  onListClick={() => handleListClick(contactsList)}
+                />
               ))}
             </div>
           ) : (
@@ -52,6 +100,9 @@ function ContactsLists() {
           )}
           <AddNewContactsListModal />
         </div>
+        {listClicked && (
+          <SingleContactList contacts={contacts} contactsList={contactsList} listClicked={listClicked} />
+        )}
       </div>
     </div>
   );

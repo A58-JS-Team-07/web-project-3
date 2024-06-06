@@ -71,3 +71,7 @@ export const eventLocation = (event) => {
     event?.location?.country
   );
 };
+
+export const MIN_CONTACT_LIST_LENGTH = 3;
+
+export const MAX_CONTACT_LIST_LENGTH = 30;

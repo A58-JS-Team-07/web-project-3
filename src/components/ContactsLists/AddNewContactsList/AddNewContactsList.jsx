@@ -4,6 +4,8 @@ import Button from '../../Button/Button';
 import { IoClose } from 'react-icons/io5';
 import { AppContext } from '../../../context/AppContext';
 import { createContactsList } from '../../../services/contactsLists.services';
+import { toast } from 'react-toastify';
+import { MIN_CONTACT_LIST_LENGTH, MAX_CONTACT_LIST_LENGTH } from '../../../common/constants';
 
 function AddNewContactsListForm({ showModal, setShowModal = () => { } }) {
   const { userData } = useContext(AppContext);
@@ -14,6 +16,22 @@ function AddNewContactsListForm({ showModal, setShowModal = () => { } }) {
   };
 
   const handleSubmit = async () => {
+    if (!newContactsListName) {
+      toast.error('Please enter a name for the new contacts list!');
+      return;
+    }
+
+    if (newContactsListName.length < MIN_CONTACT_LIST_LENGTH) {
+      toast.error('Contacts list name should be at least 3 characters long!');
+      return;
+    }
+
+    if (newContactsListName.length > MAX_CONTACT_LIST_LENGTH) {
+      toast.error('Contacts list name should be at most 30 characters long!');
+      return;
+    }
+
+
     await createContactsList(userData.username, newContactsListName);
     setNewContactsListName('');
     setShowModal(false);
