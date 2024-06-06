@@ -109,7 +109,7 @@ function Profile() {
                         {"Hi, " + userData?.firstName + " " + userData?.lastName}
                       </h2>
                       <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXu0uM0MmYsVPFaV2PqrkyuFqvK5k3RPt-g1NYd-vgpUGBSoyb4UXNG9MbUZn4hcPFoLk&usqp=CAU"
+                        src="/anonymous-avatar.jpg"
                       />
                     </>
                   ) : (
