@@ -72,6 +72,6 @@ export const eventLocation = (event) => {
   );
 };
 
-export const MIN_CONTACT_LIST_LENGTH = 3;
+export const MIN_CONTACT_LIST_NAME_LENGTH = 3;
 
-export const MAX_CONTACT_LIST_LENGTH = 30;
+export const MAX_CONTACT_LIST_NAME_LENGTH = 30;

@@ -5,7 +5,7 @@ import { IoClose } from 'react-icons/io5';
 import { AppContext } from '../../../context/AppContext';
 import { createContactsList } from '../../../services/contactsLists.services';
 import { toast } from 'react-toastify';
-import { MIN_CONTACT_LIST_LENGTH, MAX_CONTACT_LIST_LENGTH } from '../../../common/constants';
+import { MIN_CONTACT_LIST_NAME_LENGTH, MAX_CONTACT_LIST_NAME_LENGTH } from '../../../common/constants';
 
 function AddNewContactsListForm({ showModal, setShowModal = () => { } }) {
   const { userData } = useContext(AppContext);
@@ -21,12 +21,12 @@ function AddNewContactsListForm({ showModal, setShowModal = () => { } }) {
       return;
     }
 
-    if (newContactsListName.length < MIN_CONTACT_LIST_LENGTH) {
+    if (newContactsListName.length < MIN_CONTACT_LIST_NAME_LENGTH) {
       toast.error('Contacts list name should be at least 3 characters long!');
       return;
     }
 
-    if (newContactsListName.length > MAX_CONTACT_LIST_LENGTH) {
+    if (newContactsListName.length > MAX_CONTACT_LIST_NAME_LENGTH) {
       toast.error('Contacts list name should be at most 30 characters long!');
       return;
     }
