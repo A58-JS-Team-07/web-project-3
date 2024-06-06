@@ -1,20 +1,79 @@
-function SingleNotification({ notification }) {
+import { useEffect, useState, useContext } from "react";
+import { getEventById } from "../../../services/events.service";
+import { getUserByUsernameSnapshot } from "../../../services/users.service";
+import { Link } from "react-router-dom";
+import { acceptInvite, deleteInvite } from "../../../services/invites.service";
+import { AppContext } from "../../../context/AppContext";
+import { toast } from "react-toastify";
+
+function SingleNotification({ inviter, event }) {
+  const { userData } = useContext(AppContext);
+  const [inviterData, setInviterData] = useState(null);
+  const [eventData, setEventData] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const inviterData = await getUserByUsernameSnapshot(inviter);
+      setInviterData(inviterData);
+
+      const eventData = await getEventById(event);
+      setEventData(eventData);
+    })();
+  }, []);
+
+  async function handleAccept() {
+    try {
+      await acceptInvite(
+        eventData?.eid,
+        inviterData?.username,
+        userData?.username
+      );
+      toast.success("You have accepted the invite");
+    } catch (error) {
+      console.error("Error in SingleNotification > handleAccept:", error);
+      throw error;
+    }
+  }
+  async function handleDelete() {
+    await deleteInvite(
+      eventData?.eid,
+      inviterData?.username,
+      userData?.username
+    );
+    toast.success("You have deleted the invite");
+  }
+
   return (
     <div className="single-notification my-5 p-3 bg-slate-100 rounded-lg">
       <div className="notification__message flex gap-4">
         <div className="avatar w-2/12">
           <div className="w-24 rounded-full">
-            <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+            <img
+              src={
+                inviterData?.avatar
+                  ? inviterData?.avatar
+                  : "/public/anonymous-avatar.jpg"
+              }
+            />
           </div>
         </div>
         <div className="message w-10/12">
-          <span>Ivelin Banchev invited you to "Event name lorem ipsum"</span>
+          <span>{`${inviterData?.firstName} ${inviterData?.lastName} invited you to ${eventData?.title}`}</span>
         </div>
       </div>
       <div className="notification__action flex gap-4 justify-between mt-2">
-        <button className="text-green-600 hover:underline">Accept</button>
-        <button className="text-red-600 hover:underline">Delete</button>
-        <button className="hover:underline">See event</button>
+        <button
+          className="text-green-600 hover:underline"
+          onClick={handleAccept}
+        >
+          Accept
+        </button>
+        <button className="text-red-600 hover:underline" onClick={handleDelete}>
+          Delete
+        </button>
+        <Link to={`/events/${eventData?.eid}`}>
+          <button className="hover:underline">See the Event</button>
+        </Link>
       </div>
     </div>
   );

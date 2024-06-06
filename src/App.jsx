@@ -15,14 +15,14 @@ import MyCalendar from "./views/MyCalendar/MyCalendar";
 import Profile from "./views/Profile/Profile";
 import { AppContext } from "./context/AppContext";
 import { LoaderProvider } from "./hoc/LoaderProvider";
-import { auth } from "./config/firebase-config";
+import { auth, db } from "./config/firebase-config";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { getUserData } from "./services/users.service";
 import Authenticated from "./hoc/Authenticated";
+import { onValue, ref } from "firebase/database";
 
 function App() {
   const [user] = useAuthState(auth);
-  // console.log("first user:", user);
   const [appState, setAppState] = useState({ user: null, userData: null });
 
   if (appState.user !== user) {
@@ -33,16 +33,28 @@ function App() {
     if (!appState.user) {
       return;
     }
+    try {
+      return onValue(
+        ref(db, `users/${appState.user.displayName}`),
+        (snapshot) => {
+          const userData = snapshot.val();
+          setAppState({ ...appState, userData });
+        }
+      );
+    } catch (error) {
+      console.error("App.jsx > useEffect set userData:", error);
+      throw error;
+    }
 
-    getUserData(appState.user.uid)
-      .then((snapshot) => {
-        // console.log("snapshot:", snapshot.val());
-        const userData = Object.values(snapshot.val())[0];
-        // console.log("userData:", userData);
-        // console.log("appState:", appState.user);
-        setAppState({ ...appState, userData });
-      })
-      .catch((error) => console.error("Error getting user data:", error));
+    // getUserData(appState.user.uid)
+    //   .then((snapshot) => {
+    //     // console.log("snapshot:", snapshot.val());
+    //     const userData = Object.values(snapshot.val())[0];
+    //     console.log("userData:", userData);
+    //     // console.log("appState:", appState.user);
+    //     setAppState({ ...appState, userData });
+    //   })
+    //   .catch((error) => console.error("Error getting user data:", error));
   }, [appState.user]);
 
   return (

@@ -52,17 +52,17 @@ export const deleteInvite = async (eventId, inviterUser, invitedUser) => {
 
 export const acceptInvite = async (eventId, inviterUser, invitedUser) => {
   try {
-    await update(
-      ref(db, `users/${invitedUser}/isInvited/${eventId}/${inviterUser}`),
-      true
+    await update(ref(db, `events/${eventId}/participants/`), {
+      [invitedUser]: true,
+    });
+    await update(ref(db, `users/${invitedUser}/participatingEvents/`), {
+      [eventId]: true,
+    });
+    await remove(
+      ref(db, `users/${inviterUser}/isInviting/${eventId}/${invitedUser}`)
     );
-    await update(
-      ref(db, `users/${inviterUser}/hasAccepted/${eventId}/${invitedUser}`),
-      true
-    );
-    await update(
-      ref(db, `events/${eventId}/participants/${invitedUser}`),
-      true
+    await remove(
+      ref(db, `users/${invitedUser}/beingInvited/${eventId}/${inviterUser}`)
     );
   } catch (error) {
     console.error("Error in invites.services > acceptInvite:", error);

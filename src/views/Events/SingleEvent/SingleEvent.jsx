@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getEventById, deleteEvent } from "../../../services/events.service";
+import { deleteEvent } from "../../../services/events.service";
 import {
   getUserByUsernameSnapshot,
   getAllUsersArray,
@@ -19,12 +19,13 @@ import EditEventForm from "../../../components/Events/EditEvent/EditEventForm/Ed
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { joinEvent, leaveEvent } from "../../../services/events.service";
 import InvitedToEvent from "../../../components/Events/InviteToEvent/InviteToEvent";
+import { onValue, ref } from "firebase/database";
+import { db } from "../../../config/firebase-config";
 
 function SingleEvent() {
   const { setLoading } = useContext(LoaderContext);
-  const { userData, setAppState } = useContext(AppContext);
+  const { userData } = useContext(AppContext);
   const navigate = useNavigate();
-  const [reRender, setReRender] = useState(false);
   const [event, setEvent] = useState(null);
   const [creator, setCreator] = useState(null);
   const [participants, setParticipants] = useState([]);
@@ -34,16 +35,9 @@ function SingleEvent() {
 
   useEffect(() => {
     try {
-      getEventById(id)
-        .then((event) => {
-          setEvent(event);
-        })
-        .catch((error) =>
-          console.error(
-            "Error in SingleEvent.jsx > useEffect (getEvent):",
-            error
-          )
-        );
+      return onValue(ref(db, `events/${id}`), (snapshot) => {
+        setEvent(snapshot.val());
+      });
     } catch (error) {
       console.error("Error in SingleEvent.jsx > useEffect (getEvent):", error);
       throw error;
@@ -58,23 +52,32 @@ function SingleEvent() {
           .then((creator) => {
             setCreator(creator);
           })
-          .catch((error) =>
+          .catch((error) => {
             console.error(
               "Error in SingleEvent.jsx > useEffect (getCreator):",
               error
-            )
-          );
-        getAllUsersArray().then((users) => {
-          const participants = users.filter((user) => {
-            return event.participants[user.username];
+            );
+            throw error;
           });
-          setParticipants(participants);
-        });
+        getAllUsersArray()
+          .then((users) => {
+            const participants = users.filter((user) => {
+              return event.participants[user.username];
+            });
+            setParticipants(participants);
+          })
+          .catch((error) => {
+            console.error(
+              "Error in SingleEvent.jsx > useEffect (getParticipants):",
+              error
+            );
+            throw error;
+          });
         setLoading(false);
       } catch (error) {
         setLoading(false);
         console.error(
-          "Error in SingleEvent.jsx > useEffect (getParticipants):",
+          "Error in SingleEvent.jsx > second useEffect (creator and participants):",
           error
         );
         throw error;
@@ -99,25 +102,6 @@ function SingleEvent() {
     //TODO: Add logic where if user is invited and joins the event, the invite is deleted
     try {
       await joinEvent(userData.username, event.eid);
-      setAppState((prevState) => ({
-        ...prevState,
-        userData: {
-          ...prevState.userData,
-          participatingEvents: {
-            ...prevState.userData.participatingEvents,
-            [event.eid]: true,
-          },
-        },
-      }));
-      setParticipants([...participants, userData]);
-      setEvent((prevState) => ({
-        ...prevState,
-        participants: {
-          ...prevState.participants,
-          [userData.username]: true,
-        },
-      }));
-      setReRender(!reRender);
       toast.success(`You've successfully joined the event: ${event.title}`);
     } catch (error) {
       console.error("Error in SingleEvent.jsx > handleJoinEvent:", error);
@@ -135,28 +119,6 @@ function SingleEvent() {
         return;
 
       await leaveEvent(userData.username, event.eid, userData.isInviting);
-      setAppState((prevState) => ({
-        ...prevState,
-        userData: {
-          ...prevState.userData,
-          participatingEvents: {
-            ...prevState.userData.participatingEvents,
-            [event.eid]: false,
-          },
-        },
-      }));
-      setParticipants(
-        participants.filter((participant) => participant !== userData)
-      );
-      setEvent((prevState) => {
-        const updatedParticipants = { ...prevState.participants };
-        delete updatedParticipants[userData.username];
-        return {
-          ...prevState,
-          participants: updatedParticipants,
-        };
-      });
-      setReRender(!reRender);
       toast.success(`You've successfully left the event: ${event.title}`);
     } catch (error) {
       console.error("Error in SingleEvent.jsx > handleLeaveEvent:", error);
