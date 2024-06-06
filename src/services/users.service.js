@@ -173,30 +173,15 @@ export const updateUserAvatar = async (username, avatarURL) => {
   }
 };
 
-//Transfer these 3 functions to event services and test them to see if they work as expected
-//IVO: I don't use this. Delete if not needed
-export const addUserCreatedEvent = async (username, eid) => {
+export const searchUsers = async (searchQuery) => {
   try {
-    await set(ref(db, `users/${username}/createdEvents/${eid}`));
+    const usersSnapshot = await get(ref(db, "users"));
+    const users = Object.values(usersSnapshot.val());
+    return users.filter((user) => 
+      user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
   } catch (error) {
-    console.error("Error adding created event to user:" + error);
-  }
-};
-
-//IVO: I don't use this. Delete if not needed
-export const addUserInvitedEvent = async (username, eid) => {
-  try {
-    await set(ref(db, `users/${username}/invitedEvents/${eid}`));
-  } catch (error) {
-    console.error("Error adding invited event to user:");
-  }
-};
-
-//IVO: I don't use this. Delete if not needed
-export const addUserParticipatedEvent = async (username, eid) => {
-  try {
-    await set(ref(db, `users/${username}/participatedEvents/${eid}`));
-  } catch (error) {
-    console.error("Error adding participated event to user:" + error);
+    console.error("Error searching users:" + error);
   }
 };
