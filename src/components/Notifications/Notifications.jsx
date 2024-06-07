@@ -9,20 +9,25 @@ function Notifications() {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-    return onValue(
-      ref(db, `users/${userData?.username}/beingInvited`),
-      (snapshot) => {
-        if (!snapshot.exists()) {
-          return setNotifications([]);
+    try {
+      return onValue(
+        ref(db, `users/${userData?.username}/beingInvited`),
+        (snapshot) => {
+          if (!snapshot.exists()) {
+            return setNotifications([]);
+          }
+
+          const notifications = Object.keys(snapshot.val()).map((key) => {
+            return { [key]: snapshot.val()[key] };
+          });
+
+          setNotifications(notifications);
         }
-
-        const notifications = Object.keys(snapshot.val()).map((key) => {
-          return { [key]: snapshot.val()[key] };
-        });
-
-        setNotifications(notifications);
-      }
-    );
+      );
+    } catch (error) {
+      console.error("Error in Notification.jsx > UseEffect: ", error);
+      throw error;
+    }
   }, []);
 
   console.log("notificationsState: ", notifications);
