@@ -85,3 +85,7 @@ export const eventLocation = (event) => {
  */
 export const monthStartingDayIndex = (firstDayOfMonth) =>
   getDay(firstDayOfMonth) === 0 ? 7 : getDay(firstDayOfMonth) - 1;
+
+export const MIN_CONTACT_LIST_NAME_LENGTH = 3;
+
+export const MAX_CONTACT_LIST_NAME_LENGTH = 30;
