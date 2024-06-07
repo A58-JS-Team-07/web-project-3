@@ -29,7 +29,7 @@ function AllEvents() {
       <h1 className="text-3xl font-bold mb-5">All Events</h1>
       <div className="events__listing grid grid-cols-3 gap-10">
         {events.map((event) => (
-          <EventCard key={event.id} event={event} />
+          <EventCard key={event.eid} event={event} />
         ))}
       </div>
     </div>
