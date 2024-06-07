@@ -1,3 +1,5 @@
+import { getDay } from "date-fns";
+
 export const MIN_USERNAME_LENGTH = 3;
 
 export const MAX_USERNAME_LENGTH = 30;
@@ -13,6 +15,10 @@ export const MAX_EVENT_TITLE_LENGTH = 30;
 export const MIN_EVENT_DESCRIPTION_LENGTH = 10;
 
 export const MAX_EVENT_DESCRIPTION_LENGTH = 500;
+
+export const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+export const CURRENT_DATE = new Date();
 
 export const isValidEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -71,3 +77,11 @@ export const eventLocation = (event) => {
     event?.location?.country
   );
 };
+
+/**
+ * Returns the index of the first day of the month.
+ * @param {Date} firstDayOfMonth - The first day of the month, e.g. object with following info: Sat Jun 01 2024 00:00:00 GMT+0300 (Eastern European Summer Time).
+ * @returns {number} The index of the first day of the month.
+ */
+export const monthStartingDayIndex = (firstDayOfMonth) =>
+  getDay(firstDayOfMonth) === 0 ? 7 : getDay(firstDayOfMonth) - 1;
