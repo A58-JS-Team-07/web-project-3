@@ -53,7 +53,7 @@ function AllEvents() {
           {searchEvents?.length !== 0 && (
             <>
               {searchEvents?.map((event) => (
-                <EventCard key={event.id} event={event} />
+                <EventCard key={event.eid} event={event} />
               ))}
             </>
 
@@ -67,7 +67,7 @@ function AllEvents() {
           {!location.state?.searchEvents && (
             <>
               {events.map((event) => (
-                <EventCard key={event.id} event={event} />
+                <EventCard key={event.eid} event={event} />
               ))}
             </>
 
