@@ -10,8 +10,7 @@ import { getAllEvents } from "../../services/events.service";
 function MyCalendar() {
   const { userData } = useContext(AppContext);
   const [events, setEvents] = useState([]);
-  const [date, setDate] = useState(CURRENT_DATE);
-  const [nav, setNav] = useState(date);
+  const [nav, setNav] = useState(CURRENT_DATE);
   const [calendarView, setCalendarView] = useState("month");
 
   useEffect(() => {
@@ -60,8 +59,6 @@ function MyCalendar() {
     }
   }, []);
 
-  console.log("Events: ", events);
-
   function navigate(direction) {
     if (direction === "forward") {
       setNav((prevNav) => subMonths(prevNav, -1));
@@ -72,7 +69,6 @@ function MyCalendar() {
 
   function handleViewChange(e) {
     setCalendarView(e.target.value);
-    console.log(e.target.value);
   }
 
   return (
@@ -80,7 +76,7 @@ function MyCalendar() {
       <div className="calendar-nav flex flex-row items-center justify-between gap-5 mb-5">
         <div className="calendar-nav-left flex flex-row items-center gap-5">
           <h1 className="text-3xl font-bold leading-none">My Calendar</h1>
-          <Button onClick={() => setNav(date)}>Today</Button>
+          <Button onClick={() => setNav(CURRENT_DATE)}>Today</Button>
           <div className="calendar-forward-prev flex flex-row gap-2 items-center">
             <IoChevronBackOutline
               onClick={() => navigate("prev")}
