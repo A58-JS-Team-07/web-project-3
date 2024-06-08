@@ -35,6 +35,93 @@ export const getAllEvents = async () => {
   }
 };
 
+export const getAllPublicEvents = async () => {
+  try {
+    const eventsRef = ref(db, "events");
+    const snapshot = await get(eventsRef);
+
+    if (snapshot.exists()) {
+      const val = snapshot.val();
+      const events = Object.keys(val)
+        .map(key => ({ id: key, ...val[key] }))
+        .filter(event => event.isPrivate === false);
+      return events;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error in events.services > getAllPublicEvents:", error);
+    throw error;
+  }
+};
+
+export const searchPublicEvents = async (searchTerm) => {
+  try {
+    const eventsRef = ref(db, "events");
+    const snapshot = await get(eventsRef);
+
+    if (snapshot.exists()) {
+      const val = snapshot.val();
+      const events = Object.keys(val)
+        .map(key => ({ id: key, ...val[key] }))
+        .filter(event => event.isPrivate === false && event.title.toLowerCase().includes(searchTerm));
+      return events;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error in events.services > searchPublicEvents:", error);
+    throw error;
+  }
+};
+
+export const searchUserViewEvents = async (searchTerm, username) => {
+  try {
+    const eventsRef = ref(db, "events");
+    const snapshot = await get(eventsRef);
+    // console.log(username);
+
+
+    if (snapshot.exists()) {
+      const val = snapshot.val();
+      const events = Object.keys(val)
+        .map(key => ({ id: key, ...val[key] }))
+        .filter(event => (
+          (event.creator === username
+          || event?.participants[username] === true
+          || event.isPrivate === false)
+          && event.title.toLowerCase().includes(searchTerm)));
+          console.log("events:", events);
+      return events;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error in events.services > searchUserViewEvents:", error);
+    throw error;
+  }
+};
+
+export const getAllUserViewEvents = async (username) => {
+  try {
+    const eventsRef = ref(db, "events");
+    const snapshot = await get(eventsRef);
+
+    if (snapshot.exists()) {
+      const val = snapshot.val();
+      const events = Object.keys(val)
+        .map(key => ({ id: key, ...val[key] }))
+        .filter(event => event.creator === username || event?.participants[username] === true || event.isPrivate === false);
+      return events;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error in events.services > getAllPublicEvents:", error);
+    throw error;
+  }
+};
+
 export const getEventById = async (eventId) => {
   try {
     const eventRef = ref(db, `events/${eventId}`);

@@ -1,23 +1,67 @@
 import CreateEventModal from "../../Events/CreateEvent/CreateEventModal/CreateEventModal";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Notifications from "../../Notifications/Notifications";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/AppContext";
 import { logoutUser } from "../../../services/auth.service";
+import { searchPublicEvents, searchUserViewEvents } from "../../../services/events.service";
+import { LoaderContext } from "../../../context/LoaderContext";
 
 function Header() {
   const { user, userData, setAppState } = useContext(AppContext);
+  const [searchTerm, setSearchTerm] = useState("");
+  const { setLoading } = useContext(LoaderContext);
 
+  const navigate = useNavigate();
   const logout = async () => {
     await logoutUser();
+    navigate("/");
     setAppState({ user: null, userData: null });
   };
+  
+  const handleSearch = async (e) => {
+    if (e.key === "Enter") {  
+      setLoading(true);
+      if (!userData) {
+        const searchEvents = await searchPublicEvents(e.target.value);
+        console.log("searchEvents:", searchEvents);
+        navigate("/events", { state: { searchEvents } });
+      } else {
+        const searchEvents = await searchUserViewEvents(e.target.value, userData.username);
+        console.log("searchResults:", searchEvents);
+        navigate("/events", { state: { searchEvents } });
+      }
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const searchEvents = async () => {
+      if (searchTerm === "") {
+        return;
+      }
+      if (!userData) {
+        const searchEvents = await searchPublicEvents(searchTerm);
+        navigate("/events", { state: { searchEvents } });
+      } else {
+        const searchEvents = await searchUserViewEvents(searchTerm);
+        navigate("/events", { state: { searchEvents } });
+      }
+    };
+    searchEvents();
+    setSearchTerm("");
+  }, []);
 
   return (
     <div className="navbar bg-base-200 p-2 px-6 min-h-[80px]">
       <div className="flex-1 gap-6 h-16">
         <label className="input input-bordered flex grow items-center gap-2 max-w-[600px]">
-          <input type="text" className="grow" placeholder="Search" />
+          <input
+            type="text"
+            className="grow"
+            placeholder="Search"
+            onKeyDown={handleSearch}
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -54,15 +98,15 @@ function Header() {
                 className="btn btn-ghost btn-circle avatar"
               >
                 <div className="w-10 rounded-full">
-                {!userData?.avatar ? (
+                  {!userData?.avatar ? (
                     <img
-                    alt="Tailwind CSS Navbar component"
+                      alt="Tailwind CSS Navbar component"
 
                       src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXu0uM0MmYsVPFaV2PqrkyuFqvK5k3RPt-g1NYd-vgpUGBSoyb4UXNG9MbUZn4hcPFoLk&usqp=CAU"
                     />
                   ) : (
                     <img
-                    alt="Tailwind CSS Navbar component"
+                      alt="Tailwind CSS Navbar component"
 
                       src={userData.avatar}
                     />
