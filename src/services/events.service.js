@@ -23,7 +23,7 @@ export const getAllEvents = async () => {
     if (snapshot.exists()) {
       const val = snapshot.val();
       const events = Object.keys(val).map((key) => {
-        return { id: key, ...val[key] };
+        return { eid: key, ...val[key] };
       });
       return events;
     } else {

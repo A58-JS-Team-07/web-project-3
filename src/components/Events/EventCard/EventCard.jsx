@@ -36,7 +36,7 @@ function EventCard({ event }) {
           </div>
           <EventLocation event={event} />
         </div>
-        <Link to={`/events/${event.id}`}>
+        <Link to={`/events/${event.eid}`}>
           <Button>View Event</Button>
         </Link>
       </div>
