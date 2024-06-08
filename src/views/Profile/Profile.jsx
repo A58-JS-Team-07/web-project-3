@@ -11,7 +11,6 @@ import {
 } from "../../common/constants";
 import { changeCanBeInvitedStatus, updateUser } from "../../services/users.service";
 import { toast } from "react-toastify";
-import { set } from "firebase/database";
 import { uploadAvatar } from "../../services/storage.service";
 
 function Profile() {
@@ -19,7 +18,7 @@ function Profile() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isEditingAvatar, setIsEditingAvatar] = useState(false);
   const [newUserData, setNewUserData] = useState({ ...userData });
-  const [canBeInvited, setCanBeInvited] = useState(userData.canBeInvited);
+  const [canBeInvited, setCanBeInvited] = useState(null);
   const [avatarUpload, setAvatarUpload] = useState(null);
 
   const updateForm = (prop) => (e) => {
@@ -28,6 +27,10 @@ function Profile() {
       [prop]: e.target.value,
     });
   };
+
+  useEffect(() => {
+    setNewUserData(userData);
+  }, []);
 
   const canBeInvitedHandler = async (e) => {
     console.log(userData.canBeInvited, e.target.checked)

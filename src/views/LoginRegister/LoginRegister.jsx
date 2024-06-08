@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../../components/Button/Button";
 import { AppContext } from "../../context/AppContext";
@@ -20,6 +20,7 @@ import { LoaderContext } from "../../context/LoaderContext";
 function LoginRegister() {
   const [activeTab, setActiveTab] = useState("login");
   const { setLoading } = useContext(LoaderContext);
+  const location = useLocation();
 
   const changeTab = (tab) => {
     setActiveTab(tab);
@@ -40,6 +41,13 @@ function LoginRegister() {
   useEffect(() => {
     user ? navigate("/") : null;
   }, [user, navigate]);
+
+
+  useEffect(() => {
+    if (user) {
+        navigate(location.state?.from?.pathname || '/');
+    }
+}, [user, navigate, location?.state]);
 
   const updateForm = (prop) => (e) => {
     setForm({
@@ -162,9 +170,9 @@ function LoginRegister() {
 
       
       setLoading(true);
-      console.log(form.email, form.password);
       const credential = await loginUser(form.email, form.password);
       setAppState({ ...credential.user, userData: null }); //we set the userData to null because we don't have it yet
+      navigate(location?.state?.from ? location.state.from : "/");
     } catch (error) {
       if (error.code === "auth/invalid-credential") {
         toast.error("Please enter valid credentials!");
