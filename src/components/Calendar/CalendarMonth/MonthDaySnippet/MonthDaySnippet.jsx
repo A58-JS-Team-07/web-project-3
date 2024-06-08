@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { format, isToday } from "date-fns";
 import PropTypes from "prop-types";
 import CalendarEventModal from "../../CalendarEventModal/CalendarEventModal";
@@ -6,6 +6,20 @@ import CalendarEventModal from "../../CalendarEventModal/CalendarEventModal";
 function MonthDaySnippet({ day, events = [], ofFocus = false }) {
   const [displayEventModalId, setDisplayEventModalId] = useState(null);
   const [clickPosition, setClickPosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      const modal = document.getElementById("event-modal-id"); // replace 'modal-id' with your modal's id
+      if (modal && !modal.contains(event.target)) {
+        setDisplayEventModalId(null);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   function handleEventClick(e, eventId) {
     setDisplayEventModalId(eventId);

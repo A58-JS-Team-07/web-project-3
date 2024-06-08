@@ -11,6 +11,7 @@ function CalendarEventModal({
     <div
       style={{ left: clickPosition.x, top: clickPosition.y }}
       className="event-item-calendar-event-modal rounded-2xl shadow-md absolute flex max-w-80 bg-base-200"
+      id="event-modal-id"
     >
       <button
         className="cursor-pointer bg-base-200 p-1 rounded-full text-lg absolute right-4 top-4 hover:scale-110 transition-all"
@@ -41,8 +42,8 @@ function CalendarEventModal({
 
 CalendarEventModal.propTypes = {
   event: propTypes.object.isRequired,
-  displayEventModal: propTypes.bool.isRequired,
-  setDisplayEventModalId: propTypes.func.isRequired,
+  setDisplayEventModalId: propTypes.func,
+  clickPosition: propTypes.object,
 };
 
 export default CalendarEventModal;
