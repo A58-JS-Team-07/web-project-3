@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import ThemeSwitcher from "./ThemeSwitcher/ThemeSwitcher";
 import {
   IoCalendarOutline,
@@ -15,9 +15,12 @@ import { logoutUser } from "../../../services/auth.service";
 
 function SideMenu() {
   const { userData, setAppState } = useContext(AppContext);
+  const navigate = useNavigate();
+   
 
   const logout = async () => {
     await logoutUser();
+    navigate("/");
     setAppState({ user: null, userData: null });
   };
 
