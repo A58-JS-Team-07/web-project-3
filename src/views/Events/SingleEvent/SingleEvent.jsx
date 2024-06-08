@@ -265,7 +265,7 @@ function SingleEvent() {
           <h3 className="text-xl font-semibold my-[-5px]">Organizer:</h3>
           <div className="event-organizer-data flex flex-row gap-4">
             <img
-              src={creator?.avatar}
+              src={creator?.avatar ? creator.avatar : "/anonymous-avatar.jpg"}
               alt={creator?.firstName + " " + creator?.lastName}
               className="rounded-full w-16 h-16 object-cover"
             />
