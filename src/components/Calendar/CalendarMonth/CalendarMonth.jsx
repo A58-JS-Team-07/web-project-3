@@ -1,4 +1,4 @@
-import { WEEKDAYS, monthStartingDayIndex } from "../../../common/constants";
+import { WEEKDAYS } from "../../../common/constants";
 import {
   addDays,
   eachDayOfInterval,
@@ -8,8 +8,9 @@ import {
   subMonths,
 } from "date-fns";
 import MonthDaySnippet from "./MonthDaySnippet/MonthDaySnippet";
+import propTypes from "prop-types";
 
-const customDate = new Date("2024 4 5");
+// const customDate = new Date("2024 4 5");
 
 function CalendarMonth({ date, events = [] }) {
   const firstDayOfMonth = startOfMonth(date);
@@ -38,8 +39,6 @@ function CalendarMonth({ date, events = [] }) {
   const indexDaysInNextMonth =
     35 - daysInMonth.length - daysInPreviousMonth.length;
 
-  console.log(indexDaysInNextMonth);
-
   const daysInNextMonth =
     indexDaysInNextMonth > 0
       ? eachDayOfInterval({
@@ -47,8 +46,6 @@ function CalendarMonth({ date, events = [] }) {
           end: addDays(firstDayOfNextMonth, indexDaysInNextMonth - 1),
         })
       : [];
-
-  console.log(daysInNextMonth);
 
   return (
     <div className="calendar-month">
@@ -115,5 +112,10 @@ function CalendarMonth({ date, events = [] }) {
     </div>
   );
 }
+
+CalendarMonth.propTypes = {
+  date: propTypes.object.isRequired,
+  events: propTypes.array,
+};
 
 export default CalendarMonth;
