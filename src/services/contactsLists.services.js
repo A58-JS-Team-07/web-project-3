@@ -10,6 +10,8 @@ export const createContactsList = async (username, listName) => {
         });
 
         const clid = contactListRef.key;
+
+        await set(ref(db, `contactsLists/${clid}/clid`), clid);
         
         await set(ref(db, `users/${username}/contactsListsOwner/${clid}`), true);
     } catch (error) {
@@ -39,6 +41,7 @@ export const deleteContactsList = async (clid, owner) => {
     try {
         await set(ref(db, `contactsLists/${clid}`), null);
         await set(ref(db, `users/${owner}/contactsListsOwner/${clid}`), null);
+        
     } catch (error) {
         console.error('Error deleting contacts list: ' + error);
     }
@@ -58,7 +61,7 @@ export const getContactsFromList = async (clid) => {
         }
         
         console.log("contactsListsValuesAAA", Object.keys(contactsListsValues.contacts));
-        const contactsList =Object.keys(contactsListsValues.contacts);
+        const contactsList = Object.keys(contactsListsValues.contacts);
         console.log("contactsListVal", contactsList);
 
         return contactsList;
@@ -91,15 +94,12 @@ export const getAllContactsListsByUser = async (username) => {
         const ContactsListsSnapshot = await get(ref(db, `users/${username}/contactsListsOwner`));
         if (!ContactsListsSnapshot.exists()) return [];
         const contactsListsIds = Object.keys(ContactsListsSnapshot.val());
-        // console.log("contactsListsIds", contactsListsIds);
 
         const getAllContactsListsValues = await getAllContactsLists();
-        // console.log("getAllContactsListsValues", getAllContactsListsValues);
             
         const contactsLists = contactsListsIds.map((clid) => {
             return getAllContactsListsValues.find((contactsList) => contactsList.clid === clid);
         });
-        // console.log("contactsLists", contactsLists);
         return contactsLists;
         
     } catch (error) {

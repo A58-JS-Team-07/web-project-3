@@ -1,4 +1,4 @@
-import { onValue, ref } from "firebase/database";
+import { onValue, ref, set } from "firebase/database";
 import { getAllUsersArray } from "../../../services/users.service";
 import UserSnippet from "../../UserSnippet/UserSnippet";
 import AddNewUserToListModal from "../AddNewUserToListModal/AddNewUserToListModal";
@@ -33,19 +33,28 @@ function SingleContactList({ contacts, contactsList, listClicked }) {
 
     useEffect(() => {
         return onValue(ref(db, `contactsLists/${contactsList.clid}/contacts`), (snapshot) => {
-            const getContactsFullInfo = async () => {
-                const getAllUsers = await getAllUsersArray();
-                console.log('getAllUsers', getAllUsers);
-                const contactsFullInfo = contacts.map((contact) => {
-                    return getAllUsers.find((user) => user.username === contact);
-                });
-
-                setUsers(contactsFullInfo);
-            }
-            getContactsFullInfo();
+            const data = snapshot.val();
+            console.log('DATA', data);
+            
         });
 
     }, [contacts, contactsList]);
+
+    // useEffect(() => {
+    //     return onValue(ref(db, `contactsLists/${contactsList.clid}/contacts`), (snapshot) => {
+    //         const getContactsFullInfo = async () => {
+    //             const getAllUsers = await getAllUsersArray();
+    //             console.log('getAllUsers', getAllUsers);
+    //             const contactsFullInfo = contacts.map((contact) => {
+    //                 return getAllUsers.find((user) => user.username === contact);
+    //             });
+
+    //             setUsers(contactsFullInfo);
+    //         }
+    //         getContactsFullInfo();
+    //     });
+
+    // }, [contacts, contactsList]);
 
     // useEffect(() => {
     //     return onValue(ref(db, `contactsLists/${contactsList.clid}/contacts`), (snapshot) => {

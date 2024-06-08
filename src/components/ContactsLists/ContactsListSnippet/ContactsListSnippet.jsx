@@ -12,6 +12,7 @@ function ContactsListSnippet({ contactsList, onListClick }) {
   const handleDeleteList = async () => {
     try {
       await deleteContactsList(contactsList?.clid, contactsList?.owner);
+      console.log("CONTACT LIST", contactsList);
     } catch (error) {
       console.error("Error in ContactsLists > handleDeleteList:", error);
     };
@@ -40,7 +41,7 @@ function ContactsListSnippet({ contactsList, onListClick }) {
     } catch (error) {
       console.error("Error in ContactsLists > useEffect:", error);
     }
-  }, [contactsList]);
+  }, []);
 
   return (
     <>

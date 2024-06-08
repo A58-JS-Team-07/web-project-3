@@ -16,29 +16,34 @@ function ContactsLists() {
   const [contactsList, setContactsList] = useState(null);
 
   useEffect(() => {
-    const fetchContactsLists = async () => {
-      try {
-        const contactsListsValues = await getAllContactsListsByUser(userData.username);
-        // setListClicked(!listClicked);
-        setContactsList(contactsList);
-        console.log("contactsListsValues",contactsListsValues);
-        setContactsLists(contactsListsValues);
-      } catch (error) {
-        console.error("Error in ContactsLists > fetchContactsLists:", error);
-      }
-    };
+    if (userData && userData.contactsListsOwner) {
 
-    fetchContactsLists();
-  }, []);
+      const fetchContactsLists = async () => {
+        try {
+          const contactsListsValues = await getAllContactsListsByUser(userData.username);
+          // setListClicked(!listClicked);
+          // setContactsList(contactsList);
+          console.log("UserData", userData.username);
+          console.log("contactsListsValues", contactsListsValues);
+          setContactsLists(contactsListsValues);
+        } catch (error) {
+          console.error("Error in ContactsLists > fetchContactsLists:", error);
+        }
+      };
+      fetchContactsLists();
+    }
+
+  }, [userData]);
 
   useEffect(() => {
     try {
       const contactsListsRef = ref(db, `contactsLists`);
       return onValue(contactsListsRef, (snapshot) => {
+        if (!snapshot.exists()) return setContactsLists([]); 
         const contactsListsValues = snapshot.val();
+        console.log("Object.keys(contactsListsValues)", Object.values(contactsListsValues));
         const contactsLists = Object.values(contactsListsValues)
           .filter((contactsList) => contactsList.owner === userData.username)
-          .map((contactsList) => { contactsList.clid = contactsList.id; return contactsList.listName; });
         console.log("contactsLists", contactsLists);
         setContactsLists(contactsLists);
         console.log("CL", contactsLists);
@@ -47,18 +52,14 @@ function ContactsLists() {
     } catch (error) {
       console.error("Error in ContactsLists > useEffect:", error);
     }
-    
-  }, []);
+
+  }, [userData]);
 
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        // console.log("contactsList?.clid", contactsList);
         const contactsValues = await getContactsFromList(contactsList?.clid);
-        // console.log('CONTACTS LIST', contactsList);
-        // console.log('CONTACTS VALUES', contactsValues);
         setContacts(contactsValues);
-        // console.log("contacts", contacts);
         setContactsList(contactsList);
         console.log("contactsList", contactsList);
       } catch (error) {
