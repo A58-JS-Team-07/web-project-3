@@ -6,6 +6,7 @@ import { IoChevronBackOutline, IoChevronForward } from "react-icons/io5";
 import { eachDayOfInterval, subMonths } from "date-fns";
 import { AppContext } from "../../context/AppContext";
 import { getAllEvents } from "../../services/events.service";
+import CalendarWeek from "../../components/Calendar/CalendarWeek/CalendarWeek";
 
 function MyCalendar() {
   const { userData } = useContext(AppContext);
@@ -71,12 +72,33 @@ function MyCalendar() {
     setCalendarView(e.target.value);
   }
 
+  function renderCalendarView() {
+    try {
+      switch (calendarView) {
+        case "month":
+          return <CalendarMonth date={nav} events={events} />;
+        case "week":
+          return <CalendarWeek date={nav} events={events} />;
+        case "work-week":
+          return <CalendarWorkWeek date={nav} events={events} />;
+        case "day":
+          return <CalendarDay date={nav} events={events} />;
+        default:
+          return <CalendarMonth date={nav} events={events} />;
+      }
+    } catch (error) {
+      console.error("Error in MyCalendar.jsx > renderCalendarView:", error);
+      throw error;
+    }
+  }
+
   return (
     <div className="event-calendar p-6">
       <div className="calendar-nav flex flex-row items-center justify-between gap-5 mb-5">
         <div className="calendar-nav-left flex flex-row items-center gap-5">
           <h1 className="text-3xl font-bold leading-none">My Calendar</h1>
           <Button onClick={() => setNav(CURRENT_DATE)}>Today</Button>
+          {/* TODO: Make this work with weeks and days. Take it out in new component perhaps. Add a function with swtich case and depend of week month day to move forward/backward different amount */}
           <div className="calendar-forward-prev flex flex-row gap-2 items-center">
             <IoChevronBackOutline
               onClick={() => navigate("prev")}
@@ -111,9 +133,7 @@ function MyCalendar() {
         </div>
       </div>
       <div className="the-calendar bg-base-200 border rounded-2xl overflow-hidden">
-        {calendarView === "month" && (
-          <CalendarMonth date={nav} events={events} />
-        )}
+        {renderCalendarView()}
       </div>
     </div>
   );
