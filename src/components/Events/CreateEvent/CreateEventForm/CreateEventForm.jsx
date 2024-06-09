@@ -18,6 +18,7 @@ import {
 import moment from "moment";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import { addWeeks } from "date-fns";
 
 function CreateEventForm({ showModal, setShowModal = () => {} }) {
   const { userData } = useContext(AppContext);
@@ -27,7 +28,6 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
   const [isPrivate, setIsPrivate] = useState(false);
   const [canOthersInvite, setCanOthersInvite] = useState(true);
   const [imageUpload, setImageUpload] = useState(null);
-  const [invitees, setInvitees] = useState([]);
   const [eventData, setEventData] = useState({
     title: null,
     description: null,
@@ -53,7 +53,6 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
     isPrivate: isPrivate,
 
     canOthersInvite: canOthersInvite,
-    invitees: invitees,
   });
 
   useEffect(() => {
@@ -211,15 +210,66 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
       eventData.endDateTime = dateValueToObject(eventData.endDateTime);
 
       if (isRecurring) {
-        eventData.lastRecurringDate = dateValueToObject(
-          eventData.lastRecurringDate
-        );
+        eventData.lastRecurringDate = eventData.lastRecurringDate
+          .toDate()
+          .getTime();
       }
 
       const eventId = await createEvent(eventData);
       const imageId = await uploadEventImage(imageUpload, eventId);
 
       await updateEvent(eventId, { image: imageId });
+
+      if (isRecurring) {
+        try {
+          const recurringEndDate = eventData.lastRecurringDate;
+          let eventStartDate = new Date(
+            eventData.startDateTime.year,
+            eventData.startDateTime.month - 1,
+            eventData.startDateTime.day,
+            eventData.startDateTime.hours,
+            eventData.startDateTime.minutes
+          ).getTime();
+          let eventEndDate = new Date(
+            eventData.endDateTime.year,
+            eventData.endDateTime.month - 1,
+            eventData.endDateTime.day,
+            eventData.endDateTime.hours,
+            eventData.endDateTime.minutes
+          ).getTime();
+
+          switch (eventData.recurringFrequency) {
+            case "weekly":
+              while (recurringEndDate > addWeeks(eventStartDate, 1)) {
+                const newStartDate = addWeeks(eventStartDate, 1);
+                const newEndDate = addWeeks(eventEndDate, 1);
+
+                eventStartDate = newStartDate.getTime();
+                eventEndDate = newEndDate.getTime();
+
+                const newEventData = {
+                  ...eventData,
+                  startDateTime: dateValueToObject(newStartDate),
+                  endDateTime: dateValueToObject(newEndDate),
+                  image: imageId,
+                };
+
+                await createEvent(newEventData);
+              }
+              break;
+            case "monthly":
+              break;
+            case "yearly":
+              break;
+          }
+        } catch (error) {
+          console.error(
+            "Error in CreateEventForm.jsx > handleEventCreation > Recurring event creation:",
+            error
+          );
+          throw error;
+        }
+      }
 
       console.log("Event uploaded successfully");
       setShowModal(false);
