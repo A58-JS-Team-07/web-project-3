@@ -37,16 +37,6 @@ export const removeContactFromList = async (clid, contact) => {
     }
 }
 
-export const deleteContactsList = async (clid, owner) => {
-    try {
-        await set(ref(db, `contactsLists/${clid}`), null);
-        await set(ref(db, `users/${owner}/contactsListsOwner/${clid}`), null);
-        
-    } catch (error) {
-        console.error('Error deleting contacts list: ' + error);
-    }
-}
-
 export const getContactsFromList = async (clid) => {
     try {
         const contactsListSnapshot = await get(ref(db, `contactsLists/${clid}`));
@@ -69,6 +59,23 @@ export const getContactsFromList = async (clid) => {
         console.error("Error in contactsLists.services > getContactsList:", error);
     }
 };
+
+export const deleteContactsList = async (clid, owner) => {
+    try {
+        const participants = await getContactsFromList(clid);
+        console.log("PARTICIPANTS", participants);
+        
+        participants.map(async (participant) => {
+            await set(ref(db, `users/${participant}/contactsListsParticipant/${clid}`), null);
+        });
+
+        await set(ref(db, `contactsLists/${clid}`), null);
+        await set(ref(db, `users/${owner}/contactsListsOwner/${clid}`), null);
+
+    } catch (error) {
+        console.error('Error deleting contacts list: ' + error);
+    }
+}
 
 export const getAllContactsLists = async () => {
     try {
