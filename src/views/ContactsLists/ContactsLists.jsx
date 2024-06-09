@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { getAllContactsListsByUser, createContactsList } from "../../services/contactsLists.services";
+import { getAllContactsListsByUser } from "../../services/contactsLists.services";
 import AddNewContactsListModal from "../../components/ContactsLists/AddNewContactsListModal/AddNewContactsListModal";
 import { AppContext } from "../../context/AppContext";
 import ContactsListSnippet from "../../components/ContactsLists/ContactsListSnippet/ContactsListSnippet";
@@ -14,6 +14,7 @@ function ContactsLists() {
   const [contactsLists, setContactsLists] = useState([]);
   const [listClicked, setListClicked] = useState(false);
   const [contactsList, setContactsList] = useState(null);
+  const [clickedLists, setClickedLists] = useState({});
 
   useEffect(() => {
     if (userData && userData.contactsListsOwner) {
@@ -35,16 +36,24 @@ function ContactsLists() {
 
   }, [userData]);
 
+
+  const handleListсClick = (clid) => {
+    setClickedLists(prevState => ({
+      ...prevState,
+      [clid]: !prevState[clid]
+    }));
+  };
+
   useEffect(() => {
     try {
       const contactsListsRef = ref(db, `contactsLists`);
       return onValue(contactsListsRef, (snapshot) => {
-        if (!snapshot.exists()) return setContactsLists([]); 
+        if (!snapshot.exists()) return setContactsLists([]);
         const contactsListsValues = snapshot.val();
-        console.log("Object.keys(contactsListsValues)", Object.values(contactsListsValues));
+        // console.log("Object.keys(contactsListsValues)", Object.values(contactsListsValues));
         const contactsLists = Object.values(contactsListsValues)
           .filter((contactsList) => contactsList.owner === userData.username)
-        console.log("contactsLists", contactsLists);
+        // console.log("contactsLists", contactsLists);
         setContactsLists(contactsLists);
         console.log("CL", contactsLists);
       });
@@ -70,6 +79,7 @@ function ContactsLists() {
     fetchContacts();
   }, [listClicked]);
 
+
   const handleListClick = (contactsList) => {
     // console.log("List Clicked1", listClicked);
     setListClicked(!listClicked);
@@ -82,7 +92,7 @@ function ContactsLists() {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-5 p-6">Contacts Lists</h1>
-      <div className="flex gap-10 p-6">
+      <div className="flex flex-row w-full h-full gap-10 p-6">
         <div className="inner__container bg-base-200 w-1/3 min-w-1/2 p-10 rounded-3xl ">
           {contactsLists?.length > 0 ? (
             <div className="flex flex-col gap-10">
@@ -91,6 +101,7 @@ function ContactsLists() {
                   key={contactsList?.clid}
                   contactsList={contactsList}
                   onListClick={() => handleListClick(contactsList)}
+                  isListClicked={clickedLists[contactsList?.clid]}
                 />
               ))}
             </div>
@@ -99,7 +110,9 @@ function ContactsLists() {
               <p>No contacts lists found</p>
             </div>
           )}
-          <AddNewContactsListModal />
+          <div className="mt-8">
+            <AddNewContactsListModal />
+          </div>
         </div>
         {listClicked && (
           <SingleContactList contacts={contacts} contactsList={contactsList} listClicked={listClicked} />

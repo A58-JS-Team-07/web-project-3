@@ -1,9 +1,9 @@
 import propsType from "prop-types";
-import Button from "../../Button/Button";
 import { deleteContactsList } from "../../../services/contactsLists.services";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { db } from "../../../config/firebase-config";
 import { ref, onValue } from "firebase/database";
+import { IoList } from "react-icons/io5";
 
 function ContactsListSnippet({ contactsList, onListClick }) {
   const [isListClicked, setListClicked] = useState(false);
@@ -18,17 +18,15 @@ function ContactsListSnippet({ contactsList, onListClick }) {
     };
   };
 
-  const handleEditList = async () => {
-    try {
-      await deleteContactsList(contactsList?.clid, contactsList?.owner);
-    } catch (error) {
-      console.error("Error in ContactsLists > handleDeleteList:", error);
-    };
-  };
-
   const handleListClick = () => {
     setListClicked(!isListClicked);
     onListClick(isListClicked, contactsList?.clid);
+  };
+
+
+
+  const handleListsClick = () => {
+    onListClick(contactsList?.clid);
   };
 
   useEffect(() => {
@@ -47,20 +45,29 @@ function ContactsListSnippet({ contactsList, onListClick }) {
     <>
       <div className="contact-list-info flex flex-row gap-4 bg-base-100 px-4 py-3 rounded-xl">
         <div className="contact-list-info flex flex-col">
-          <span 
-          className="text-lg font-semibold mb-[-3px]"
-          onClick={handleListClick}>
-            {isListClicked ? "🔽" : "🔼"}
+          <span className="text-lg font-semibold mb-[-3px]" >
+            <IoList className="fill-secondary text-secondary w-5 h-5 inline-block mr-2" />
             {contactsListValue?.listName}
           </span>
         </div>
       </div>
-      {/* <div>
-        <Button onClick={handleEditList}>Show List</Button>
-      </div> */}
-      <div className="form-update-row flex gap-8 justify-between">
-        <Button onClick={handleEditList}>Edit</Button>
-        <Button onClick={handleDeleteList}>Delete</Button>
+      <div className="contact-list-delete-show flex justify-end gap-4">
+        <div className="form-update-row flex gap-8 justify-between">
+          <span
+            onClick={handleListsClick}
+            className="text-black-500 underline hover:no-underline cursor-pointer"
+          >
+            Show List
+          </span>
+        </div>
+        <div className="form-update-row flex gap-8 justify-between">
+          <span
+            onClick={handleDeleteList}
+            className="text-red-500 underline hover:no-underline cursor-pointer"
+          >
+            Delete
+          </span>
+        </div>
       </div>
     </>
   );
