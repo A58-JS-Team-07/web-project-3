@@ -16,6 +16,7 @@ import { AppContext } from "../../context/AppContext";
 import { getAllEvents } from "../../services/events.service";
 import CalendarWeek from "../../components/Calendar/CalendarWeek/CalendarWeek";
 import CalendarWorkWeek from "../../components/Calendar/CalendarWorkWeek/CalendarWorkWeek";
+import CalendarDay from "../../components/Calendar/CalendarDay/CalendarDay";
 
 function MyCalendar() {
   const { userData } = useContext(AppContext);
@@ -86,7 +87,7 @@ function MyCalendar() {
       } else if (calendarView === "day") {
         if (direction === "forward") {
           setNav((curDate) => subDays(curDate, -1));
-        } else if (direction === "prevS") {
+        } else if (direction === "prev") {
           setNav((curDate) => subDays(curDate, 1));
         }
       }

@@ -1,27 +1,56 @@
 import { useEffect, useState } from "react";
-import { WEEKDAYS, HOURS, CURRENT_DATE } from "../../../common/constants";
+import { HOURS, CURRENT_DATE } from "../../../common/constants";
 import propTypes from "prop-types";
-import { addDays, getDate, isSameDay, startOfWeek } from "date-fns";
+import { addDays, getDate, getDay, isSameDay } from "date-fns";
 import CalendarDayWeekSnippet from "../CalendarDayWeekSnippet/CalendarDayWeekSnippet";
 
-function CalendarWeek({ date, events = [] }) {
+function CalendarDay({ date, events = [] }) {
   const [week, setWeek] = useState([]);
 
   useEffect(() => {
     try {
       if (!date) return;
 
-      const startWeek = startOfWeek(date, { weekStartsOn: 1 });
+      const dayNum = getDay(date);
+      let dayName = "";
 
-      const weekConstructor = [];
+      switch (dayNum) {
+        case 0:
+          dayName = "Sun";
+          break;
+        case 1:
+          dayName = "Mon";
+          break;
+        case 2:
+          dayName = "Tue";
+          break;
+        case 3:
+          dayName = "Wed";
+          break;
+        case 4:
+          dayName = "Thu";
+          break;
+        case 5:
+          dayName = "Fri";
+          break;
+        case 6:
+          dayName = "Sat";
+          break;
+      }
 
-      WEEKDAYS.map((day, i) => {
-        const weekDay = addDays(startWeek, i);
-        weekConstructor.push({
-          dayName: day,
-          date: weekDay,
-        });
-      });
+      //Fixes date issue. Time must be 00:00:00
+      const fixDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+      );
+
+      const weekConstructor = [
+        {
+          dayName: dayName,
+          date: fixDate,
+        },
+      ];
 
       setWeek(weekConstructor);
     } catch (error) {
@@ -30,7 +59,7 @@ function CalendarWeek({ date, events = [] }) {
     }
   }, [date]);
 
-  console.log("Week: ", week);
+  console.log("Day: ", week);
 
   return (
     <div className="calendar-week calendar-selector flex flex-row">
@@ -42,7 +71,7 @@ function CalendarWeek({ date, events = [] }) {
           </div>
         ))}
       </div>
-      <div className="calendar-week grid grid-cols-7 relative w-full">
+      <div className="calendar-week grid grid-cols-1 relative w-full">
         {week.map((day, index) => {
           const dayTime = day.date.getTime();
 
@@ -107,9 +136,9 @@ function CalendarWeek({ date, events = [] }) {
   );
 }
 
-CalendarWeek.propTypes = {
+CalendarDay.propTypes = {
   date: propTypes.instanceOf(Date).isRequired,
   events: propTypes.array,
 };
 
-export default CalendarWeek;
+export default CalendarDay;
