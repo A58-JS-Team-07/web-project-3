@@ -31,7 +31,15 @@ function CalendarWeek({ date, events = [] }) {
   }, [date]);
 
   return (
-    <div className="calendar-week calendar-selector">
+    <div className="calendar-week calendar-selector flex flex-row">
+      <div className="calendar-week-time px-2">
+        <div className="calendar-week-time-slot-empty h-16"></div>
+        {HOURS.map((hour) => (
+          <div key={hour} className="calendar-week-time-slot h-12">
+            <span className="text-xs">{hour}</span>
+          </div>
+        ))}
+      </div>
       <div className="calendar-week grid grid-cols-7 relative">
         {week.map((day, index) => {
           const dayTime = day.date.getTime();
@@ -50,7 +58,7 @@ function CalendarWeek({ date, events = [] }) {
                 <span
                   className={`text-2xl font-bold w-10 h-10 ${
                     isSameDay(CURRENT_DATE, day.date)
-                      ? "bg-secondary text-white rounded-full flex items-center justify-center pr-1"
+                      ? "bg-secondary text-white rounded-full flex items-center justify-center pr-[1px]"
                       : "text-center"
                   }`}
                 >
@@ -61,7 +69,7 @@ function CalendarWeek({ date, events = [] }) {
                 {HOURS.map((hour, index) => (
                   <div
                     key={`${hour}-${index}`}
-                    className="calendar-week-hour-slot border border-gray-200 h-20 max-h-20 overflow-hidden flex flex-row"
+                    className="calendar-week-hour-slot border border-gray-200 h-12 max-h-12 overflow-hidden flex flex-row"
                   >
                     {allEventsInDay.length > 0 &&
                       allEventsInDay.map((event, i) => {

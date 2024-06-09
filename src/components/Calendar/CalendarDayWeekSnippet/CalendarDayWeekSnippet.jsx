@@ -41,11 +41,11 @@ function CalendarDayWeekSnippet({ event, design = "main" }) {
   return (
     <div
       onClick={(e) => handleEventClick(e, event.eid)}
-      className={`calendar-week-hour-event-snippet w-full h-full border p-2 cursor-pointer ${
+      className={`calendar-week-hour-event-snippet w-full h-full p-1 cursor-pointer ${
         design === "main" ? "bg-secondary" : "bg-secondary-light"
       }`}
     >
-      <div className="calendar-week-hour-event-snippet__title text-white text-sm">
+      <div className="calendar-week-hour-event-snippet__title text-white text-sm leading-none ">
         {event.title}
       </div>
       {displayEventModalId === event.eid && (
@@ -63,6 +63,7 @@ function CalendarDayWeekSnippet({ event, design = "main" }) {
 
 CalendarDayWeekSnippet.propTypes = {
   event: PropTypes.object.isRequired,
+  design: PropTypes.string,
 };
 
 export default CalendarDayWeekSnippet;
