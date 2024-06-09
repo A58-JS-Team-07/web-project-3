@@ -1,5 +1,5 @@
 import CreateEventModal from "../../Events/CreateEvent/CreateEventModal/CreateEventModal";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import Notifications from "../../Notifications/Notifications";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/AppContext";
@@ -9,7 +9,7 @@ import { LoaderContext } from "../../../context/LoaderContext";
 
 function Header() {
   const { user, userData, setAppState } = useContext(AppContext);
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [searchTerm, setSearchTerm] = useState("");
   const { setLoading } = useContext(LoaderContext);
 
   const navigate = useNavigate();
@@ -18,39 +18,40 @@ function Header() {
     navigate("/");
     setAppState({ user: null, userData: null });
   };
-  
+
   const handleSearch = async (e) => {
-    if (e.key === "Enter") {  
+    if (e.key === "Enter") {
       setLoading(true);
+
       if (!userData) {
         const searchEvents = await searchPublicEvents(e.target.value);
         console.log("searchEvents:", searchEvents);
-        navigate("/events", { state: { searchEvents } });
+        navigate(`/events?search=${e.target.value}`, { state: { searchEvents } });
       } else {
         const searchEvents = await searchUserViewEvents(e.target.value, userData.username);
         console.log("searchResults:", searchEvents);
-        navigate("/events", { state: { searchEvents } });
+        navigate(`/events?search=${e.target.value}`, { state: { searchEvents } });
       }
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    const searchEvents = async () => {
-      if (searchTerm === "") {
-        return;
-      }
-      if (!userData) {
-        const searchEvents = await searchPublicEvents(searchTerm);
-        navigate("/events", { state: { searchEvents } });
-      } else {
-        const searchEvents = await searchUserViewEvents(searchTerm);
-        navigate("/events", { state: { searchEvents } });
-      }
-    };
-    searchEvents();
-    setSearchTerm("");
-  }, []);
+  // useEffect(() => {
+  //   const searchEvents = async () => {
+  //     if (searchTerm === "") {
+  //       return;
+  //     }
+  //     if (!userData) {
+  //       const searchEvents = await searchPublicEvents(searchTerm);
+  //       navigate("/events", { state: { searchEvents } });
+  //     } else {
+  //       const searchEvents = await searchUserViewEvents(searchTerm);
+  //       navigate("/events", { state: { searchEvents } });
+  //     }
+  //   };
+  //   searchEvents();
+  //   setSearchTerm("");
+  // }, [searchTerm]);
 
   return (
     <div className="navbar bg-base-200 p-2 px-6 min-h-[80px]">
