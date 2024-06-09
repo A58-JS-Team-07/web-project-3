@@ -42,9 +42,10 @@ export default {
         },
         customThemeDark: {
           primary: "#002448",
-          secondary: "red",
+          secondary: "#55d3d2",
           accent: "#37cdbe",
           neutral: "#3d4451",
+          white: "#fff",
           "base-100": "#212121",
 
           "--rounded-box": "1rem", // border radius rounded-box utility class, used in card and other large boxes
