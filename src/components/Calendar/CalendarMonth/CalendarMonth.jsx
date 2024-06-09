@@ -48,7 +48,7 @@ function CalendarMonth({ date, events = [] }) {
       : [];
 
   return (
-    <div className="calendar-month">
+    <div className="calendar-month calendar-selector">
       <div className="calendar grid grid-cols-7 relative">
         {WEEKDAYS.map((day, index) => (
           <div

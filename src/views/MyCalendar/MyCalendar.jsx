@@ -58,7 +58,7 @@ function MyCalendar() {
       console.error("Error in MyCalendar.jsx > useEffect:", error);
       throw error;
     }
-  }, []);
+  }, [calendarView]);
 
   function navigate(direction) {
     if (direction === "forward") {

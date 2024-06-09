@@ -15,7 +15,10 @@ function CalendarEventModal({
     >
       <button
         className="cursor-pointer bg-base-200 p-1 rounded-full text-lg absolute right-4 top-4 hover:scale-110 transition-all"
-        onClick={() => setDisplayEventModalId(null)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setDisplayEventModalId(null);
+        }}
       >
         <IoClose />
       </button>

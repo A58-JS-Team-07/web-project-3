@@ -9,7 +9,7 @@ function MonthDaySnippet({ day, events = [], ofFocus = false }) {
 
   useEffect(() => {
     function handleClickOutside(event) {
-      const modal = document.getElementById("event-modal-id"); // replace 'modal-id' with your modal's id
+      const modal = document.getElementById("event-modal-id");
       if (modal && !modal.contains(event.target)) {
         setDisplayEventModalId(null);
       }
@@ -25,13 +25,13 @@ function MonthDaySnippet({ day, events = [], ofFocus = false }) {
     setDisplayEventModalId(eventId);
     const rect = e.target.getBoundingClientRect();
     const calendarRect = document
-      .querySelector(".calendar-month")
+      .querySelector(".calendar-selector")
       .getBoundingClientRect();
     const x = rect.left - calendarRect.left;
     const y = rect.top - calendarRect.top;
     const windowWidth = calendarRect.width;
     const windowHeight = calendarRect.height;
-    const modalHeight = 320; // replace with your modal's actual height
+    const modalHeight = 320;
 
     const xOffset = x > windowWidth / 2 ? -320 : 50;
     const yOffset = y + modalHeight > windowHeight ? -modalHeight : 50;
