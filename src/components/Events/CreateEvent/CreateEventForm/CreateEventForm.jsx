@@ -260,7 +260,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
 
             <div className="create-event-form">
               <div className="form-title-row flex gap-8">
-                <label className="form-control w-8/12">
+                <label className="form-control w-5/12">
                   <div className="label">
                     <span className="label-text text-lg">
                       Event title<span className="text-red-500"> *</span>
@@ -276,10 +276,36 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                     onChange={updateForm("title")}
                   />
                 </label>
-                <div className="is-private flex flex-col gap-2 w-4/12 p-3 bg-base-100 rounded-md">
+                <div className="can-others-invite flex flex-col gap-2 w-4/12 p-3 bg-base-100 rounded-md">
+                  <div className="invite-checkbox flex gap-4 items-center">
+                    <span className="label-text text-lg font-semibold">
+                      Can participants invite others?
+                    </span>
+
+                    <input
+                      type="checkbox"
+                      className="toggle"
+                      name="can-others-invite-to-event"
+                      id="can-others-invite-to-event"
+                      checked={canOthersInvite}
+                      onClick={() => {
+                        setCanOthersInvite(!canOthersInvite);
+                        setEventData({
+                          ...eventData,
+                          canOthersInvite: !canOthersInvite,
+                        });
+                      }}
+                    />
+                  </div>
+                  <span className="label-text-alt">
+                    * Check this if you would like all participants to this
+                    event to be able to invite other participants to it.
+                  </span>
+                </div>
+                <div className="is-private flex flex-col gap-2 w-3/12 p-3 bg-base-100 rounded-md">
                   <div className="private-checkbox flex gap-4 items-center">
                     <span className="label-text text-lg font-semibold">
-                      Is this a private event?
+                      This is Private event?
                     </span>
 
                     <input
@@ -294,8 +320,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                     />
                   </div>
                   <span className="label-text-alt">
-                    * Private events are only visible to you and your invitees
-                    and will not appear on the public events page.
+                    * Private events will not appear in the public event feed.
                   </span>
                 </div>
               </div>
@@ -535,51 +560,6 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                       }}
                     />
                   </div>
-                </div>
-              </div>
-
-              <hr className="border-dashed mt-3 mb-3" />
-
-              <div className="form-invite-row flex flex-row gap-8">
-                <label className="form-control w-8/12">
-                  <div className="label">
-                    <span className="label-text text-lg">
-                      Invite participants
-                    </span>
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Leave empty if you don't want to invite anyone"
-                    className="input input-bordered w-full "
-                    name="event-invitees"
-                    id="event-invitees"
-                  />
-                </label>
-                <div className="can-others-invite flex flex-col gap-2 w-4/12 p-3 bg-base-100 rounded-md">
-                  <div className="invite-checkbox flex gap-4 items-center">
-                    <span className="label-text text-lg font-semibold">
-                      Can participants invite others?
-                    </span>
-
-                    <input
-                      type="checkbox"
-                      className="toggle"
-                      name="can-others-invite-to-event"
-                      id="can-others-invite-to-event"
-                      checked={canOthersInvite}
-                      onClick={() => {
-                        setCanOthersInvite(!canOthersInvite);
-                        setEventData({
-                          ...eventData,
-                          canOthersInvite: !canOthersInvite,
-                        });
-                      }}
-                    />
-                  </div>
-                  <span className="label-text-alt">
-                    * Check this if you would like all participants to this
-                    event to be able to invite other participants to it.
-                  </span>
                 </div>
               </div>
 
