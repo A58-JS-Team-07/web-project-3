@@ -1,23 +1,33 @@
-import React, { useState } from 'react';
-import { addContactToList } from '../../../services/contactsLists.services';
+import React, { useEffect, useState } from 'react';
 import { IoClose } from 'react-icons/io5';
-import { searchUsers } from '../../../services/users.service';
+import { searchUsers, getAllUsersExcludeCurrent } from '../../../services/users.service';
 import UserSnippet from '../../UserSnippet/UserSnippet';
+import { useContext } from 'react';
+import { AppContext } from '../../../context/AppContext';
 
-
-function AddNewUserToListFrom({ showModal, setShowModal = () => { }, contactsList}) {
+function AddNewUserToListFrom({ showModal, setShowModal = () => { }, contactsList }) {
     const [newContactName, setNewContactName] = useState('');
     const [searchUsersList, setSearchUsersList] = useState([]);
-    const [buttonText, setButtonText] = useState('Add to List');
+    const { userData } = useContext(AppContext);
 
     const handleChange = async (e) => {
         setNewContactName(e.target.value);
-        const searchUsersData = await searchUsers(e.target.value).then((res) => {
+        const searchUsersData = await searchUsers(userData.username, e.target.value).then((res) => {
             return res;
         });
 
         setSearchUsersList(searchUsersData);
     };
+
+    useEffect(() => {
+        const loadAllUsersList = async () => {
+            const loadUsers = await getAllUsersExcludeCurrent(userData.username).then((res) => {
+                return res;
+            });
+            setSearchUsersList(loadUsers);
+        }
+        loadAllUsersList();
+    }, []);
 
     function closeModal() {
         setShowModal(false);
@@ -40,10 +50,10 @@ function AddNewUserToListFrom({ showModal, setShowModal = () => { }, contactsLis
                             <input
                                 type="text"
                                 className="grow"
-                                placeholder="Enter username or email address" 
+                                placeholder="Enter username or email address"
                                 value={newContactName}
                                 onChange={handleChange}
-                                />
+                            />
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 16 16"
@@ -57,15 +67,22 @@ function AddNewUserToListFrom({ showModal, setShowModal = () => { }, contactsLis
                                 />
                             </svg>
                         </label>
-                        <div className="flex flex-col gap-6">
-                            {searchUsersList.map((user) => (
-                                <UserSnippet
-                                    key={user.uid}
-                                    user={user}
-                                    contactsList={contactsList}
-                                />
-                            ))}
-                        </div>
+                        {searchUsersList.length !== 0 && (
+                            <div className="flex flex-col gap-6">
+                                {searchUsersList.map((user) => (
+                                    <UserSnippet
+                                        key={user.uid}
+                                        user={user}
+                                        contactsList={contactsList}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                        {searchUsersList.length === 0 && (
+                            <div className="text-xl">
+                                No users found
+                            </div>
+                        )}
                     </div>
                 </div>
             ) : null}
