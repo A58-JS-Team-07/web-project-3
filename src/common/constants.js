@@ -18,6 +18,8 @@ export const MAX_EVENT_DESCRIPTION_LENGTH = 500;
 
 export const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+export const WORKWEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+
 export const HOURS = [
   "00:00",
   "01:00",

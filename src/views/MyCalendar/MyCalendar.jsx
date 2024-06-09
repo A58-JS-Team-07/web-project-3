@@ -15,6 +15,7 @@ import {
 import { AppContext } from "../../context/AppContext";
 import { getAllEvents } from "../../services/events.service";
 import CalendarWeek from "../../components/Calendar/CalendarWeek/CalendarWeek";
+import CalendarWorkWeek from "../../components/Calendar/CalendarWorkWeek/CalendarWorkWeek";
 
 function MyCalendar() {
   const { userData } = useContext(AppContext);
