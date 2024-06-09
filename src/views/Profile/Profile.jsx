@@ -103,7 +103,7 @@ function Profile() {
       <div className="__container bg-base-200 flex flex-row w-full h-full p-20 gap-10 rounded-2xl">
         <div className="inner__container bg-base-100 w-1/3 min-w-1/2 p-10 rounded-3xl  ">
         <h2 className="text-lg font-semibold flex flex-col px-3 pt-2 pb-2">
-          {"Hi, " + userData?.firstName + " " + userData?.lastName}
+          {"Hi " + userData?.firstName + " " + userData?.lastName + ","}
         </h2>
           {!isEditingAvatar ? (
             <>
