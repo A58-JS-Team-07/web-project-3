@@ -173,15 +173,27 @@ export const updateUserAvatar = async (username, avatarURL) => {
   }
 };
 
-export const searchUsers = async (searchQuery) => {
+export const searchUsers = async (username, searchQuery = null) => {
   try {
     const usersSnapshot = await get(ref(db, "users"));
     const users = Object.values(usersSnapshot.val());
-    return users.filter((user) => 
-      user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    return users.filter((user) =>
+      (
+        user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase())
+      ) && user.username !== username
     );
   } catch (error) {
     console.error("Error searching users:" + error);
+  }
+};
+
+export const getAllUsersExcludeCurrent = async (username) => {
+  try {
+    const usersSnapshot = await get(ref(db, "users"));
+    const users = Object.values(usersSnapshot.val());
+    return users.filter((user) => user.username !== username);
+  } catch (error) {
+    console.error("Error getting all users: " + error);
   }
 };
