@@ -40,7 +40,7 @@ function CalendarWeek({ date, events = [] }) {
           </div>
         ))}
       </div>
-      <div className="calendar-week grid grid-cols-7 relative">
+      <div className="calendar-week grid grid-cols-7 relative w-full">
         {week.map((day, index) => {
           const dayTime = day.date.getTime();
 

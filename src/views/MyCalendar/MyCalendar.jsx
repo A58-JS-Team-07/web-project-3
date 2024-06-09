@@ -3,7 +3,15 @@ import CalendarMonth from "../../components/Calendar/CalendarMonth/CalendarMonth
 import { CURRENT_DATE } from "../../common/constants";
 import Button from "../../components/Button/Button";
 import { IoChevronBackOutline, IoChevronForward } from "react-icons/io5";
-import { eachDayOfInterval, subMonths } from "date-fns";
+import {
+  eachDayOfInterval,
+  endOfWeek,
+  getWeek,
+  startOfWeek,
+  subDays,
+  subMonths,
+  subWeeks,
+} from "date-fns";
 import { AppContext } from "../../context/AppContext";
 import { getAllEvents } from "../../services/events.service";
 import CalendarWeek from "../../components/Calendar/CalendarWeek/CalendarWeek";
@@ -61,10 +69,29 @@ function MyCalendar() {
   }, [calendarView]);
 
   function navigate(direction) {
-    if (direction === "forward") {
-      setNav((prevNav) => subMonths(prevNav, -1));
-    } else if (direction === "prev") {
-      setNav((prevNav) => subMonths(prevNav, 1));
+    try {
+      if (calendarView === "month") {
+        if (direction === "forward") {
+          setNav((curDate) => subMonths(curDate, -1));
+        } else if (direction === "prev") {
+          setNav((curDate) => subMonths(curDate, 1));
+        }
+      } else if (calendarView === "week" || calendarView === "work-week") {
+        if (direction === "forward") {
+          setNav((curDate) => subWeeks(curDate, -1));
+        } else if (direction === "prev") {
+          setNav((curDate) => subWeeks(curDate, 1));
+        }
+      } else if (calendarView === "day") {
+        if (direction === "forward") {
+          setNav((curDate) => subDays(curDate, -1));
+        } else if (direction === "prevS") {
+          setNav((curDate) => subDays(curDate, 1));
+        }
+      }
+    } catch (error) {
+      console.error("Error in MyCalendar.jsx > navigate:", error);
+      throw error;
     }
   }
 
@@ -110,10 +137,24 @@ function MyCalendar() {
             />
           </div>
           <div className="calendar-month-year flex flex-row items-center gap-2">
-            <h2 className="text-2xl font-semibold">
+            {calendarView !== "month" && (
+              <span className="text-2xl font-semibold">
+                {`Week ${getWeek(nav, { weekStartsOn: 1 })} (${startOfWeek(
+                  nav,
+                  { weekStartsOn: 1 }
+                )
+                  .getDate()
+                  .toString()
+                  .padStart(2, "0")}-${endOfWeek(nav, { weekStartsOn: 1 })
+                  .getDate()
+                  .toString()
+                  .padStart(2, "0")})`}
+              </span>
+            )}
+            <span className="text-2xl font-semibold">
               {nav.toLocaleString("default", { month: "long" })}
-            </h2>
-            <h2 className="text-2xl font-semibold">{nav.getFullYear()}</h2>
+            </span>
+            <span className="text-2xl font-semibold">{nav.getFullYear()}</span>
           </div>
         </div>
         <div className="calendar-nav-right flex flex-row gap-2 items-center">
