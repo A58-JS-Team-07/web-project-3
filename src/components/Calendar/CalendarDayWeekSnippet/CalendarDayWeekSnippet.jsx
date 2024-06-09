@@ -49,7 +49,7 @@ function CalendarDayWeekSnippet({ event, design = "main" }) {
         {event.title}
       </div>
       {displayEventModalId === event.eid && (
-        <div className="calendar-day-event-details">
+        <div className="calendar-day-event-details opacity-">
           <CalendarEventModal
             event={event}
             setDisplayEventModalId={setDisplayEventModalId}

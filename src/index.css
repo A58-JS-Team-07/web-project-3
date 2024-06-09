@@ -15,3 +15,8 @@
   /* @apply rounded-lg; */
   @apply bg-secondary;
 }
+
+.bg-secondary-light {
+  @apply bg-secondary;
+  @apply bg-opacity-70;
+}

@@ -24,7 +24,6 @@ export default {
         customThemeLight: {
           primary: "#002448",
           secondary: "#55d3d2",
-          "secondary-light": "#77f3f2",
           accent: "002448",
           neutral: "#212121",
           white: "#fff",
