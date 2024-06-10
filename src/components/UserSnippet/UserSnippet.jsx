@@ -1,14 +1,22 @@
 import propsType from "prop-types";
 import Button from "../Button/Button";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { addContactToList, removeContactFromList, isContactInList } from "../../services/contactsLists.services";
 import { toast } from "react-toastify";
 import { db } from "../../config/firebase-config.js";
 import { ref, onValue } from "firebase/database";
+import { AppContext } from "../../context/AppContext";
 
-function UserSnippet({ user, contactsList = null}) {
+function UserSnippet({
+  user,
+  contactsList = null,
+  handleBanUser = () => { },
+  adminActions = false,
+}) {
+
   const [toAdd, setToAdd] = useState(true);
   const [isInList, setIsInList] = useState(false);
+  const { userData } = useContext(AppContext);
 
   const handleAddUserToList = async () => {
     setToAdd(!toAdd);
@@ -33,41 +41,62 @@ function UserSnippet({ user, contactsList = null}) {
 
   useEffect(() => {
     try {
-      return onValue(ref(db, `contactsLists/${contactsList?.clid}/contacts/${user.username}`) , (snapshot) => {
-        snapshot.exists() ? setIsInList(true) : setIsInList(false); 
-       });
+      return onValue(ref(db, `contactsLists/${contactsList?.clid}/contacts/${user.username}`), (snapshot) => {
+        snapshot.exists() ? setIsInList(true) : setIsInList(false);
+      });
     } catch (error) {
       console.error("Error in UserSnippet Socket: " + error);
     }
   }, [contactsList]);
 
 
-  console.log('UserSnippetContactsList',  contactsList);
+  console.log('UserSnippetContactsList', contactsList);
 
   return (
-    <div className="event-organizer-data flex flex-row gap-4 bg-base-100 px-4 py-3 rounded-xl">
-      <img
-        src={user?.avatar ? user.avatar : "/anonymous-avatar.jpg"}
-        alt={user?.firstName + " " + user?.lastName}
-        className="rounded-full w-14 h-14 object-cover flex flex-col justify-center"
-      />
-      <div className="event-organizer-user-info flex flex-col">
-        <span className="text-lg font-semibold mb-[-3px]">
-          {user?.firstName + " " + user?.lastName}
-        </span>
-        <span>{"@" + user?.username}</span>
-        {!isInList && contactsList && (
-        <div className="form-update-row flex flex-row gap-8 justify-between mt-5">
-          <Button onClick={handleAddUserToList}>Add</Button>
+    <div className={`${!adminActions
+     ? "user-snippet-data flex flex-row gap-4 bg-base-100 px-4 py-3 rounded-xl justify-between"
+     : "user-snippet-data flex flex-row gap-4 bg-base-100 px-4 py-3 rounded-xl justify-between w-full"
+      }`}>
+      <div className="user-snippet-info flex flex-row gap-4 bg-base-100 px-4 py-3 rounded-xl">
+        <img
+          src={user?.avatar ? user.avatar : "/anonymous-avatar.jpg"}
+          alt={user?.firstName + " " + user?.lastName}
+          className="rounded-full w-14 h-14 object-cover flex flex-col justify-center"
+        />
+        <div className="user-snippet-info flex flex-col">
+          <span className="text-lg font-semibold mb-[-3px]">
+            {user?.firstName + " " + user?.lastName}
+          </span>
+          <span>{"@" + user?.username}</span>
+          {userData.isAdmin && adminActions && (
+            <span>{user?.email}</span>
+          )}
         </div>
-        ) }
-        {isInList && contactsList && (
-          <div className="form-update-row flex flex-col gap-8 justify-between mt-5">
-            <Button style="btn btn-outline btn-secondary" onClick={handleRemoveUserFromList}>Remove</Button>
-          </div>
-        )}
       </div>
-    </div>
+      <div className="user-snippet-actions flex flex-row gap-4 items-center">
+        <div className="contact-list-actions flex flex-row gap-4">
+          {!isInList && contactsList && (
+            <div className="add-user-btn flex flex-row gap-8 justify-between mt-5">
+              <Button onClick={handleAddUserToList}>Add</Button>
+            </div>
+          )}
+          {isInList && contactsList && (
+            <div className="remove-user-btn flex flex-col gap-8 justify-between mt-5">
+              <Button style="btn btn-outline btn-secondary" onClick={handleRemoveUserFromList}>Remove</Button>
+            </div>
+          )}
+        </div>
+        <div className="admin-actions flex flex-row gap-4">
+          {userData.isAdmin && adminActions && (
+            <div className="admin-user-actions flex justify-between gap-4">
+              <Button onClick={() => handleBanUser(user)}>
+                {user.isBanned ? ("Unban") : ("Ban")}
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div >
   );
 }
 
