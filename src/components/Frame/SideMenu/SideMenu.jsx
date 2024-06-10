@@ -1,4 +1,4 @@
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import ThemeSwitcher from "./ThemeSwitcher/ThemeSwitcher";
 import {
   IoCalendarOutline,
@@ -12,11 +12,12 @@ import {
 import { useContext } from "react";
 import { AppContext } from "../../../context/AppContext";
 import { logoutUser } from "../../../services/auth.service";
+import AdminComponentProtect from "../../../hoc/AdminLogic/AdminComponentProtect/AdminComponentProtect";
 
 function SideMenu() {
   const { userData, setAppState } = useContext(AppContext);
   const navigate = useNavigate();
-   
+
 
   const logout = async () => {
     await logoutUser();
@@ -36,8 +37,7 @@ function SideMenu() {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `text-lg text-white flex items-center rounded-none ${
-                  isActive ? "border-l-4 border-secondary pl-3" : ""
+                `text-lg text-white flex items-center rounded-none ${isActive ? "border-l-4 border-secondary pl-3" : ""
                 }`
               }
               style={({ isActive }) => ({
@@ -53,11 +53,10 @@ function SideMenu() {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/events"  className={({ isActive }) =>
-                `text-lg text-white flex items-center rounded-none ${
-                  isActive ? "border-l-4 border-secondary pl-3" : ""
-                }`
-              }
+            <NavLink to="/events" className={({ isActive }) =>
+              `text-lg text-white flex items-center rounded-none ${isActive ? "border-l-4 border-secondary pl-3" : ""
+              }`
+            }
               style={({ isActive }) => ({
                 backgroundColor: isActive ? "transparent" : undefined,
                 outline: "none",
@@ -70,92 +69,90 @@ function SideMenu() {
             </NavLink>
           </li>
           {userData && (
-<>
-          <li>
-            <NavLink to="my-calendar"  className={({ isActive }) =>
-                `text-lg text-white flex items-center rounded-none ${
-                  isActive ? "border-l-4 border-secondary pl-3" : ""
-                }`
-              }
-              style={({ isActive }) => ({
-                backgroundColor: isActive ? "transparent" : undefined,
-                outline: "none",
-                color: isActive ? "white" : undefined,
-              })}>
-              {
-                <IoCalendarOutline className="text-xl fill-secondary text-secondary" />
-              }{" "}
-              My Calendar
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="contacts-lists"  className={({ isActive }) =>
-                `text-lg text-white flex items-center rounded-none ${
-                  isActive ? "border-l-4 border-secondary pl-3" : ""
-                }`
-              }
-              style={({ isActive }) => ({
-                backgroundColor: isActive ? "transparent" : undefined,
-                outline: "none",
-                color: isActive ? "white" : undefined,
-              })}>
-              {
-                <IoIdCardOutline className="text-xl fill-secondary text-secondary" />
-              }{" "}
-              Contacts Lists
-            </NavLink>
-          </li>
-</>
+            <>
+              <li>
+                <NavLink to="my-calendar" className={({ isActive }) =>
+                  `text-lg text-white flex items-center rounded-none ${isActive ? "border-l-4 border-secondary pl-3" : ""
+                  }`
+                }
+                  style={({ isActive }) => ({
+                    backgroundColor: isActive ? "transparent" : undefined,
+                    outline: "none",
+                    color: isActive ? "white" : undefined,
+                  })}>
+                  {
+                    <IoCalendarOutline className="text-xl fill-secondary text-secondary" />
+                  }{" "}
+                  My Calendar
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="contacts-lists" className={({ isActive }) =>
+                  `text-lg text-white flex items-center rounded-none ${isActive ? "border-l-4 border-secondary pl-3" : ""
+                  }`
+                }
+                  style={({ isActive }) => ({
+                    backgroundColor: isActive ? "transparent" : undefined,
+                    outline: "none",
+                    color: isActive ? "white" : undefined,
+                  })}>
+                  {
+                    <IoIdCardOutline className="text-xl fill-secondary text-secondary" />
+                  }{" "}
+                  Contacts Lists
+                </NavLink>
+              </li>
+            </>
           )}
         </ul>
-        <hr className="border-t-2 border-gray-500 opacity-30" /> 
+        <hr className="border-t-2 border-gray-500 opacity-30" />
         {userData && (
 
-        <ul className="menu p-2">
-          <li>
-            <NavLink to="admin-center"  className={({ isActive }) =>
-                `text-lg text-white flex items-center rounded-none ${
-                  isActive ? "border-l-4 border-secondary pl-3" : ""
+          <ul className="menu p-2">
+            <AdminComponentProtect>
+              <li>
+                <NavLink to="admin-center" className={({ isActive }) =>
+                  `text-lg text-white flex items-center rounded-none ${isActive ? "border-l-4 border-secondary pl-3" : ""
+                  }`
+                }
+                  style={({ isActive }) => ({
+                    backgroundColor: isActive ? "transparent" : undefined,
+                    outline: "none",
+                    color: isActive ? "white" : undefined,
+                  })}>
+                  {
+                    <IoConstructOutline className="text-xl fill-secondary text-secondary" />
+                  }{" "}
+                  Admin Center
+                </NavLink>
+              </li>
+            </AdminComponentProtect>
+            <li>
+              <NavLink to="profile" className={({ isActive }) =>
+                `text-lg text-white flex items-center rounded-none ${isActive ? "border-l-4 border-secondary pl-3" : ""
                 }`
               }
-              style={({ isActive }) => ({
-                backgroundColor: isActive ? "transparent" : undefined,
-                outline: "none",
-                color: isActive ? "white" : undefined,
-              })}>
-              {
-                <IoConstructOutline className="text-xl fill-secondary text-secondary" />
-              }{" "}
-              Admin Center
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="profile"  className={({ isActive }) =>
-                `text-lg text-white flex items-center rounded-none ${
-                  isActive ? "border-l-4 border-secondary pl-3" : ""
-                }`
-              }
-              style={({ isActive }) => ({
-                backgroundColor: isActive ? "transparent" : undefined,
-                outline: "none",
-                color: isActive ? "white" : undefined,
-              })}>
-              {
-                <IoPersonOutline className="text-xl fill-secondary text-secondary" />
-              }{" "}
-              Profile
-            </NavLink>
-          </li>
-          <li>
-            <a className="text-lg text-white" onClick={logout}>
-              {
-                <IoPowerOutline className="text-xl fill-secondary text-secondary" />
-              }{" "}
-              Logout
-            </a>
-          </li>
-        </ul>
-        )} 
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? "transparent" : undefined,
+                  outline: "none",
+                  color: isActive ? "white" : undefined,
+                })}>
+                {
+                  <IoPersonOutline className="text-xl fill-secondary text-secondary" />
+                }{" "}
+                Profile
+              </NavLink>
+            </li>
+            <li>
+              <a className="text-lg text-white" onClick={logout}>
+                {
+                  <IoPowerOutline className="text-xl fill-secondary text-secondary" />
+                }{" "}
+                Logout
+              </a>
+            </li>
+          </ul>
+        )}
         <hr className="border-t-2 border-gray-500 opacity-30" />
         {<ThemeSwitcher />}
       </div>
