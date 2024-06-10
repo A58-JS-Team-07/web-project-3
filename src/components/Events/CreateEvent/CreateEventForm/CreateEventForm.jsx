@@ -27,18 +27,18 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
   const [isRecurring, setIsRecurring] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
   const [canOthersInvite, setCanOthersInvite] = useState(true);
-  const [imageUpload, setImageUpload] = useState(null);
+  const [imageUpload, setImageUpload] = useState("");
   const [eventData, setEventData] = useState({
-    title: null,
-    description: null,
-    image: null,
-    startDateTime: null,
-    endDateTime: null,
+    title: "",
+    description: "",
+    image: "",
+    startDateTime: "",
+    endDateTime: "",
 
     location: {
-      country: null,
-      city: null,
-      address: null,
+      country: "",
+      city: "",
+      address: "",
     },
 
     creator: userData.username,
@@ -47,8 +47,8 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
     },
 
     isRecurring: isRecurring,
-    recurringFrequency: null,
-    lastRecurringDate: null,
+    recurringFrequency: "",
+    lastRecurringDate: "",
 
     isPrivate: isPrivate,
 
@@ -251,10 +251,15 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                   ...eventData,
                   startDateTime: dateValueToObject(newStartDate),
                   endDateTime: dateValueToObject(newEndDate),
-                  image: imageId,
                 };
 
-                await createEvent(newEventData);
+                const newEventId = await createEvent(newEventData);
+                const newImageId = await uploadEventImage(
+                  imageUpload,
+                  newEventId
+                );
+
+                await updateEvent(newEventId, { image: newImageId });
               }
               break;
             case "monthly":
@@ -269,10 +274,15 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                   ...eventData,
                   startDateTime: dateValueToObject(newStartDate),
                   endDateTime: dateValueToObject(newEndDate),
-                  image: imageId,
                 };
 
-                await createEvent(newEventData);
+                const newEventId = await createEvent(newEventData);
+                const newImageId = await uploadEventImage(
+                  imageUpload,
+                  newEventId
+                );
+
+                await updateEvent(newEventId, { image: newImageId });
               }
               break;
             case "yearly":
@@ -287,10 +297,15 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                   ...eventData,
                   startDateTime: dateValueToObject(newStartDate),
                   endDateTime: dateValueToObject(newEndDate),
-                  image: imageId,
                 };
 
-                await createEvent(newEventData);
+                const newEventId = await createEvent(newEventData);
+                const newImageId = await uploadEventImage(
+                  imageUpload,
+                  newEventId
+                );
+
+                await updateEvent(newEventId, { image: newImageId });
               }
               break;
           }
@@ -370,7 +385,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                       name="can-others-invite-to-event"
                       id="can-others-invite-to-event"
                       checked={canOthersInvite}
-                      onClick={() => {
+                      onChange={() => {
                         setCanOthersInvite(!canOthersInvite);
                         setEventData({
                           ...eventData,
