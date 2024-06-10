@@ -18,6 +18,7 @@ import {
 import moment from "moment";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import { addMonths, addWeeks, addYears } from "date-fns";
 
 function CreateEventForm({ showModal, setShowModal = () => {} }) {
   const { userData } = useContext(AppContext);
@@ -27,7 +28,6 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
   const [isPrivate, setIsPrivate] = useState(false);
   const [canOthersInvite, setCanOthersInvite] = useState(true);
   const [imageUpload, setImageUpload] = useState(null);
-  const [invitees, setInvitees] = useState([]);
   const [eventData, setEventData] = useState({
     title: null,
     description: null,
@@ -53,7 +53,6 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
     isPrivate: isPrivate,
 
     canOthersInvite: canOthersInvite,
-    invitees: invitees,
   });
 
   useEffect(() => {
@@ -211,15 +210,98 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
       eventData.endDateTime = dateValueToObject(eventData.endDateTime);
 
       if (isRecurring) {
-        eventData.lastRecurringDate = dateValueToObject(
-          eventData.lastRecurringDate
-        );
+        eventData.lastRecurringDate = eventData.lastRecurringDate
+          .toDate()
+          .getTime();
       }
 
       const eventId = await createEvent(eventData);
       const imageId = await uploadEventImage(imageUpload, eventId);
 
       await updateEvent(eventId, { image: imageId });
+
+      if (isRecurring) {
+        try {
+          const recurringEndDate = eventData.lastRecurringDate;
+          let eventStartDate = new Date(
+            eventData.startDateTime.year,
+            eventData.startDateTime.month - 1,
+            eventData.startDateTime.day,
+            eventData.startDateTime.hours,
+            eventData.startDateTime.minutes
+          ).getTime();
+          let eventEndDate = new Date(
+            eventData.endDateTime.year,
+            eventData.endDateTime.month - 1,
+            eventData.endDateTime.day,
+            eventData.endDateTime.hours,
+            eventData.endDateTime.minutes
+          ).getTime();
+
+          switch (eventData.recurringFrequency) {
+            case "weekly":
+              while (recurringEndDate > addWeeks(eventStartDate, 1)) {
+                const newStartDate = addWeeks(eventStartDate, 1);
+                const newEndDate = addWeeks(eventEndDate, 1);
+
+                eventStartDate = newStartDate.getTime();
+                eventEndDate = newEndDate.getTime();
+
+                const newEventData = {
+                  ...eventData,
+                  startDateTime: dateValueToObject(newStartDate),
+                  endDateTime: dateValueToObject(newEndDate),
+                  image: imageId,
+                };
+
+                await createEvent(newEventData);
+              }
+              break;
+            case "monthly":
+              while (recurringEndDate > addMonths(eventStartDate, 1)) {
+                const newStartDate = addMonths(eventStartDate, 1);
+                const newEndDate = addMonths(eventEndDate, 1);
+
+                eventStartDate = newStartDate.getTime();
+                eventEndDate = newEndDate.getTime();
+
+                const newEventData = {
+                  ...eventData,
+                  startDateTime: dateValueToObject(newStartDate),
+                  endDateTime: dateValueToObject(newEndDate),
+                  image: imageId,
+                };
+
+                await createEvent(newEventData);
+              }
+              break;
+            case "yearly":
+              while (recurringEndDate > addYears(eventStartDate, 1)) {
+                const newStartDate = addYears(eventStartDate, 1);
+                const newEndDate = addYears(eventEndDate, 1);
+
+                eventStartDate = newStartDate.getTime();
+                eventEndDate = newEndDate.getTime();
+
+                const newEventData = {
+                  ...eventData,
+                  startDateTime: dateValueToObject(newStartDate),
+                  endDateTime: dateValueToObject(newEndDate),
+                  image: imageId,
+                };
+
+                await createEvent(newEventData);
+              }
+              break;
+          }
+        } catch (error) {
+          console.error(
+            "Error in CreateEventForm.jsx > handleEventCreation > Recurring event creation:",
+            error
+          );
+          throw error;
+        }
+      }
 
       console.log("Event uploaded successfully");
       setShowModal(false);
@@ -260,7 +342,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
 
             <div className="create-event-form">
               <div className="form-title-row flex gap-8">
-                <label className="form-control w-8/12">
+                <label className="form-control w-5/12">
                   <div className="label">
                     <span className="label-text text-lg">
                       Event title<span className="text-red-500"> *</span>
@@ -276,10 +358,36 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                     onChange={updateForm("title")}
                   />
                 </label>
-                <div className="is-private flex flex-col gap-2 w-4/12 p-3 bg-base-100 rounded-md">
+                <div className="can-others-invite flex flex-col gap-2 w-4/12 p-3 bg-base-100 rounded-md">
+                  <div className="invite-checkbox flex gap-4 items-center">
+                    <span className="label-text text-lg font-semibold">
+                      Can participants invite others?
+                    </span>
+
+                    <input
+                      type="checkbox"
+                      className="toggle"
+                      name="can-others-invite-to-event"
+                      id="can-others-invite-to-event"
+                      checked={canOthersInvite}
+                      onClick={() => {
+                        setCanOthersInvite(!canOthersInvite);
+                        setEventData({
+                          ...eventData,
+                          canOthersInvite: !canOthersInvite,
+                        });
+                      }}
+                    />
+                  </div>
+                  <span className="label-text-alt">
+                    * Check this if you would like all participants to this
+                    event to be able to invite other participants to it.
+                  </span>
+                </div>
+                <div className="is-private flex flex-col gap-2 w-3/12 p-3 bg-base-100 rounded-md">
                   <div className="private-checkbox flex gap-4 items-center">
                     <span className="label-text text-lg font-semibold">
-                      Is this a private event?
+                      This is Private event?
                     </span>
 
                     <input
@@ -294,8 +402,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                     />
                   </div>
                   <span className="label-text-alt">
-                    * Private events are only visible to you and your invitees
-                    and will not appear on the public events page.
+                    * Private events will not appear in the public event feed.
                   </span>
                 </div>
               </div>
@@ -535,51 +642,6 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                       }}
                     />
                   </div>
-                </div>
-              </div>
-
-              <hr className="border-dashed mt-3 mb-3" />
-
-              <div className="form-invite-row flex flex-row gap-8">
-                <label className="form-control w-8/12">
-                  <div className="label">
-                    <span className="label-text text-lg">
-                      Invite participants
-                    </span>
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Leave empty if you don't want to invite anyone"
-                    className="input input-bordered w-full "
-                    name="event-invitees"
-                    id="event-invitees"
-                  />
-                </label>
-                <div className="can-others-invite flex flex-col gap-2 w-4/12 p-3 bg-base-100 rounded-md">
-                  <div className="invite-checkbox flex gap-4 items-center">
-                    <span className="label-text text-lg font-semibold">
-                      Can participants invite others?
-                    </span>
-
-                    <input
-                      type="checkbox"
-                      className="toggle"
-                      name="can-others-invite-to-event"
-                      id="can-others-invite-to-event"
-                      checked={canOthersInvite}
-                      onClick={() => {
-                        setCanOthersInvite(!canOthersInvite);
-                        setEventData({
-                          ...eventData,
-                          canOthersInvite: !canOthersInvite,
-                        });
-                      }}
-                    />
-                  </div>
-                  <span className="label-text-alt">
-                    * Check this if you would like all participants to this
-                    event to be able to invite other participants to it.
-                  </span>
                 </div>
               </div>
 

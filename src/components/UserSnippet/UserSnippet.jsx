@@ -12,6 +12,9 @@ function UserSnippet({
   contactsList = null,
   handleBanUser = () => { },
   adminActions = false,
+  isInviting = false,
+  handleDeleteInvite = () => {},
+  handleInvitation = () => {},
 }) {
 
   const [toAdd, setToAdd] = useState(true);
@@ -33,7 +36,7 @@ function UserSnippet({
   useEffect(() => {
     const isUserInList = async () => {
       const result = await isContactInList(contactsList?.clid, user);
-      console.log('isUserInList', result);
+      console.log("isUserInList", result);
       setIsInList(result);
     };
     isUserInList();
@@ -41,9 +44,15 @@ function UserSnippet({
 
   useEffect(() => {
     try {
-      return onValue(ref(db, `contactsLists/${contactsList?.clid}/contacts/${user.username}`), (snapshot) => {
-        snapshot.exists() ? setIsInList(true) : setIsInList(false);
-      });
+      return onValue(
+        ref(
+          db,
+          `contactsLists/${contactsList?.clid}/contacts/${user.username}`
+        ),
+        (snapshot) => {
+          snapshot.exists() ? setIsInList(true) : setIsInList(false);
+        }
+      );
     } catch (error) {
       console.error("Error in UserSnippet Socket: " + error);
     }
