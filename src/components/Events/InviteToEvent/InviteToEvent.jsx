@@ -62,7 +62,7 @@ function InviteToEvent({
     <div>
       {invitingModal && (
         <div className="create-event-modal-backdrop absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  h-full w-full min-w-full min-h-full bg-black z-10 bg-opacity-60  ">
-          <div className="create-event-modal m-8 rounded-bl-2xl rounded-tl-2xl bg-base-200 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-[60%] min-h-[70%] max-h-[70%] overflow-auto max-w-7xl z-10 px-8 py-7 flex flex-col h-full">
+          <div className="create-event-modal m-8 rounded-2xl bg-base-200 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-[60%] min-h-[70%] max-h-[70%] overflow-auto max-w-7xl z-10 px-8 py-7 flex flex-col h-full">
             <button
               onClick={() => {
                 setInvitingModal(false);
@@ -74,8 +74,8 @@ function InviteToEvent({
             <h2 className="text-3xl font-bold mb-8">
               Invite users to the event
             </h2>
-            <div className="grid grid-cols-2 flex-grow gap-8">
-              <div className="contact-lists flex flex-col gap-4 border px-4 py-5 rounded-2xl overflow-auto">
+            <div className="flex flex-row flex-grow gap-8">
+              <div className="contact-lists flex flex-col gap-4 border px-4 py-5 rounded-2xl overflow-auto w-2/5">
                 <span className="font-semibold text-lg">
                   Choose contact list:
                 </span>
@@ -90,7 +90,7 @@ function InviteToEvent({
                 })}
               </div>
               {contactsUsernames.length !== 0 && (
-                <div className="contacts-window flex flex-col gap-4 border px-4 py-5 rounded-2xl overflow-auto">
+                <div className="contacts-window flex flex-col gap-4 border px-4 py-5 rounded-2xl overflow-auto w-3/5">
                   <span className="font-semibold text-lg">
                     Invite users from the list:
                   </span>

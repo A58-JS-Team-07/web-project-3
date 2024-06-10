@@ -27,8 +27,12 @@ function EventContactsWindow({ contactsUsernames, invitingUsername, eventId }) {
     }
   }, [contactsUsernames]);
 
-  function handleInvitation(invitedUser) {
-    inviteUsers(eventId, invitingUsername, invitedUser);
+  async function handleInvitation(invitedUser) {
+    return await inviteUsers(eventId, invitingUsername, invitedUser);
+  }
+
+  function handleDeleteInvite(invitedUser) {
+    deleteInvite(eventId, invitingUsername, invitedUser);
   }
 
   return (
@@ -39,6 +43,7 @@ function EventContactsWindow({ contactsUsernames, invitingUsername, eventId }) {
             key={user.username}
             user={user}
             handleInvitation={handleInvitation}
+            handleDeleteInvite={handleDeleteInvite}
             isInviting={true}
           />
         );
