@@ -17,9 +17,11 @@ import { AppContext } from "./context/AppContext";
 import { LoaderProvider } from "./hoc/LoaderProvider";
 import { auth, db } from "./config/firebase-config";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { getUserData } from "./services/users.service";
 import Authenticated from "./hoc/Authenticated";
 import { onValue, ref } from "firebase/database";
+import AdminPageProtect from "./hoc/AdminLogic/AdminPageProtect/AdminPageProtect";
+import { logoutUser } from "./services/auth.service";
+import { toast } from "react-toastify";
 
 function App() {
   const [user] = useAuthState(auth);
@@ -45,17 +47,18 @@ function App() {
       console.error("App.jsx > useEffect set userData:", error);
       throw error;
     }
-
-    // getUserData(appState.user.uid)
-    //   .then((snapshot) => {
-    //     // console.log("snapshot:", snapshot.val());
-    //     const userData = Object.values(snapshot.val())[0];
-    //     console.log("userData:", userData);
-    //     // console.log("appState:", appState.user);
-    //     setAppState({ ...appState, userData });
-    //   })
-    //   .catch((error) => console.error("Error getting user data:", error));
   }, [appState.user]);
+
+  useEffect(() => {
+    const handleBannedUser = async () => {
+      if (appState.userData?.isBanned) {
+        await logoutUser();
+        setAppState({ user: null, userData: null });
+        toast.error("You have been banned! Please contact the administrator.");
+      }
+    };
+    handleBannedUser();
+  }, [appState.userData]);
 
   return (
     <>
@@ -108,7 +111,9 @@ function App() {
                     path="/admin-center"
                     element={
                       <Authenticated>
-                        <AdminCenter />
+                        <AdminPageProtect>
+                          <AdminCenter />
+                        </AdminPageProtect>
                       </Authenticated>
                     }
                   />
