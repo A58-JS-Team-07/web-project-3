@@ -26,7 +26,7 @@ function MyCalendar() {
 
   useEffect(() => {
     try {
-      if (userData) {
+      if (userData.participatingEvents) {
         const userEvents = Object.keys(userData.participatingEvents);
 
         getAllEvents().then((events) => {
