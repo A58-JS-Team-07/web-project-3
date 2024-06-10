@@ -21,6 +21,7 @@ import { joinEvent, leaveEvent } from "../../../services/events.service";
 import InvitedToEvent from "../../../components/Events/InviteToEvent/InviteToEvent";
 import { onValue, ref } from "firebase/database";
 import { db } from "../../../config/firebase-config";
+import AdminComponentProtect from "../../../hoc/AdminLogic/AdminComponentProtect/AdminComponentProtect";
 
 function SingleEvent() {
   const { setLoading } = useContext(LoaderContext);
@@ -136,25 +137,50 @@ function SingleEvent() {
               Created on:{" "}
               {event?.createdOn &&
                 new Date(event.createdOn).toLocaleDateString("en-GB") +
-                  " at " +
-                  new Date(event.createdOn).toLocaleTimeString("en-GB", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}{" "}
+                " at " +
+                new Date(event.createdOn).toLocaleTimeString("en-GB", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}{" "}
             </span>
             {event?.updatedOn && (
               <span>
                 Updated on:{" "}
                 {event?.updatedOn &&
                   new Date(event.updatedOn).toLocaleDateString("en-GB") +
-                    " " +
-                    new Date(event.updatedOn).toLocaleTimeString("en-GB", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}{" "}
+                  " " +
+                  new Date(event.updatedOn).toLocaleTimeString("en-GB", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}{" "}
               </span>
             )}
           </div>
+          {userData?.isAdmin && (
+            <AdminComponentProtect>
+              <div className="event-edit-delete flex justify-end gap-4">
+                <span
+                  onClick={() => setEditEventModal(!editEventModal)}
+                  className="underline hover:no-underline cursor-pointer"
+                >
+                  Edit
+                </span>
+                {editEventModal && (
+                  <EditEventForm
+                    event={event}
+                    setEvent={setEvent}
+                    setEditEventModal={setEditEventModal}
+                  />
+                )}
+                <span
+                  onClick={handleDeleteEvent}
+                  className="text-red-500 underline hover:no-underline cursor-pointer"
+                >
+                  Delete
+                </span>
+              </div>
+            </AdminComponentProtect>
+          )}
           {event?.creator === userData?.username && (
             <div className="event-edit-delete flex justify-end gap-4">
               <span
