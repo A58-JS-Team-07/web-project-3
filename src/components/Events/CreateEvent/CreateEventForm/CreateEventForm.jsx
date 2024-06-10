@@ -18,7 +18,7 @@ import {
 import moment from "moment";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { addWeeks } from "date-fns";
+import { addMonths, addWeeks, addYears } from "date-fns";
 
 function CreateEventForm({ showModal, setShowModal = () => {} }) {
   const { userData } = useContext(AppContext);
@@ -258,8 +258,40 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
               }
               break;
             case "monthly":
+              while (recurringEndDate > addMonths(eventStartDate, 1)) {
+                const newStartDate = addMonths(eventStartDate, 1);
+                const newEndDate = addMonths(eventEndDate, 1);
+
+                eventStartDate = newStartDate.getTime();
+                eventEndDate = newEndDate.getTime();
+
+                const newEventData = {
+                  ...eventData,
+                  startDateTime: dateValueToObject(newStartDate),
+                  endDateTime: dateValueToObject(newEndDate),
+                  image: imageId,
+                };
+
+                await createEvent(newEventData);
+              }
               break;
             case "yearly":
+              while (recurringEndDate > addYears(eventStartDate, 1)) {
+                const newStartDate = addYears(eventStartDate, 1);
+                const newEndDate = addYears(eventEndDate, 1);
+
+                eventStartDate = newStartDate.getTime();
+                eventEndDate = newEndDate.getTime();
+
+                const newEventData = {
+                  ...eventData,
+                  startDateTime: dateValueToObject(newStartDate),
+                  endDateTime: dateValueToObject(newEndDate),
+                  image: imageId,
+                };
+
+                await createEvent(newEventData);
+              }
               break;
           }
         } catch (error) {
