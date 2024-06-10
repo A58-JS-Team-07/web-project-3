@@ -4,7 +4,11 @@ import Notifications from "../../Notifications/Notifications";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/AppContext";
 import { logoutUser } from "../../../services/auth.service";
-import { searchPublicEvents, searchUserViewEvents } from "../../../services/events.service";
+import { 
+  searchPublicEvents,
+  searchUserViewEvents,
+  searchAdminViewEvents
+ } from "../../../services/events.service";
 import { LoaderContext } from "../../../context/LoaderContext";
 
 function Header() {
@@ -23,17 +27,22 @@ function Header() {
     if (e.key === "Enter") {
       setLoading(true);
 
-      if (!userData) {
-        const searchEvents = await searchPublicEvents(e.target.value);
-        console.log("searchEvents:", searchEvents);
-        navigate(`/events?search=${e.target.value}`, { state: { searchEvents } });
+      if (userData.isAdmin === true) {
+        const searchAdminEvents = await searchAdminViewEvents(e.target.value);
+        handleSearchNavigate(e, searchAdminEvents);
+      } else if (userData.isAdmin === false) {
+        const searchUserEvents = await searchUserViewEvents(e.target.value, userData.username);
+        handleSearchNavigate(e, searchUserEvents);
       } else {
-        const searchEvents = await searchUserViewEvents(e.target.value, userData.username);
-        console.log("searchResults:", searchEvents);
-        navigate(`/events?search=${e.target.value}`, { state: { searchEvents } });
+        const searchPublicEvents = await searchPublicEvents(e.target.value);
+        handleSearchNavigate(e, searchPublicEvents);
       }
       setLoading(false);
     }
+  };
+
+  const handleSearchNavigate = (e, searchEvents) => {
+    navigate(`/events?search=${e.target.value}`, { state: { searchEvents } });
   };
 
   // useEffect(() => {

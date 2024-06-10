@@ -10,8 +10,7 @@ import {
   equalTo,
 } from "firebase/database";
 import { db } from "../config/firebase-config.js";
-import { createEventToUser } from "./users.service";
-import { deleteEventFromUser } from "./users.service";
+import { createEventToUser, deleteEventFromUser } from "./users.service";
 import { deleteEventImage } from "./storage.service";
 import { deleteInvite } from "./invites.service";
 
@@ -64,13 +63,34 @@ export const searchPublicEvents = async (searchTerm) => {
       const val = snapshot.val();
       const events = Object.keys(val)
         .map(key => ({ id: key, ...val[key] }))
-        .filter(event => event.isPrivate === false && event.title.toLowerCase().includes(searchTerm));
+        .filter(event => event.isPrivate === false &&
+          event.title.toLowerCase().includes(searchTerm));
       return events;
     } else {
       return [];
     }
   } catch (error) {
     console.error("Error in events.services > searchPublicEvents:", error);
+    throw error;
+  }
+};
+
+export const searchAdminViewEvents = async (searchTerm) => {
+  try {
+    const eventsRef = ref(db, "events");
+    const snapshot = await get(eventsRef);
+
+    if (snapshot.exists()) {
+      const val = snapshot.val();
+      const events = Object.keys(val)
+        .map(key => ({ id: key, ...val[key] }))
+        .filter(event => event.title.toLowerCase().includes(searchTerm));
+      return events;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error in events.services > searchAdminViewEvents:", error);
     throw error;
   }
 };
@@ -88,10 +108,10 @@ export const searchUserViewEvents = async (searchTerm, username) => {
         .map(key => ({ id: key, ...val[key] }))
         .filter(event => (
           (event.creator === username
-          || event?.participants[username] === true
-          || event.isPrivate === false)
+            || event?.participants[username] === true
+            || event.isPrivate === false)
           && event.title.toLowerCase().includes(searchTerm)));
-          console.log("events:", events);
+      console.log("events:", events);
       return events;
     } else {
       return [];
