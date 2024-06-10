@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
-import { getAllPublicEvents } from "../../../services/events.service";
+import { useEffect, useState, useContext } from "react";
+import { 
+  getAllPublicEvents, 
+  getAllUserViewEvents, 
+  getAllEvents 
+} from "../../../services/events.service";
 import EventCard from "../../../components/Events/EventCard/EventCard";
 import { LoaderContext } from "../../../context/LoaderContext";
-import { useContext } from "react";
 import { AppContext } from "../../../context/AppContext";
-import { getAllUserViewEvents } from "../../../services/events.service";
 import { useLocation } from "react-router-dom";
 
 
@@ -19,15 +21,19 @@ function AllEvents() {
     setLoading(true);
     const fetchEvents = async () => {
       try {
-        if (!userData) {
+        if (userData?.isAdmin === false) {
+          const userViewEvents = await getAllUserViewEvents(userData.username);
+          setEvents(userViewEvents);
+          setLoading(false);
+        } if (userData?.isAdmin === true) {
+          const allEvents = await getAllEvents();
+          setEvents(allEvents);
+          setLoading(false);
+        } else {
           const publicEvents = await getAllPublicEvents();
           setEvents(publicEvents);
           setLoading(false);
           console.log("AllPublicEvents > fetchEvents > events:", publicEvents);
-        } else {
-          const userViewEvents = await getAllUserViewEvents(userData.username);
-          setEvents(userViewEvents);
-          setLoading(false);
         }
       } catch (error) {
         console.error("Error in AllEvents > fetchEvents:", error);
