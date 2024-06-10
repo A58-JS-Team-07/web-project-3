@@ -38,15 +38,7 @@ function AddNewContactsListForm({ showModal, setShowModal = () => { } }) {
   };
 
   function closeModal() {
-    // if (
-    //   window.confirm(
-    //     "Are you sure you want to close the modal? Any unsaved changes will be lost."
-    //   )
-    // ) {
-    //   setShowModal(false);
-    // }
     setShowModal(false);
-
   }
 
   return (

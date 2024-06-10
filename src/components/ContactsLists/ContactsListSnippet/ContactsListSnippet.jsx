@@ -18,13 +18,6 @@ function ContactsListSnippet({ contactsList, onListClick }) {
     };
   };
 
-  const handleListClick = () => {
-    setListClicked(!isListClicked);
-    onListClick(isListClicked, contactsList?.clid);
-  };
-
-
-
   const handleListsClick = () => {
     onListClick(contactsList?.clid);
   };
@@ -40,6 +33,8 @@ function ContactsListSnippet({ contactsList, onListClick }) {
       console.error("Error in ContactsLists > useEffect:", error);
     }
   }, []);
+
+  console.log('ContactsListSnippet', contactsList);
 
   return (
     <>

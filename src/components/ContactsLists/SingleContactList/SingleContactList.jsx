@@ -50,6 +50,8 @@ function SingleContactList({ contacts, contactsList, listClicked }) {
 
   }, [listClicked, contactsList]);
 
+  console.log("CONTACTS", contacts);
+
 
   return (
     <div className="inner__container bg-base-200 w-1/3 min-w-1/2 p-10 rounded-3xl">
