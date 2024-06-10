@@ -33,7 +33,6 @@ function AddNewUserToListFrom({ showModal, setShowModal = () => { }, contactsLis
         setShowModal(false);
     }
 
-
     return (
         <div>
             {showModal ? (
@@ -46,7 +45,7 @@ function AddNewUserToListFrom({ showModal, setShowModal = () => { }, contactsLis
                         >
                             <IoClose />
                         </button>
-                        <label className="input input-bordered flex mb-8 grow items-center gap-2 max-w-[300px]">
+                        <label className="input input-bordered flex mb-8 grow items-center gap-2 max-w-[600px]">
                             <input
                                 type="text"
                                 className="grow"

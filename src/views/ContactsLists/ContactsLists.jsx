@@ -91,9 +91,9 @@ function ContactsLists() {
   // console.log("ContactsList", contactsList);
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-5 p-6">Contacts Lists</h1>
+      <h1 className="contacts-lists-page text-3xl font-bold mb-5 p-6">Contacts Lists</h1>
       <div className="flex flex-row w-full h-full gap-10 p-6">
-        <div className="inner__container bg-base-200 w-1/3 min-w-1/2 p-10 rounded-3xl ">
+        <div className="inner-container bg-base-200 w-1/3 min-w-1/2 p-10 rounded-3xl">
           {contactsLists?.length > 0 ? (
             <div className="flex flex-col gap-10">
               {contactsLists.map((contactsList) => (
