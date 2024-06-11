@@ -8,12 +8,14 @@ import EventCard from "../../../components/Events/EventCard/EventCard";
 import { LoaderContext } from "../../../context/LoaderContext";
 import { AppContext } from "../../../context/AppContext";
 import { useLocation } from "react-router-dom";
+import Button from "../../../components/Button/Button";
 
 function AllEvents() {
   const { userData } = useContext(AppContext);
   const [events, setEvents] = useState([]);
   const [searchEvents, setSearchEvents] = useState(null);
   const { setLoading } = useContext(LoaderContext);
+  const [visibleEvents, setVisibleEvents] = useState(9);
   const location = useLocation();
 
   useEffect(() => {
@@ -124,12 +126,23 @@ function AllEvents() {
             ))}
           {!location.state?.searchEvents && (
             <>
-              {events.map((event) => (
+              {events.slice(0, visibleEvents).map((event) => (
                 <EventCard key={event.eid} event={event} />
               ))}
             </>
           )}
         </div>
+        {visibleEvents < events.length && (
+          <div className="load-more flex w-full justify-center mt-8">
+            <Button
+              onClick={() =>
+                setVisibleEvents((prevVisibleEvents) => prevVisibleEvents + 9)
+              }
+            >
+              Load more
+            </Button>
+          </div>
+        )}
       </div>
     </>
   );
