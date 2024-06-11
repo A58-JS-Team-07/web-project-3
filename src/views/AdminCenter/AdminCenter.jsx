@@ -13,7 +13,7 @@ function AdminCenter() {
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("search") || "";
   const [displayCount, setDisplayCount] = useState(7);
-  const [userCount, setUserCount] = useState(0);
+  // const [userCount, setUserCount] = useState(0);
 
   const setSearch = (value) => {
     setSearchParams({ search: value });
@@ -39,16 +39,16 @@ function AdminCenter() {
     loadAllUsersList();
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.innerHeight + document.documentElement.scrollTop < document.documentElement.offsetHeight - 50) return;
-      setDisplayCount(prevCount => prevCount + 7);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [displayCount]);
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     if (window.innerHeight + document.documentElement.scrollTop < document.documentElement.offsetHeight - 50) return;
+  //     setDisplayCount(prevCount => prevCount + 7);
+  //   };
+  //   window.addEventListener('scroll', handleScroll);
+  //   return () => {
+  //     window.removeEventListener('scroll', handleScroll);
+  //   };
+  // }, [displayCount]);
 
   function handleBanUser(user) {
     const currStatus = user.isBanned;
@@ -112,7 +112,7 @@ function AdminCenter() {
               </>
             );
           })}
-        {/* {users.length === 0 && <p>No users found</p>} */}
+        {users.length === 0 && <p>No users found</p>}
         {users.length > displayCount && (
           <div className="flex justify-center p-4">
             <Button
