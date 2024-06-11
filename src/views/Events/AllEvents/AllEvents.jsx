@@ -23,17 +23,20 @@ function AllEvents() {
       try {
         if (userData?.isAdmin === false) {
           const userViewEvents = await getAllUserViewEvents(userData.username);
+          console.log("userViewEvents:", userViewEvents);
           setEvents(userViewEvents);
           setLoading(false);
-        } if (userData?.isAdmin === true) {
+        } else if (userData?.isAdmin === true) {
           const allEvents = await getAllEvents();
+          console.log("allEvents:", allEvents);
           setEvents(allEvents);
           setLoading(false);
         } else {
           const publicEvents = await getAllPublicEvents();
           setEvents(publicEvents);
+          console.log("userData?.isAdmin:", userData?.isAdmin);
+          console.log("publicEvents:", publicEvents);
           setLoading(false);
-          console.log("AllPublicEvents > fetchEvents > events:", publicEvents);
         }
       } catch (error) {
         console.error("Error in AllEvents > fetchEvents:", error);
