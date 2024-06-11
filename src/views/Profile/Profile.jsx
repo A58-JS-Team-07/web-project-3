@@ -32,19 +32,21 @@ function Profile() {
     setNewUserData(userData);
   }, []);
 
-  const canBeInvitedHandler = async (e) => {
-    console.log(userData.canBeInvited, e.target.checked)
-    setCanBeInvited(e.target.checked);
-    console.log(e.target.checked);
-    setAppState((prevState) => ({
-      ...prevState,
-      userData: { ...userData, canBeInvited: e.target.checked },
-    }));
+  // const canBeInvitedHandler = async (e) => {
+  //   console.log(userData.canBeInvited, e.target.checked)
+  //   setCanBeInvited(e.target.checked);
+  //   console.log(e.target.checked);
+  //   setAppState((prevState) => ({
+  //     ...prevState,
+  //     userData: { ...userData, canBeInvited: e.target.checked },
+  //   }));
 
-    await changeCanBeInvitedStatus(userData.username, e.target.checked);
-  };
+  //   await changeCanBeInvitedStatus(userData.username, e.target.checked);
+  // };
 
   const saveChanges = async () => {
+    // console.log("newUser", newUserData);
+    // console.log("userData", userData);
     if (!isValidName(newUserData.firstName)) {
       toast.error(
         "First name must be between 1 and 30 characters and contain only letters!"
@@ -267,7 +269,7 @@ function Profile() {
             </>
           )}
         </div>
-        <div className="inner__container bg-base-100 w-1/3 min-w-1/2 p-10 rounded-3xl">
+        {/* <div className="inner__container bg-base-100 w-1/3 min-w-1/2 p-10 rounded-3xl">
           <div className="can-be-invited flex flex-col gap-2 bg-base-100 rounded-md">
             <div className="private-checkbox flex gap-4 items-center">
               <span className="label-text text-lg font-semibold">
@@ -286,7 +288,7 @@ function Profile() {
               * You have the option to opt-out of event invitations.
             </span>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
