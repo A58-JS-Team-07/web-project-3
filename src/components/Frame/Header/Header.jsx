@@ -27,15 +27,15 @@ function Header() {
     if (e.key === "Enter") {
       setLoading(true);
 
-      if (userData.isAdmin === true) {
+      if (userData?.isAdmin === true) {
         const searchAdminEvents = await searchAdminViewEvents(e.target.value);
         handleSearchNavigate(e, searchAdminEvents);
-      } else if (userData.isAdmin === false) {
+      } else if (userData?.isAdmin === false) {
         const searchUserEvents = await searchUserViewEvents(e.target.value, userData.username);
         handleSearchNavigate(e, searchUserEvents);
       } else {
-        const searchPublicEvents = await searchPublicEvents(e.target.value);
-        handleSearchNavigate(e, searchPublicEvents);
+        const searchPublicEventsData = await searchPublicEvents(e.target.value);
+        handleSearchNavigate(e, searchPublicEventsData);
       }
       setLoading(false);
     }
