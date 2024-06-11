@@ -17,7 +17,7 @@ function Profile() {
   const { userData, setAppState } = useContext(AppContext);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isEditingAvatar, setIsEditingAvatar] = useState(false);
-  const [newUserData, setNewUserData] = useState({});
+  const [newUserData, setNewUserData] = useState({...userData});
   const [canBeInvited, setCanBeInvited] = useState(null);
   const [avatarUpload, setAvatarUpload] = useState(null);
 
@@ -28,9 +28,9 @@ function Profile() {
     });
   };
 
-  useEffect(() => {
-    setNewUserData(userData);
-  }, []);
+  // useEffect(() => {
+  //   setNewUserData(userData);
+  // }, []);
 
   // const canBeInvitedHandler = async (e) => {
   //   console.log(userData.canBeInvited, e.target.checked)
