@@ -72,7 +72,7 @@ function UserSnippet({
           : "user-snippet-data flex flex-row gap-4 bg-base-100 px-4 py-3 rounded-xl justify-between w-full"
       }`}
     >
-      <div className="user-snippet-info flex flex-row gap-4 bg-base-100 px-4 py-3 rounded-xl">
+      <div className="user-snippet-info flex flex-row gap-4 bg-base-100 py-2 px-0  rounded-xl items-center">
         <img
           src={user?.avatar ? user.avatar : "/anonymous-avatar.jpg"}
           alt={user?.firstName + " " + user?.lastName}

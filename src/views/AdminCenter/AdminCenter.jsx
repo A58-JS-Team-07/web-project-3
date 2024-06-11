@@ -4,7 +4,10 @@ import { AppContext } from "../../context/AppContext";
 import { changeBanStatus } from "../../services/users.service";
 import UserSnippet from "../../components/UserSnippet/UserSnippet";
 import { toast } from "react-toastify";
-import { searchUsers, getAllUsersExcludeCurrent } from "../../services/users.service";
+import {
+  searchUsers,
+  getAllUsersExcludeCurrent,
+} from "../../services/users.service";
 import Button from "../../components/Button/Button";
 
 function AdminCenter() {
@@ -21,20 +24,24 @@ function AdminCenter() {
 
   const handleChange = async (e) => {
     setSearch(e.target.value);
-    const searchUsersData = await searchUsers(userData.username, e.target.value)
-      .then((res) => {
-        return res;
-      });
+    const searchUsersData = await searchUsers(
+      userData.username,
+      e.target.value
+    ).then((res) => {
+      return res;
+    });
     setUsers(searchUsersData);
   };
 
   useEffect(() => {
     const loadAllUsersList = async () => {
-      const loadUsers = await getAllUsersExcludeCurrent(userData.username).then((res) => {
-        return res;
-      });
+      const loadUsers = await getAllUsersExcludeCurrent(userData.username).then(
+        (res) => {
+          return res;
+        }
+      );
       setUsers(loadUsers);
-    }
+    };
     loadAllUsersList();
   }, []);
 
@@ -61,22 +68,28 @@ function AdminCenter() {
         });
       });
       console.log("User banned/unbanned", user.isBanned);
-      toast.success(`User ${user.username} has been ${!user.isBanned ? "banned" : "unbanned"}!`);
+      toast.success(
+        `User ${user.username} has been ${
+          !user.isBanned ? "banned" : "unbanned"
+        }!`
+      );
     });
   }
 
   return (
-    <div className="admin-center-page">
-      <h1 className="admin-center-header text-3xl font-bold p-3">Admin Center</h1>
+    <div className="admin-center-page px-4 py-3">
+      <h1 className="admin-center-header text-3xl font-bold p-3">
+        Admin Center
+      </h1>
       <div className="search-bar p-3">
-        <label className="input input-bordered flex grow items-center gap-2 max-w-[300px]">
+        <label className="input input-bordered flex grow items-center gap-2 ">
           <input
             type="text"
             className="grow"
             placeholder="Enter username or email address"
             value={search}
             onChange={(e) => handleChange(e)}
-          // onKeyDown={(e) => handleChange(e)}
+            // onKeyDown={(e) => handleChange(e)}
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -93,7 +106,7 @@ function AdminCenter() {
         </label>
       </div>
       <h2 className="admin-center-header text-2xl font-bold p-5">Users List</h2>
-      <div className="user-list bg-base-200 w-4/5 min-w-1/2 p-4 ml-5 rounded-3xl">
+      <div className="user-list bg-base-200 p-4 ml-5 rounded-3xl w-[98%]">
         {users
           .filter((user) => user.uid !== userData.uid)
           .slice(0, displayCount)
@@ -115,7 +128,6 @@ function AdminCenter() {
         {users.length > displayCount && (
           <div className="flex justify-center p-4">
             <Button
-              style="load-more-btn btn-active btn-ghost"
               onClick={() => setDisplayCount((prevCount) => prevCount + 7)}
             >
               Load more
