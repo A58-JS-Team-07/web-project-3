@@ -207,7 +207,7 @@ function Profile() {
                   <div className="flex flex-col gap-2 ">
                     <input
                       className="input input-bordered"
-                      value={newUserData.firstName}
+                      value={newUserData?.firstName}
                       onChange={updateForm("firstName")}
                       placeholder="First Name"
                       type="text"
@@ -218,7 +218,7 @@ function Profile() {
                   <div className="flex flex-col gap-2">
                     <input
                       className="input input-bordered"
-                      value={newUserData.lastName}
+                      value={newUserData?.lastName}
                       onChange={updateForm("lastName")}
                       placeholder="Last Name"
                       type="text"
@@ -229,7 +229,7 @@ function Profile() {
                   <div className="flex flex-col gap-2">
                     <input
                       className="input input-bordered"
-                      value={newUserData.email}
+                      value={newUserData?.email}
                       onChange={updateForm("email")}
                       placeholder="Email"
                       type="text"
@@ -240,7 +240,7 @@ function Profile() {
                   <div className="flex flex-col gap-2">
                     <input
                       className="input input-bordered"
-                      value={newUserData.phoneNumber}
+                      value={newUserData?.phoneNumber}
                       onChange={updateForm("phoneNumber")}
                       placeholder="Phone number"
                       type="text"
@@ -251,7 +251,7 @@ function Profile() {
                   <div className="flex flex-col gap-2">
                     <input
                       className="input input-bordered"
-                      value={newUserData.address}
+                      value={newUserData?.address}
                       onChange={updateForm("address")}
                       placeholder="City, Country"
                       type="text"
