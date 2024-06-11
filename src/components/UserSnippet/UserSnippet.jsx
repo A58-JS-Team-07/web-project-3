@@ -72,7 +72,7 @@ function UserSnippet({
           : "user-snippet-data flex flex-row gap-4 bg-base-100 px-4 py-3 rounded-xl justify-between w-full"
       }`}
     >
-      <div className="user-snippet-info flex flex-row gap-4 bg-base-100 px-4 py-3 rounded-xl">
+      <div className="user-snippet-info flex flex-row gap-4 bg-base-100 py-2 px-0  rounded-xl items-center">
         <img
           src={user?.avatar ? user.avatar : "/anonymous-avatar.jpg"}
           alt={user?.firstName + " " + user?.lastName}
@@ -89,19 +89,15 @@ function UserSnippet({
       <div className="user-snippet-actions flex flex-row gap-4 items-center">
         <div className="contact-list-actions flex flex-row gap-4">
           {!isInList && contactsList && (
-            <div className="add-user-btn flex flex-row gap-8 justify-between mt-5">
-              <Button onClick={handleAddUserToList}>Add</Button>
-            </div>
+            <Button onClick={handleAddUserToList}>Add</Button>
           )}
           {isInList && contactsList && (
-            <div className="remove-user-btn flex flex-col gap-8 justify-between mt-5">
-              <Button
-                style="btn btn-outline btn-secondary"
-                onClick={handleRemoveUserFromList}
-              >
-                Remove
-              </Button>
-            </div>
+            <Button
+              style="btn btn-outline btn-secondary"
+              onClick={handleRemoveUserFromList}
+            >
+              Remove
+            </Button>
           )}
         </div>
         <div className="admin-actions flex flex-row gap-4">

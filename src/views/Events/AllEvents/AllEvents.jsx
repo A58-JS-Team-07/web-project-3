@@ -107,7 +107,7 @@ function AllEvents() {
 
   return (
     <>
-      <div className="events p-6">
+      <div className="events p-6 min-h-[92%]">
         <h1 className="text-3xl font-bold mb-5">All Events</h1>
         <div className="events__listing grid grid-cols-3 gap-10">
           {searchEvents?.length !== 0 && (
@@ -132,7 +132,7 @@ function AllEvents() {
             </>
           )}
         </div>
-        {visibleEvents < events.length && (
+        {visibleEvents < events.length && !searchEvents && (
           <div className="load-more flex w-full justify-center mt-8">
             <Button
               onClick={() =>

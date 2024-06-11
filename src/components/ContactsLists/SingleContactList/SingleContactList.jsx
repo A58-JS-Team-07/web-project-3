@@ -35,28 +35,29 @@ function SingleContactList({ contacts, contactsList, listClicked }) {
       return onValue(ref(db, `users`), (snapshot) => {
         const usersDataFullInfo = Object.values(snapshot.val());
         console.log("snaphot.val()", snapshot.val());
-      //   console.log('CONTACTS', contacts);
-        console.log('usersDataFullInfo', usersDataFullInfo);
-        const participants = usersDataFullInfo.filter((user) => user?.contactsListsParticipant && user.contactsListsParticipant[contactsList?.clid] === true);
-      console.log('participants', participants);
-      setUsers(participants);
-    //   console.log('usersParticipants', users);
-        });
-      // 
-    
+        //   console.log('CONTACTS', contacts);
+        console.log("usersDataFullInfo", usersDataFullInfo);
+        const participants = usersDataFullInfo.filter(
+          (user) =>
+            user?.contactsListsParticipant &&
+            user.contactsListsParticipant[contactsList?.clid] === true
+        );
+        console.log("participants", participants);
+        setUsers(participants);
+        //   console.log('usersParticipants', users);
+      });
+      //
     } catch (error) {
       console.error("Error in SingleContactList > useEffect:", error);
     }
-
   }, [listClicked, contactsList]);
 
   console.log("CONTACTS", contacts);
 
-
   return (
-    <div className="inner__container bg-base-200 w-1/3 min-w-1/2 p-10 rounded-3xl">
+    <div className="inner__container bg-base-200 w-2/3 p-10 rounded-3xl ">
       {users.length > 0 ? (
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-6">
           {users.map((user) => (
             <UserSnippet
               key={user.uid}

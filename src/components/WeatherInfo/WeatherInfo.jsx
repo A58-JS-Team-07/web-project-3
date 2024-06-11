@@ -1,7 +1,6 @@
-
 function WeatherInfo({ weatherData }) {
   return (
-    <div>
+    <div className="weather-snippet flex flex-row items-center px-6">
       <h1>{weatherData?.location?.name}</h1>
       <img
         src={weatherData?.current?.condition?.icon}

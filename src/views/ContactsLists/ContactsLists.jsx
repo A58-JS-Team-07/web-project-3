@@ -18,10 +18,11 @@ function ContactsLists() {
 
   useEffect(() => {
     if (userData && userData.contactsListsOwner) {
-
       const fetchContactsLists = async () => {
         try {
-          const contactsListsValues = await getAllContactsListsByUser(userData.username);
+          const contactsListsValues = await getAllContactsListsByUser(
+            userData.username
+          );
           // setListClicked(!listClicked);
           // setContactsList(contactsList);
           console.log("UserData", userData.username);
@@ -33,14 +34,12 @@ function ContactsLists() {
       };
       fetchContactsLists();
     }
-
   }, [userData]);
 
-
   const handleListсClick = (clid) => {
-    setClickedLists(prevState => ({
+    setClickedLists((prevState) => ({
       ...prevState,
-      [clid]: !prevState[clid]
+      [clid]: !prevState[clid],
     }));
   };
 
@@ -51,17 +50,16 @@ function ContactsLists() {
         if (!snapshot.exists()) return setContactsLists([]);
         const contactsListsValues = snapshot.val();
         // console.log("Object.keys(contactsListsValues)", Object.values(contactsListsValues));
-        const contactsLists = Object.values(contactsListsValues)
-          .filter((contactsList) => contactsList.owner === userData.username)
+        const contactsLists = Object.values(contactsListsValues).filter(
+          (contactsList) => contactsList.owner === userData.username
+        );
         // console.log("contactsLists", contactsLists);
         setContactsLists(contactsLists);
         console.log("CL", contactsLists);
       });
-
     } catch (error) {
       console.error("Error in ContactsLists > useEffect:", error);
     }
-
   }, [userData]);
 
   useEffect(() => {
@@ -79,7 +77,6 @@ function ContactsLists() {
     fetchContacts();
   }, [listClicked]);
 
-
   const handleListClick = (contactsList) => {
     // console.log("List Clicked1", listClicked);
     setListClicked(!listClicked);
@@ -90,12 +87,14 @@ function ContactsLists() {
 
   // console.log("ContactsList", contactsList);
   return (
-    <div>
-      <h1 className="contacts-lists-page text-3xl font-bold mb-5 p-6">Contacts Lists</h1>
-      <div className="flex flex-row w-full h-full gap-10 p-6">
+    <div className="min-h-[92%]">
+      <h1 className="contacts-lists-page text-3xl font-bold p-6">
+        Contacts Lists
+      </h1>
+      <div className="flex flex-row w-full h-full gap-10 px-6 pb-6">
         <div className="inner-container bg-base-200 w-1/3 min-w-1/2 p-10 rounded-3xl">
           {contactsLists?.length > 0 ? (
-            <div className="flex flex-col gap-10">
+            <div className="flex flex-col gap-6">
               {contactsLists.map((contactsList) => (
                 <ContactsListSnippet
                   key={contactsList?.clid}
@@ -115,7 +114,11 @@ function ContactsLists() {
           </div>
         </div>
         {listClicked && (
-          <SingleContactList contacts={contacts} contactsList={contactsList} listClicked={listClicked} />
+          <SingleContactList
+            contacts={contacts}
+            contactsList={contactsList}
+            listClicked={listClicked}
+          />
         )}
       </div>
     </div>

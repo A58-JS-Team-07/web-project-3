@@ -15,7 +15,7 @@ function ContactsListSnippet({ contactsList, onListClick }) {
       console.log("CONTACT LIST", contactsList);
     } catch (error) {
       console.error("Error in ContactsLists > handleDeleteList:", error);
-    };
+    }
   };
 
   const handleListsClick = () => {
@@ -24,44 +24,47 @@ function ContactsListSnippet({ contactsList, onListClick }) {
 
   useEffect(() => {
     try {
-      return onValue(ref(db, `contactsLists/${contactsList.clid}`), (snapshot) => {
-        const contactsListValues = snapshot.val();
-        setContactsListValue(contactsListValues);
-        console.log('ContactsListSnippet', contactsList);
-      });
+      return onValue(
+        ref(db, `contactsLists/${contactsList.clid}`),
+        (snapshot) => {
+          const contactsListValues = snapshot.val();
+          setContactsListValue(contactsListValues);
+          console.log("ContactsListSnippet", contactsList);
+        }
+      );
     } catch (error) {
       console.error("Error in ContactsLists > useEffect:", error);
     }
   }, []);
 
-  console.log('ContactsListSnippet', contactsList);
+  console.log("ContactsListSnippet", contactsList);
 
   return (
     <>
-      <div className="contact-list-info flex flex-row gap-4 bg-base-100 px-4 py-3 rounded-xl">
-        <div className="contact-list-info flex flex-col">
-          <span className="text-lg font-semibold mb-[-3px]" >
+      <div className="contact-list-info flex flex-row gap- bg-base-100 px-4 py-3 rounded-xl w-full">
+        <div className="contact-list-info flex flex-row items-center justify-between w-full">
+          <div className="text-lg flex flex-row items-center font-semibold mb-[-3px]">
             <IoList className="fill-secondary text-secondary w-5 h-5 inline-block mr-2" />
             {contactsListValue?.listName}
-          </span>
-        </div>
-      </div>
-      <div className="contact-list-delete-show flex justify-end gap-4">
-        <div className="form-update-row flex gap-8 justify-between">
-          <span
-            onClick={handleListsClick}
-            className="text-black-500 underline hover:no-underline cursor-pointer"
-          >
-            Show List
-          </span>
-        </div>
-        <div className="form-update-row flex gap-8 justify-between">
-          <span
-            onClick={handleDeleteList}
-            className="text-red-500 underline hover:no-underline cursor-pointer"
-          >
-            Delete
-          </span>
+          </div>
+          <div className="contact-list-delete-show flex flex-row gap-4 mt-[2px]">
+            <div className="form-update-row flex gap-8 justify-between">
+              <span
+                onClick={handleListsClick}
+                className="text-black-500 underline hover:no-underline cursor-pointer"
+              >
+                Show List
+              </span>
+            </div>
+            <div className="form-update-row flex gap-8 justify-between">
+              <span
+                onClick={handleDeleteList}
+                className="text-red-500 underline hover:no-underline cursor-pointer"
+              >
+                Delete
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </>

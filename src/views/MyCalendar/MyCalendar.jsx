@@ -122,7 +122,7 @@ function MyCalendar() {
   }
 
   return (
-    <div className="event-calendar p-6">
+    <div className="event-calendar p-6 min-h-[92%]">
       <div className="calendar-nav flex flex-row items-center justify-between gap-5 mb-5">
         <div className="calendar-nav-left flex flex-row items-center gap-5">
           <h1 className="text-3xl font-bold leading-none">My Calendar</h1>
