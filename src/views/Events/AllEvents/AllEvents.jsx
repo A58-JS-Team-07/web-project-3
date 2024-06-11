@@ -1,14 +1,13 @@
 import { useEffect, useState, useContext } from "react";
-import { 
-  getAllPublicEvents, 
-  getAllUserViewEvents, 
-  getAllEvents 
+import {
+  getAllPublicEvents,
+  getAllUserViewEvents,
+  getAllEvents,
 } from "../../../services/events.service";
 import EventCard from "../../../components/Events/EventCard/EventCard";
 import { LoaderContext } from "../../../context/LoaderContext";
 import { AppContext } from "../../../context/AppContext";
 import { useLocation } from "react-router-dom";
-
 
 function AllEvents() {
   const { userData } = useContext(AppContext);
@@ -23,19 +22,69 @@ function AllEvents() {
       try {
         if (userData?.isAdmin === false) {
           const userViewEvents = await getAllUserViewEvents(userData.username);
-          console.log("userViewEvents:", userViewEvents);
-          setEvents(userViewEvents);
+          const sortedEvents = userViewEvents.sort((a, b) => {
+            const dateA = new Date(
+              a.startDateTime.year,
+              a.startDateTime.month - 1,
+              a.startDateTime.day,
+              a.startDateTime.hours,
+              a.startDateTime.minutes
+            );
+            const dateB = new Date(
+              b.startDateTime.year,
+              b.startDateTime.month - 1,
+              b.startDateTime.day,
+              b.startDateTime.hours,
+              b.startDateTime.minutes
+            );
+
+            return dateA - dateB;
+          });
+          setEvents(sortedEvents);
           setLoading(false);
         } else if (userData?.isAdmin === true) {
           const allEvents = await getAllEvents();
-          console.log("allEvents:", allEvents);
-          setEvents(allEvents);
+          const sortedEvents = allEvents.sort((a, b) => {
+            const dateA = new Date(
+              a.startDateTime.year,
+              a.startDateTime.month - 1,
+              a.startDateTime.day,
+              a.startDateTime.hours,
+              a.startDateTime.minutes
+            );
+            const dateB = new Date(
+              b.startDateTime.year,
+              b.startDateTime.month - 1,
+              b.startDateTime.day,
+              b.startDateTime.hours,
+              b.startDateTime.minutes
+            );
+
+            return dateA - dateB;
+          });
+          setEvents(sortedEvents);
           setLoading(false);
         } else {
           const publicEvents = await getAllPublicEvents();
-          setEvents(publicEvents);
-          console.log("userData?.isAdmin:", userData?.isAdmin);
-          console.log("publicEvents:", publicEvents);
+          const sortedEvents = publicEvents.sort((a, b) => {
+            const dateA = new Date(
+              a.startDateTime.year,
+              a.startDateTime.month - 1,
+              a.startDateTime.day,
+              a.startDateTime.hours,
+              a.startDateTime.minutes
+            );
+            const dateB = new Date(
+              b.startDateTime.year,
+              b.startDateTime.month - 1,
+              b.startDateTime.day,
+              b.startDateTime.hours,
+              b.startDateTime.minutes
+            );
+
+            return dateA - dateB;
+          });
+          setEvents(sortedEvents);
           setLoading(false);
         }
       } catch (error) {
@@ -65,21 +114,20 @@ function AllEvents() {
                 <EventCard key={event.eid} event={event} />
               ))}
             </>
-
           )}
-          {searchEvents?.length === 0 && (
-            console.log("searchEvents:", searchEvents),
-            <>
-              <p>No Events found</p>
-            </>
-          )}
+          {searchEvents?.length === 0 &&
+            (console.log("searchEvents:", searchEvents),
+            (
+              <>
+                <p>No Events found</p>
+              </>
+            ))}
           {!location.state?.searchEvents && (
             <>
               {events.map((event) => (
                 <EventCard key={event.eid} event={event} />
               ))}
             </>
-
           )}
         </div>
       </div>
