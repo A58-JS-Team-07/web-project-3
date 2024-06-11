@@ -89,19 +89,15 @@ function UserSnippet({
       <div className="user-snippet-actions flex flex-row gap-4 items-center">
         <div className="contact-list-actions flex flex-row gap-4">
           {!isInList && contactsList && (
-            <div className="add-user-btn flex flex-row gap-8 justify-between mt-5">
-              <Button onClick={handleAddUserToList}>Add</Button>
-            </div>
+            <Button onClick={handleAddUserToList}>Add</Button>
           )}
           {isInList && contactsList && (
-            <div className="remove-user-btn flex flex-col gap-8 justify-between mt-5">
-              <Button
-                style="btn btn-outline btn-secondary"
-                onClick={handleRemoveUserFromList}
-              >
-                Remove
-              </Button>
-            </div>
+            <Button
+              style="btn btn-outline btn-secondary"
+              onClick={handleRemoveUserFromList}
+            >
+              Remove
+            </Button>
           )}
         </div>
         <div className="admin-actions flex flex-row gap-4">

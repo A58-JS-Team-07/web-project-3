@@ -20,3 +20,7 @@
   @apply bg-secondary;
   @apply bg-opacity-70;
 }
+
+.btn-outline.btn-secondary:hover {
+  color: #fff;
+}
