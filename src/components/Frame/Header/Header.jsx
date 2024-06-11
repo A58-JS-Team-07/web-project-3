@@ -4,17 +4,22 @@ import Notifications from "../../Notifications/Notifications";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/AppContext";
 import { logoutUser } from "../../../services/auth.service";
-import { 
+import {
   searchPublicEvents,
   searchUserViewEvents,
   searchAdminViewEvents
- } from "../../../services/events.service";
+} from "../../../services/events.service";
 import { LoaderContext } from "../../../context/LoaderContext";
+import { WEATHER_API_KEY } from "../../../common/constants";
+import WeatherInfo from "../../WeatherInfo/WeatherInfo";
 
 function Header() {
   const { user, userData, setAppState } = useContext(AppContext);
   // const [searchTerm, setSearchTerm] = useState("");
   const { setLoading } = useContext(LoaderContext);
+  const [weather, setWeather] = useState(null);
+  const [address, setAddress] = useState('Sofia');
+  const [inputCity, setInputCity] = useState('');
 
   const navigate = useNavigate();
   const logout = async () => {
@@ -62,6 +67,20 @@ function Header() {
   //   setSearchTerm("");
   // }, [searchTerm]);
 
+  useEffect(() => {
+    console.log('userData', userData?.address);
+    if (!userData || !userData?.address) {
+      return;
+    }
+    setAddress(userData?.address);
+    console.log('address', address);
+    fetch(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${address}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setWeather(data); // Set the weather state to the current weather data (const weather = data.current)
+      });
+  }, [WEATHER_API_KEY, userData?.address]);
+
   return (
     <div className="navbar bg-base-200 p-2 px-6 min-h-[80px]">
       <div className="flex-1 gap-6 h-16">
@@ -86,6 +105,9 @@ function Header() {
           </svg>
         </label>
       </div>
+      {userData?.address && (
+        <WeatherInfo weatherData={weather} />
+      )}
       <div className="flex-none gap-2">
         {!userData ? (
           <div className="flex-none">
