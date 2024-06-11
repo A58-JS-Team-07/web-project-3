@@ -18,7 +18,7 @@ function Header() {
   // const [searchTerm, setSearchTerm] = useState("");
   const { setLoading } = useContext(LoaderContext);
   const [weather, setWeather] = useState(null);
-  const [address, setAddress] = useState('Sofia');
+  // const [address, setAddress] = useState('');
   const [inputCity, setInputCity] = useState('');
 
   const navigate = useNavigate();
@@ -69,17 +69,20 @@ function Header() {
 
   useEffect(() => {
     console.log('userData', userData?.address);
-    if (!userData || !userData?.address) {
-      return;
-    }
-    setAddress(userData?.address);
+    if (userData?.address) {
+      const address = userData?.address;
+    
     console.log('address', address);
     fetch(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${address}`)
       .then((response) => response.json())
       .then((data) => {
         setWeather(data); // Set the weather state to the current weather data (const weather = data.current)
+      }).catch((error) => {
+        console.error('Error trying to set Weather API:', error);
       });
-  }, [WEATHER_API_KEY, userData?.address]);
+      ;
+    }
+  }, [WEATHER_API_KEY, userData]);
 
   return (
     <div className="navbar bg-base-200 p-2 px-6 min-h-[80px]">
@@ -105,7 +108,7 @@ function Header() {
           </svg>
         </label>
       </div>
-      {userData?.address && (
+      {weather && (
         <WeatherInfo weatherData={weather} />
       )}
       <div className="flex-none gap-2">
