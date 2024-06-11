@@ -27,9 +27,11 @@ function App() {
   const [user] = useAuthState(auth);
   const [appState, setAppState] = useState({ user: null, userData: null });
 
-  if (appState.user !== user) {
-    setAppState({ ...appState, user });
-  }
+  useEffect(() => {
+    if (appState.user !== user) {
+      setAppState((prevState) => ({ ...prevState, user }));
+    }
+  }, [user, appState.user]);
 
   useEffect(() => {
     if (!appState.user) {
