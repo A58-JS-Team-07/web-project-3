@@ -181,7 +181,7 @@ function SingleEvent() {
               </div>
             </AdminComponentProtect>
           )}
-          {event?.creator === userData?.username && (
+          {event?.creator === userData?.username && !userData?.isAdmin && (
             <div className="event-edit-delete flex justify-end gap-4">
               <span
                 onClick={() => setEditEventModal(!editEventModal)}
