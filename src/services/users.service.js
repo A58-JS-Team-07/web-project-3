@@ -84,14 +84,16 @@ export const getAllUsersArray = async () => {
   }
 };
 
-export const updateUser = async (username, updatedData) => {
+export const updateUser = async (username, newUserData) => {
   try {
+    const previousData = await getUserByUsernameSnapshot(username);
+    const updatedData = { ...previousData, ...newUserData };
     await set(ref(db, `users/${username}`), {
       ...updatedData,
       updatedOn: Date.now(),
     });
   } catch (error) {
-    console.error("Error updating user:" + error);
+    console.error("Error updating user info:" + error);
   }
 };
 
@@ -163,7 +165,6 @@ export const changeBanStatus = async (username, status) => {
   }
 };
 
-//Check if there is another way to do it
 export const updateUserAvatar = async (username, avatarURL) => {
   try {
     const userRef = ref(db, `users/${username}`);

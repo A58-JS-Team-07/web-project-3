@@ -17,7 +17,7 @@ function Profile() {
   const { userData, setAppState } = useContext(AppContext);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isEditingAvatar, setIsEditingAvatar] = useState(false);
-  const [newUserData, setNewUserData] = useState({ ...userData });
+  const [newUserData, setNewUserData] = useState({});
   const [canBeInvited, setCanBeInvited] = useState(null);
   const [avatarUpload, setAvatarUpload] = useState(null);
 
@@ -80,7 +80,7 @@ function Profile() {
 
     setIsEditingProfile(false);
     await updateUser(userData.username, newUserData);
-    setAppState((prevState) => ({ ...prevState, userData: newUserData }));
+    // setAppState((prevState) => ({ ...prevState, userData: newUserData }));
   };
 
   const cancelChanges = () => {
@@ -89,6 +89,10 @@ function Profile() {
   };
 
   const handleAvatarUpload = async () => {
+    if (!avatarUpload) {
+      toast.error("Please select an image to upload!");
+      return;
+    }
     const avatarId = await uploadAvatar(avatarUpload, userData);
 
     setAppState((prevState) => ({
