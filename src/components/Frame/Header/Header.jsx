@@ -7,7 +7,7 @@ import { logoutUser } from "../../../services/auth.service";
 import {
   searchPublicEvents,
   searchUserViewEvents,
-  searchAdminViewEvents
+  searchAdminViewEvents,
 } from "../../../services/events.service";
 import { LoaderContext } from "../../../context/LoaderContext";
 import { WEATHER_API_KEY } from "../../../common/constants";
@@ -18,8 +18,8 @@ function Header() {
   // const [searchTerm, setSearchTerm] = useState("");
   const { setLoading } = useContext(LoaderContext);
   const [weather, setWeather] = useState(null);
-  const [address, setAddress] = useState('Sofia');
-  const [inputCity, setInputCity] = useState('');
+  const [address, setAddress] = useState("Sofia");
+  const [inputCity, setInputCity] = useState("");
 
   const navigate = useNavigate();
   const logout = async () => {
@@ -36,7 +36,10 @@ function Header() {
         const searchAdminEvents = await searchAdminViewEvents(e.target.value);
         handleSearchNavigate(e, searchAdminEvents);
       } else if (userData?.isAdmin === false) {
-        const searchUserEvents = await searchUserViewEvents(e.target.value, userData.username);
+        const searchUserEvents = await searchUserViewEvents(
+          e.target.value,
+          userData.username
+        );
         handleSearchNavigate(e, searchUserEvents);
       } else {
         const searchPublicEventsData = await searchPublicEvents(e.target.value);
@@ -68,13 +71,15 @@ function Header() {
   // }, [searchTerm]);
 
   useEffect(() => {
-    console.log('userData', userData?.address);
+    console.log("userData", userData?.address);
     if (!userData || !userData?.address) {
       return;
     }
     setAddress(userData?.address);
-    console.log('address', address);
-    fetch(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${address}`)
+    console.log("address", address);
+    fetch(
+      `http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${address}`
+    )
       .then((response) => response.json())
       .then((data) => {
         setWeather(data); // Set the weather state to the current weather data (const weather = data.current)
@@ -105,10 +110,11 @@ function Header() {
           </svg>
         </label>
       </div>
-      {userData?.address && (
-        <WeatherInfo weatherData={weather} />
-      )}
+
       <div className="flex-none gap-2">
+        <div className="weather flex flex-row">
+          {userData?.address && <WeatherInfo weatherData={weather} />}
+        </div>
         {!userData ? (
           <div className="flex-none">
             <ul className="menu menu-horizontal px-1">
@@ -133,13 +139,11 @@ function Header() {
                   {!userData?.avatar ? (
                     <img
                       alt="Tailwind CSS Navbar component"
-
                       src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXu0uM0MmYsVPFaV2PqrkyuFqvK5k3RPt-g1NYd-vgpUGBSoyb4UXNG9MbUZn4hcPFoLk&usqp=CAU"
                     />
                   ) : (
                     <img
                       alt="Tailwind CSS Navbar component"
-
                       src={userData.avatar}
                     />
                   )}
