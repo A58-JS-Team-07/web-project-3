@@ -1,18 +1,14 @@
-import {
-  get,
-  set,
-  update,
-  ref,
-  push,
-  remove,
-  query,
-  orderByChild,
-  equalTo,
-} from "firebase/database";
+import { get, set, update, ref, push, remove } from "firebase/database";
 import { db } from "../config/firebase-config.js";
 import { createEventToUser, deleteEventFromUser } from "./users.service";
 import { deleteEventImage } from "./storage.service";
 import { deleteInvite } from "./invites.service";
+
+/**
+ * Get all events from the database.
+ *
+ * @returns snapshot array of all events
+ */
 
 export const getAllEvents = async () => {
   try {
@@ -34,6 +30,12 @@ export const getAllEvents = async () => {
   }
 };
 
+/**
+ * Get all public events from the database.
+ *
+ * @returns snapshot array of all public events
+ */
+
 export const getAllPublicEvents = async () => {
   try {
     const eventsRef = ref(db, "events");
@@ -42,8 +44,8 @@ export const getAllPublicEvents = async () => {
     if (snapshot.exists()) {
       const val = snapshot.val();
       const events = Object.keys(val)
-        .map(key => ({ id: key, ...val[key] }))
-        .filter(event => event.isPrivate === false);
+        .map((key) => ({ id: key, ...val[key] }))
+        .filter((event) => event.isPrivate === false);
       return events;
     } else {
       return [];
@@ -54,6 +56,13 @@ export const getAllPublicEvents = async () => {
   }
 };
 
+/**
+ * Search public events from the database and return the filtered public events. Use for non-logged in users.
+ *
+ * @param {string} searchTerm - The search term to filter the events.
+ * @returns  snapshot array of all public events that match the search term.
+ */
+
 export const searchPublicEvents = async (searchTerm) => {
   try {
     const eventsRef = ref(db, "events");
@@ -62,9 +71,12 @@ export const searchPublicEvents = async (searchTerm) => {
     if (snapshot.exists()) {
       const val = snapshot.val();
       const events = Object.keys(val)
-        .map(key => ({ id: key, ...val[key] }))
-        .filter(event => event.isPrivate === false &&
-          event.title.toLowerCase().includes(searchTerm));
+        .map((key) => ({ id: key, ...val[key] }))
+        .filter(
+          (event) =>
+            event.isPrivate === false &&
+            event.title.toLowerCase().includes(searchTerm)
+        );
       return events;
     } else {
       return [];
@@ -75,6 +87,13 @@ export const searchPublicEvents = async (searchTerm) => {
   }
 };
 
+/**
+ * Search events from the database and return the filtered public and private events.
+ *
+ * @param {string} searchTerm - The search term to filter the events.
+ * @returns snapshot array of all public and private events that match the search term.
+ */
+
 export const searchAdminViewEvents = async (searchTerm) => {
   try {
     const eventsRef = ref(db, "events");
@@ -83,8 +102,8 @@ export const searchAdminViewEvents = async (searchTerm) => {
     if (snapshot.exists()) {
       const val = snapshot.val();
       const events = Object.keys(val)
-        .map(key => ({ id: key, ...val[key] }))
-        .filter(event => event.title.toLowerCase().includes(searchTerm));
+        .map((key) => ({ id: key, ...val[key] }))
+        .filter((event) => event.title.toLowerCase().includes(searchTerm));
       return events;
     } else {
       return [];
@@ -95,23 +114,29 @@ export const searchAdminViewEvents = async (searchTerm) => {
   }
 };
 
+/**
+ * Search events from the database and return the filtered events that particular user can see.
+ *
+ * @param {string} searchTerm - The search term to filter the events.
+ * @param {string} username - The username to filter the events.
+ * @returns snapshot array of all events that match the search term.
+ */
+
 export const searchUserViewEvents = async (searchTerm, username) => {
   try {
     const eventsRef = ref(db, "events");
     const snapshot = await get(eventsRef);
-    // console.log(username);
-
-
     if (snapshot.exists()) {
       const val = snapshot.val();
       const events = Object.keys(val)
-        .map(key => ({ id: key, ...val[key] }))
-        .filter(event => (
-          (event.creator === username
-            || event?.participants[username] === true
-            || event.isPrivate === false)
-          && event.title.toLowerCase().includes(searchTerm)));
-      console.log("events:", events);
+        .map((key) => ({ id: key, ...val[key] }))
+        .filter(
+          (event) =>
+            (event.creator === username ||
+              event?.participants[username] === true ||
+              event.isPrivate === false) &&
+            event.title.toLowerCase().includes(searchTerm)
+        );
       return events;
     } else {
       return [];
@@ -122,19 +147,28 @@ export const searchUserViewEvents = async (searchTerm, username) => {
   }
 };
 
+/**
+ * Get all events that a particular user can see.
+ *
+ * @param {string} username - The username to filter the events.
+ * @returns snapshot array of all events that the user can see.
+ */
+
 export const getAllUserViewEvents = async (username) => {
   try {
     const eventsRef = ref(db, "events");
     const snapshot = await get(eventsRef);
-    console.log(username);
 
     if (snapshot.exists()) {
       const val = snapshot.val();
       const events = Object.keys(val)
-        .map(key => ({ id: key, ...val[key] }))
-        .filter(event => event.creator === username 
-          || event?.participants[username] === true 
-          || event.isPrivate === false);
+        .map((key) => ({ id: key, ...val[key] }))
+        .filter(
+          (event) =>
+            event.creator === username ||
+            event?.participants[username] === true ||
+            event.isPrivate === false
+        );
       return events;
     } else {
       return [];
@@ -144,6 +178,13 @@ export const getAllUserViewEvents = async (username) => {
     throw error;
   }
 };
+
+/**
+ * Get event snapshot with the given event ID.
+ *
+ * @param {string} eventId - The event ID to get the event.
+ * @returns snapshot of the event with the given event ID.
+ */
 
 export const getEventById = async (eventId) => {
   try {
@@ -162,6 +203,13 @@ export const getEventById = async (eventId) => {
     throw error;
   }
 };
+
+/**
+ *  Create a new event in the database.
+ *
+ * @param {object} eventData - The event data to create the event.
+ * @returns event ID of the created event.
+ */
 
 export const createEvent = async (eventData) => {
   try {
@@ -182,6 +230,13 @@ export const createEvent = async (eventData) => {
   }
 };
 
+/**
+ * Update an existing event in the database.
+ *
+ * @param {string} eventId - The event ID to update the event.
+ * @param {object} eventData - The event data to update the event.
+ */
+
 export const updateEvent = async (eventId, eventData) => {
   try {
     const eventRef = ref(db, `events/${eventId}`);
@@ -192,18 +247,18 @@ export const updateEvent = async (eventId, eventData) => {
   }
 };
 
-//TODO: when delete as admin get event by ID first and pass it to deleteEvent
+/**
+ * Delete an existing event from the database.
+ *
+ * @param {object} eventData - The event data to delete the event.
+ */
+
 export const deleteEvent = async (eventData) => {
   try {
     const participants = Object.keys(eventData.participants);
-    console.log("participants: ", participants);
-    console.log(typeof participants, participants.length);
-
     participants.forEach(async (participant) => {
-      console.log("participant: ", participant);
       deleteEventFromUser(participant, eventData.eid);
     });
-
     await set(ref(db, `events/${eventData.eid}`), null);
     await deleteEventImage(eventData.eid);
   } catch (error) {
@@ -211,6 +266,13 @@ export const deleteEvent = async (eventData) => {
     throw error;
   }
 };
+
+/**
+ * User join an existing event in the database.
+ *
+ * @param {string} username - The username to join the event.
+ * @param {string} eventId - The event ID to join the event by user.
+ */
 
 export const joinEvent = async (username, eventId) => {
   try {
@@ -226,6 +288,14 @@ export const joinEvent = async (username, eventId) => {
   }
 };
 
+/**
+ * User leave an existing event in the database.
+ *
+ * @param {string} username - The username to leave the event.
+ * @param {string} eventId - The event ID to leave the event by user.
+ * @param {object} invitedUsers - The invited users to the event to automatically remove all invites for the particular event.
+ */
+
 export const leaveEvent = async (username, eventId, invitedUsers) => {
   try {
     await remove(ref(db, `users/${username}/participatingEvents/${eventId}`));
@@ -233,7 +303,6 @@ export const leaveEvent = async (username, eventId, invitedUsers) => {
 
     if (invitedUsers) {
       Object.keys(invitedUsers[eventId]).forEach(async (invitedUser) => {
-        console.log("deleteInvite: ", invitedUser);
         await deleteInvite(eventId, username, invitedUser);
       });
     }
