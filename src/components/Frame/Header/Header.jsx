@@ -113,7 +113,7 @@ function Header() {
       </div>
       <div className="flex-none gap-2">
         <div className="weather flex flex-row">
-          {weather && <WeatherInfo weatherData={weather} />}
+          {userData?.address && <WeatherInfo weatherData={weather} />}
         </div>
         {!userData ? (
           <div className="flex-none">
