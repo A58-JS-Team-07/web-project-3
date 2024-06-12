@@ -43,7 +43,7 @@ export default {
         customThemeDark: {
           primary: "#002448",
           secondary: "#55d3d2",
-          accent: "#37cdbe",
+          accent: "#002448",
           neutral: "#3d4451",
           white: "#fff",
           "base-100": "#212121",
