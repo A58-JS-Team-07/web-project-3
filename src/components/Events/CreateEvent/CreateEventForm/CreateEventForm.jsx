@@ -482,7 +482,7 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
                         />
                       ) : (
                         <img
-                          src={"../../../../../public/dummy-img.png"}
+                          src={"/dummy-img.png"}
                           className="aspect-40/21 object-cover mt-3 rounded-lg"
                         />
                       )}
