@@ -19,7 +19,7 @@ function Home() {
           <div className="hero-content text-center text-neutral-content">
             <div className="max-w-2xl">
               <h1 className="mb-5 text-5xl font-bold text-white">
-                N1 Sports Event Calendar
+                №1 Sports Event Calendar
               </h1>
               <p className="mb-5 text-xl text-white">
                 Stay updated with the latest sports events. Effortlessly add
@@ -94,7 +94,7 @@ function Home() {
       <div className="info__section flex flex-row-reverse gap-14 px-14">
         <div className="flex w-3/5">
           <img
-            src="/public/dummy-img.png"
+            src="/public/Showcase/create-event.jpg"
             className="max-3xl rounded-lg shadow-2xl"
           />
         </div>
@@ -113,7 +113,7 @@ function Home() {
       <div className="info__section flex flex-row gap-14 py-20 px-14 ">
         <div className="flex justify-end w-3/5">
           <img
-            src="/public/dummy-img.png"
+            src="/public/Showcase/profile.jpg"
             className="max-3xl rounded-lg shadow-2xl"
           />
         </div>
