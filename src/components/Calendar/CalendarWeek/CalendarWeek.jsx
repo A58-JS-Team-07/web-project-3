@@ -4,6 +4,14 @@ import propTypes from "prop-types";
 import { addDays, getDate, isSameDay, startOfWeek } from "date-fns";
 import CalendarDayWeekSnippet from "../CalendarDayWeekSnippet/CalendarDayWeekSnippet";
 
+/**
+ * CalendarWeek component which provides a week view of the calendar
+ *
+ * @param {Object} date - The current date. Based on this date, the week is displayed.
+ * @param {Array} events - The events to display in the week.
+ * @returns {JSX.Element} - Rendered CalendarWeek component.
+ */
+
 function CalendarWeek({ date, events = [] }) {
   const [week, setWeek] = useState([]);
 
@@ -29,8 +37,6 @@ function CalendarWeek({ date, events = [] }) {
       throw error;
     }
   }, [date]);
-
-  console.log("Week: ", week);
 
   return (
     <div className="calendar-week calendar-selector flex flex-row">

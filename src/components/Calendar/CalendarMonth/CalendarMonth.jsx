@@ -10,7 +10,13 @@ import {
 import MonthDaySnippet from "./MonthDaySnippet/MonthDaySnippet";
 import propTypes from "prop-types";
 
-// const customDate = new Date("2024 4 5");
+/**
+ * CalendarMonth component which provides a month view of the calendar
+ *
+ * @param {Object} date - The current date. Based on this date, the month is displayed.
+ * @param {Array} events - The events to display in the month
+ * @returns {JSX.Element} - Rendered CalendarMonth component
+ */
 
 function CalendarMonth({ date, events = [] }) {
   const firstDayOfMonth = startOfMonth(date);

@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
 import { HOURS, CURRENT_DATE } from "../../../common/constants";
 import propTypes from "prop-types";
-import { addDays, getDate, getDay, isSameDay } from "date-fns";
+import { getDate, getDay, isSameDay } from "date-fns";
 import CalendarDayWeekSnippet from "../CalendarDayWeekSnippet/CalendarDayWeekSnippet";
 
+/**
+ * CalendarDay component which provides a day view of the calendar
+ *
+ * @param {Date} date - The date to display
+ * @param {Array} events - The events to display
+ * @returns {JSX.Element} - Rendered CalendarDay component
+ */
 function CalendarDay({ date, events = [] }) {
   const [week, setWeek] = useState([]);
 
@@ -58,8 +65,6 @@ function CalendarDay({ date, events = [] }) {
       throw error;
     }
   }, [date]);
-
-  console.log("Day: ", week);
 
   return (
     <div className="calendar-week calendar-selector flex flex-row">

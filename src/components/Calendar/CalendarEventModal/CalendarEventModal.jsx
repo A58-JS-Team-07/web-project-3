@@ -2,6 +2,15 @@ import propTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
 
+/**
+ * CalendarEventModal component which provides a pop-up with additional information for the clicked event.
+ *
+ * @param {Object} event - The event to display.
+ * @param {Function} setDisplayEventModalId - Function to set the displayEventModalId state.
+ * @param {Object} clickPosition - The position of the click event.
+ * @returns {JSX.Element} - Rendered CalendarEventModal component
+ */
+
 function CalendarEventModal({
   event,
   setDisplayEventModalId = () => {},

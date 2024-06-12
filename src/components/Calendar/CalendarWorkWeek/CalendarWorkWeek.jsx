@@ -4,6 +4,13 @@ import propTypes from "prop-types";
 import { addDays, getDate, isSameDay, startOfWeek } from "date-fns";
 import CalendarDayWeekSnippet from "../CalendarDayWeekSnippet/CalendarDayWeekSnippet";
 
+/**
+ * CalendarWorkWeek component which provides a work week view of the calendar.
+ *
+ * @param {Object} date - The current date. Based on this date, the work week is displayed.
+ * @param {Array} events - The events to display in the work week.
+ * @returns {JSX.Element} - Rendered CalendarWorkWeek component.
+ */
 function CalendarWorkWeek({ date, events = [] }) {
   const [week, setWeek] = useState([]);
 

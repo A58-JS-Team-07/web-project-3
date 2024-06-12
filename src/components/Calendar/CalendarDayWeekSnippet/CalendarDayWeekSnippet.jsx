@@ -2,15 +2,30 @@ import { PropTypes } from "prop-types";
 import { useEffect, useState } from "react";
 import CalendarEventModal from "../CalendarEventModal/CalendarEventModal";
 
+/**
+ * CalendarDayWeekSnippet component which provides a snippet of an event in the week or day view of the calendar
+ * @param {Object} event - The event to display.
+ * @param {String} design - The design of the snippet - "main" for main color, "light" for light color.
+ * @returns {JSX.Element} - Rendered CalendarDayWeekSnippet component
+ */
+
 function CalendarDayWeekSnippet({ event, design = "main" }) {
   const [displayEventModalId, setDisplayEventModalId] = useState(null);
   const [clickPosition, setClickPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     function handleClickOutside(event) {
-      const modal = document.getElementById("event-modal-id");
-      if (modal && !modal.contains(event.target)) {
-        setDisplayEventModalId(null);
+      try {
+        const modal = document.getElementById("event-modal-id");
+        if (modal && !modal.contains(event.target)) {
+          setDisplayEventModalId(null);
+        }
+      } catch (error) {
+        console.error(
+          "Error in CalendarDayWeekSnippet.jsx > useEffect > handleClickOUtside:",
+          error
+        );
+        throw error;
       }
     }
 
@@ -21,21 +36,29 @@ function CalendarDayWeekSnippet({ event, design = "main" }) {
   }, []);
 
   function handleEventClick(e, eventId) {
-    setDisplayEventModalId(eventId);
-    const rect = e.target.getBoundingClientRect();
-    const calendarRect = document
-      .querySelector(".calendar-selector")
-      .getBoundingClientRect();
-    const x = rect.left - calendarRect.left;
-    const y = rect.top - calendarRect.top;
-    const windowWidth = calendarRect.width;
-    const windowHeight = calendarRect.height;
-    const modalHeight = 320;
+    try {
+      setDisplayEventModalId(eventId);
+      const rect = e.target.getBoundingClientRect();
+      const calendarRect = document
+        .querySelector(".calendar-selector")
+        .getBoundingClientRect();
+      const x = rect.left - calendarRect.left;
+      const y = rect.top - calendarRect.top;
+      const windowWidth = calendarRect.width;
+      const windowHeight = calendarRect.height;
+      const modalHeight = 320;
 
-    const xOffset = x > windowWidth / 2 ? -320 : 50;
-    const yOffset = y + modalHeight > windowHeight ? -modalHeight : 50;
+      const xOffset = x > windowWidth / 2 ? -320 : 50;
+      const yOffset = y + modalHeight > windowHeight ? -modalHeight : 50;
 
-    setClickPosition({ x: x + xOffset, y: y + yOffset });
+      setClickPosition({ x: x + xOffset, y: y + yOffset });
+    } catch (error) {
+      console.error(
+        "Error in CalendarDayWeekSnippet.jsx > handleEventClick:",
+        error
+      );
+      throw error;
+    }
   }
 
   return (
