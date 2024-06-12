@@ -4,12 +4,10 @@ import CreateEventForm from "../CreateEventForm/CreateEventForm";
 import { useState } from "react";
 
 function CreateEventModal() {
-
   const [showModal, setShowModal] = useState(false);
 
   return (
     <div>
-      {/* Open the modal using document.getElementById('ID').showModal() method */}
       <Button onClick={() => setShowModal(!showModal)}>
         {<LuCalendarPlus />} Create Event
       </Button>

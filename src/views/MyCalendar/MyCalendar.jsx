@@ -133,7 +133,6 @@ function MyCalendar() {
         <div className="calendar-nav-left flex flex-row items-center gap-5">
           <h1 className="text-3xl font-bold leading-none">My Calendar</h1>
           <Button onClick={() => setNav(CURRENT_DATE)}>Today</Button>
-          {/* TODO: Make this work with weeks and days. Take it out in new component perhaps. Add a function with swtich case and depend of week month day to move forward/backward different amount */}
           <div className="calendar-forward-prev flex flex-row gap-2 items-center">
             <IoChevronBackOutline
               onClick={() => navigate("prev")}

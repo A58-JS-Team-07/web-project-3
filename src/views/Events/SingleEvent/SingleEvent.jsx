@@ -100,7 +100,6 @@ function SingleEvent() {
   };
 
   const handleJoinEvent = async () => {
-    //TODO: Add logic where if user is invited and joins the event, the invite is deleted
     try {
       await joinEvent(userData.username, event.eid);
       toast.success(`You've successfully joined the event: ${event.title}`);
@@ -130,29 +129,28 @@ function SingleEvent() {
   return (
     <div className="single-event m-8 flex flex-row gap-8">
       <div className="single-event__left w-2/3 bg-base-200 py-6 px-8  rounded-3xl">
-        {/*TODO: Add edit and delete functionality for ADMINS logic too*/}
         <div className="event-created-updated-date-and-edit-delete flex flex-row justify-between mb-3">
           <div className="event-created-updated flex gap-4 text-gray-300">
             <span>
               Created on:{" "}
               {event?.createdOn &&
                 new Date(event.createdOn).toLocaleDateString("en-GB") +
-                " at " +
-                new Date(event.createdOn).toLocaleTimeString("en-GB", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}{" "}
+                  " at " +
+                  new Date(event.createdOn).toLocaleTimeString("en-GB", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}{" "}
             </span>
             {event?.updatedOn && (
               <span>
                 Updated on:{" "}
                 {event?.updatedOn &&
                   new Date(event.updatedOn).toLocaleDateString("en-GB") +
-                  " " +
-                  new Date(event.updatedOn).toLocaleTimeString("en-GB", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}{" "}
+                    " " +
+                    new Date(event.updatedOn).toLocaleTimeString("en-GB", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}{" "}
               </span>
             )}
           </div>
@@ -277,13 +275,6 @@ function SingleEvent() {
                 <EventEndDateTime event={event} />
               </div>
               <EventLocation event={event} />
-              {/* <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2933.253718515032!2d23.285919675242468!3d42.677167615010056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40aa85da9bb2b5ed%3A0xc5eefb71463a0602!2sg.k.%20Belite%20brezi%2C%20ul.%20%22Vorino%22%2019%2C%201612%20Sofia!5e0!3m2!1sen!2sbg!4v1717081103473!5m2!1sen!2sbg"
-                width=""
-                height="200"
-                loading="lazy"
-                className="rounded-xl"
-              ></iframe> */}
             </>
           )}
         </div>
@@ -303,10 +294,6 @@ function SingleEvent() {
             </div>
           </div>
         </div>
-        {/*TODO: Add weather API here if time*/}
-        {/* <div className="event-weather flex flex-col gap-5 rounded-2xl bg-base-200 p-5">
-          <h3 className="text-xl font-semibold">Expected weather:</h3>
-        </div> */}
       </div>
     </div>
   );
