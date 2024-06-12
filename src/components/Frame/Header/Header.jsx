@@ -19,7 +19,7 @@ function Header() {
   const { setLoading } = useContext(LoaderContext);
   const [weather, setWeather] = useState(null);
   // const [address, setAddress] = useState('');
-  const [inputCity, setInputCity] = useState('');
+  const [inputCity, setInputCity] = useState("");
 
   const navigate = useNavigate();
   const logout = async () => {
@@ -71,19 +71,21 @@ function Header() {
   // }, [searchTerm]);
 
   useEffect(() => {
-    console.log('userData', userData?.address);
+    console.log("userData", userData?.address);
     if (userData?.address) {
       const address = userData?.address;
-    
-    console.log('address', address);
-    fetch(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${address}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setWeather(data); // Set the weather state to the current weather data (const weather = data.current)
-      }).catch((error) => {
-        console.error('Error trying to set Weather API:', error);
-      });
-      ;
+
+      console.log("address", address);
+      fetch(
+        `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${address}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setWeather(data); // Set the weather state to the current weather data (const weather = data.current)
+        })
+        .catch((error) => {
+          console.error("Error trying to set Weather API:", error);
+        });
     }
   }, [WEATHER_API_KEY, userData]);
 

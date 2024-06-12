@@ -19,7 +19,7 @@ function Home() {
           <div className="hero-content text-center text-neutral-content">
             <div className="max-w-2xl">
               <h1 className="mb-5 text-5xl font-bold text-white">
-                №1 Sports Event Calendar
+                №1 Sports Events Calendar
               </h1>
               <p className="mb-5 text-xl text-white">
                 Stay updated with the latest sports events. Effortlessly add
