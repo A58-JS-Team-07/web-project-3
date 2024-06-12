@@ -53,7 +53,7 @@ function SingleNotification({ inviter, event }) {
   }
 
   return (
-    <div className="single-notification my-5 p-3 bg-slate-100 rounded-lg">
+    <div className="single-notification my-5 p-3 bg-base-100 rounded-lg">
       <div className="notification__message flex gap-4">
         <div className="avatar w-2/12">
           <div className="w-24 rounded-full">
