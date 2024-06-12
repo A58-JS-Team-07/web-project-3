@@ -1,4 +1,4 @@
-import propsType from "prop-types";
+import PropTypes from "prop-types";
 import Button from "../Button/Button";
 import { useEffect, useState, useContext } from "react";
 import {
@@ -11,6 +11,21 @@ import { db } from "../../config/firebase-config.js";
 import { ref, onValue } from "firebase/database";
 import { AppContext } from "../../context/AppContext";
 import { IoPersonAdd, IoPersonRemove } from "react-icons/io5";
+
+//TODO: JS DOCKS
+
+/**
+ * UserSnippet Component is a reusable component that displays user information and actions.
+ *
+ * @param {Object} props.user - The user object to display.
+ * @param {Object} props.contactsList - The contacts list object to add or remove the user from.
+ * @param {Function} props.handleBanUser - The function to handle banning the user.
+ * @param {Boolean} props.adminActions - The boolean to display admin actions.
+ * @param {Boolean} props.isInviting - The boolean to display invite actions.
+ * @param {Function} props.handleDeleteInvite - The function to handle deleting the invite.
+ * @param {Function} props.handleInvitation - The function to handle inviting the user.
+ * @returns {JSX.Element} - Rendered UserSnippet component.
+ */
 
 function UserSnippet({
   user,
@@ -137,7 +152,13 @@ function UserSnippet({
 }
 
 UserSnippet.propTypes = {
-  user: propsType.object.isRequired,
+  user: PropTypes.object.isRequired,
+  contactsList: PropTypes.object,
+  handleBanUser: PropTypes.func,
+  adminActions: PropTypes.bool,
+  isInviting: PropTypes.bool,
+  handleDeleteInvite: PropTypes.func,
+  handleInvitation: PropTypes.func,
 };
 
 export default UserSnippet;
