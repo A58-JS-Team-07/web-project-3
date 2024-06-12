@@ -1,13 +1,21 @@
-import { onValue, ref, set } from "firebase/database";
-import { getAllUsersArray } from "../../../services/users.service";
-import UserSnippet from "../../UserSnippet/UserSnippet";
-import AddNewUserToListModal from "../AddNewUserToListModal/AddNewUserToListModal";
 import { useEffect, useState, useContext } from "react";
-import { LoaderContext } from "../../../context/LoaderContext";
+import { onValue, ref } from "firebase/database";
 import { db } from "../../../config/firebase-config";
+import PropTypes from "prop-types";
+import { getAllUsersArray } from "../../../services/users.service";
+import AddNewUserToListModal from "../AddNewUserToListModal/AddNewUserToListModal";
+import UserSnippet from "../../UserSnippet/UserSnippet";
+import { LoaderContext } from "../../../context/LoaderContext";
+
+/** 
+ * This component displays the contacts list information.
+ * @param {Array} props.contacts - List of all contacts in the specific list
+ * @param {Object} props.contactsList - The contacts list object
+ * @param {boolean} props.listClicked - The boolean to show or hide the list
+ * @returns {JSX.Element}
+ */
 
 function SingleContactList({ contacts, contactsList, listClicked }) {
-  // console.log("CONTACTS", contacts);
   const [users, setUsers] = useState([]);
   const { setLoading } = useContext(LoaderContext);
 
@@ -15,16 +23,12 @@ function SingleContactList({ contacts, contactsList, listClicked }) {
     const getContactsFullInfo = async () => {
       setLoading(true);
       const getAllUsers = await getAllUsersArray();
-      console.log("getAllUsers", getAllUsers);
       const contactsFullInfo = contacts?.map((contact) => {
         return getAllUsers.find((user) => user.username === contact);
       });
 
       setUsers(contactsFullInfo);
       setLoading(false);
-      console.log("CONTACTS FULL INFO", contactsFullInfo);
-      console.log("CONTACTS LIST", contactsList);
-      console.log("Users", users);
     };
 
     getContactsFullInfo();
@@ -34,25 +38,17 @@ function SingleContactList({ contacts, contactsList, listClicked }) {
     try {
       return onValue(ref(db, `users`), (snapshot) => {
         const usersDataFullInfo = Object.values(snapshot.val());
-        console.log("snaphot.val()", snapshot.val());
-        //   console.log('CONTACTS', contacts);
-        console.log("usersDataFullInfo", usersDataFullInfo);
         const participants = usersDataFullInfo.filter(
           (user) =>
             user?.contactsListsParticipant &&
             user.contactsListsParticipant[contactsList?.clid] === true
         );
-        console.log("participants", participants);
         setUsers(participants);
-        //   console.log('usersParticipants', users);
       });
-      //
     } catch (error) {
       console.error("Error in SingleContactList > useEffect:", error);
     }
   }, [listClicked, contactsList]);
-
-  console.log("CONTACTS", contacts);
 
   return (
     <div className="inner__container bg-base-200 w-2/3 p-10 rounded-3xl ">
@@ -75,5 +71,11 @@ function SingleContactList({ contacts, contactsList, listClicked }) {
     </div>
   );
 }
+
+SingleContactList.propTypes = {
+  contacts: PropTypes.array.isRequired,
+  contactsList: PropTypes.object.isRequired,
+  listClicked: PropTypes.bool.isRequired,
+};
 
 export default SingleContactList;
