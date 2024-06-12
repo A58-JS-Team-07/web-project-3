@@ -1,6 +1,4 @@
-import { createContext, useState } from "react";
-import Loader from "../components/Loader/Loader";
-import propTypes from "prop-types";
+import { createContext } from "react";
 
 export const LoaderContext = createContext({
   loading: false,
