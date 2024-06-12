@@ -42,7 +42,7 @@ function Home() {
       <div className="info__section flex flex-row gap-14 pt-20 px-14">
         <div className="flex w-3/5">
           <img
-            src="/public/dummy-img.png"
+            src="/public/showcase/all-events.jpg"
             className="max-3xl rounded-lg shadow-2xl"
           />
         </div>
@@ -57,7 +57,7 @@ function Home() {
       <div className="info__section flex flex-row-reverse gap-14 pt-20 px-14">
         <div className="flex w-3/5">
           <img
-            src="/public/dummy-img.png"
+            src="/public/Showcase/calendar.jpg"
             className="max-3xl rounded-lg shadow-2xl"
           />
         </div>
@@ -76,7 +76,7 @@ function Home() {
       <div className="info__section flex flex-row gap-14 py-20 px-14 ">
         <div className="flex justify-end w-3/5">
           <img
-            src="/public/dummy-img.png"
+            src="/public/Showcase/invite-friends.jpg"
             className="max-3xl rounded-lg shadow-2xl"
           />
         </div>
