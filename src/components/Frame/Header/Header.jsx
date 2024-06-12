@@ -51,7 +51,6 @@ function Header() {
   };
 
   useEffect(() => {
-    console.log("userData", userData?.address);
     if (userData?.address) {
       const address = userData?.address;
 
