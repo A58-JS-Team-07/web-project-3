@@ -136,7 +136,6 @@ function LoginRegister() {
       }
 
       const credential = await registerUser(form.email, form.password);
-      console.log(credential);
       await createUser(
         form.username,
         credential.user.uid,
