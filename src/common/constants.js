@@ -119,4 +119,4 @@ export const MIN_CONTACT_LIST_NAME_LENGTH = 3;
 
 export const MAX_CONTACT_LIST_NAME_LENGTH = 30;
 
-export const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
+export const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
