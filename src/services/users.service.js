@@ -126,7 +126,7 @@ export const deleteEventFromUser = async (username, eventId) => {
 
     if (userData.isInviting) {
       const invitedUsers = Object.keys(userData.isInviting[eventId]);
-      console.log("DeleteEventFromUser > invitedUsers: ", invitedUsers);
+      
       invitedUsers.forEach(async (invitedUser) => {
         await remove(
           ref(db, `users/${invitedUser}/beingInvited/${eventId}/${username}`)
