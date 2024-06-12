@@ -28,8 +28,13 @@ function App() {
   const [appState, setAppState] = useState({ user: null, userData: null });
 
   useEffect(() => {
-    if (appState.user !== user) {
-      setAppState((prevState) => ({ ...prevState, user }));
+    try {
+      if (appState.user !== user) {
+        setAppState((prevState) => ({ ...prevState, user }));
+      }
+    } catch (error) {
+      console.error("App.jsx > useEffect set user:", error);
+      throw error;
     }
   }, [user, appState.user]);
 
@@ -52,14 +57,21 @@ function App() {
   }, [appState.user]);
 
   useEffect(() => {
-    const handleBannedUser = async () => {
-      if (appState.userData?.isBanned) {
-        await logoutUser();
-        setAppState({ user: null, userData: null });
-        toast.error("You have been banned! Please contact the administrator.");
-      }
-    };
-    handleBannedUser();
+    try {
+      const handleBannedUser = async () => {
+        if (appState.userData?.isBanned) {
+          await logoutUser();
+          setAppState({ user: null, userData: null });
+          toast.error(
+            "You have been banned! Please contact the administrator."
+          );
+        }
+      };
+      handleBannedUser();
+    } catch (error) {
+      console.error("App.jsx > useEffect handleBannedUser:", error);
+      throw error;
+    }
   }, [appState.userData]);
 
   return (
