@@ -1,9 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { IoClose } from 'react-icons/io5';
+import React, { useEffect, useState, useContext } from 'react';
+import PropTypes from 'prop-types';
+import { AppContext } from '../../../context/AppContext';
 import { searchUsers, getAllUsersExcludeCurrent } from '../../../services/users.service';
 import UserSnippet from '../../UserSnippet/UserSnippet';
-import { useContext } from 'react';
-import { AppContext } from '../../../context/AppContext';
+import { IoClose } from 'react-icons/io5';
+
+/**
+ * This component allows the user to search for contacts by username or email address.
+ * And allows the user to add a new contact to the contacts list.
+ * @param {boolean} props.showModal - The boolean to show or hide the modal
+ * @param {function} props.setShowModal - Function to set the state of the boolean
+ * @param {Object} props.contactsList - The contacts list object
+ * @returns {JSX.Element}
+ */
 
 function AddNewUserToListFrom({ showModal, setShowModal = () => { }, contactsList }) {
     const [newContactName, setNewContactName] = useState('');
@@ -88,5 +97,11 @@ function AddNewUserToListFrom({ showModal, setShowModal = () => { }, contactsLis
         </div>
     );
 }
+
+AddNewUserToListFrom.propTypes = {
+    showModal: PropTypes.bool.isRequired,
+    setShowModal: PropTypes.func,
+    contactsList: PropTypes.object.isRequired,
+};
 
 export default AddNewUserToListFrom;   
