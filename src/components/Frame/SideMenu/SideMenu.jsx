@@ -1,4 +1,8 @@
+import { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { AppContext } from "../../../context/AppContext";
+import { logoutUser } from "../../../services/auth.service";
+import AdminComponentProtect from "../../../hoc/AdminLogic/AdminComponentProtect/AdminComponentProtect";
 import ThemeSwitcher from "./ThemeSwitcher/ThemeSwitcher";
 import {
   IoCalendarOutline,
@@ -9,10 +13,6 @@ import {
   IoPersonOutline,
   IoPowerOutline,
 } from "react-icons/io5";
-import { useContext } from "react";
-import { AppContext } from "../../../context/AppContext";
-import { logoutUser } from "../../../services/auth.service";
-import AdminComponentProtect from "../../../hoc/AdminLogic/AdminComponentProtect/AdminComponentProtect";
 
 function SideMenu() {
   const { userData, setAppState } = useContext(AppContext);
