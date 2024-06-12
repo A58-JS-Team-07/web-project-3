@@ -124,3 +124,5 @@ export const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 export const FIREBASE_API_KEY = import.meta.env.VITE_FIREBASE_API_KEY;
 
 export const FIREBASE_DATABASE_URL = import.meta.env.VITE_FIREBASE_DATABASE_URL;
+
+export const NUM_OF_USERS_PER_ADMIN_PAGE = 7;
