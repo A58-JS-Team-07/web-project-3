@@ -1,17 +1,21 @@
-import Button from "../../Button/Button";
 import { useState } from "react";
 import AddNewUserToListFrom from "../AddNewUserToListForm/AddNewUserToListForm";
-function AddNewUserToListModal({ contactsList }) {
+import PropTypes from "prop-types";
+import Button from "../../Button/Button";
 
+/**
+ * This component is a wrapper for the AddNewUserToListFrom component.
+ * @param {Object} props.contactsList - The contacts list object
+ * @returns {JSX.Element}
+	*/
+function AddNewUserToListModal({ contactsList }) {
   const [showModal, setShowModal] = useState(false);
 
   return (
     <div className="mt-5">
-      {/* Open the modal using document.getElementById('ID').showModal() method */}
       <Button onClick={() => setShowModal(!showModal)}>
         Add Contact
       </Button>
-
       {showModal ? (
         <div>
           <AddNewUserToListFrom showModal={showModal} setShowModal={setShowModal} contactsList={contactsList} />
@@ -22,3 +26,7 @@ function AddNewUserToListModal({ contactsList }) {
 }
 
 export default AddNewUserToListModal;
+
+AddNewUserToListModal.PropTypes = {
+  contactsList: PropTypes.object.isRequired,
+};
