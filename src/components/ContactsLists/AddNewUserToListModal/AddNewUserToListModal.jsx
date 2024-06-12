@@ -27,6 +27,6 @@ function AddNewUserToListModal({ contactsList }) {
 
 export default AddNewUserToListModal;
 
-AddNewUserToListModal.PropTypes = {
+AddNewUserToListModal.propTypes = {
   contactsList: PropTypes.object.isRequired,
 };
