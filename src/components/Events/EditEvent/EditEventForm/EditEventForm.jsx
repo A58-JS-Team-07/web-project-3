@@ -16,6 +16,17 @@ import {
 } from "../../../../common/constants";
 import { uploadEventImage } from "../../../../services/storage.service";
 
+/**
+ * EditEventForm component which provides a form to edit an event.
+ *
+ * @param {Object} event - The event to edit.
+ * @param {Function} setEvent - Function to set the event.
+ * @param {Function} setEditEventModal - Function to set the edit event modal.
+ * @returns {JSX.Element} - Rendered EditEventForm component.
+ */
+
+//TODO: You can remove the event setter due to event change listener that triggers rerender.
+
 function EditEventForm({ event, setEvent, setEditEventModal }) {
   const { setLoading } = useContext(LoaderContext);
   const [eventData, setEventData] = useState({ ...event });

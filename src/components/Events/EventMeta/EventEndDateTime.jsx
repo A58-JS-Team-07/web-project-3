@@ -2,6 +2,13 @@ import propTypes from "prop-types";
 import { eventEndDate, eventEndTime } from "../../../common/constants";
 import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
 
+/**
+ * EventEndDateTime component is used to display the end date and time of the event.
+ *
+ * @param {object} event - The event object.
+ * @returns - The JSX element for EventEndDateTime component.
+ */
+
 function EventEndDateTime({ event }) {
   return (
     <>

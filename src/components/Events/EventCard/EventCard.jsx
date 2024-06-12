@@ -6,6 +6,13 @@ import EventStartDateTime from "../EventMeta/EventStartDateTime";
 import EventLocation from "../EventMeta/EventLocation";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 
+/**
+ * EventCard component which displays the event information for listing page.
+ *
+ * @param {Object} event - The event object to display.
+ * @returns {JSX.Element} - Rendered EventCard component.
+ */
+
 function EventCard({ event }) {
   return (
     <div className="event w-full bg-base-200 rounded-xl overflow-hidden shadow-lg relative">

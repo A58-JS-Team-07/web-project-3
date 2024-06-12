@@ -2,6 +2,13 @@ import propTypes from "prop-types";
 import { eventStartDate, eventStartTime } from "../../../common/constants";
 import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
 
+/**
+ * EventStartDateTime component is used to display the start date and time of the event.
+ *
+ * @param {object} event - The event object.
+ * @returns - The JSX element for EventStartDateTime component.
+ */
+
 function EventStartDateTime({ event }) {
   return (
     <>

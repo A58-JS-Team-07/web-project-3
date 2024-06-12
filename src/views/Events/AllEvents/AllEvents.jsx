@@ -10,6 +10,12 @@ import { AppContext } from "../../../context/AppContext";
 import { useLocation } from "react-router-dom";
 import Button from "../../../components/Button/Button";
 
+/**
+ * AllEvents component is used to display all the events.
+ *
+ * @returns - The JSX element for AllEvents component.
+ */
+
 function AllEvents() {
   const { userData } = useContext(AppContext);
   const [events, setEvents] = useState([]);
@@ -102,7 +108,6 @@ function AllEvents() {
     if (location.state?.searchEvents) {
       setSearchEvents(location.state?.searchEvents);
     }
-    console.log("searchEvents:", searchEvents);
   }, [location.state?.searchEvents]);
 
   return (
@@ -117,13 +122,11 @@ function AllEvents() {
               ))}
             </>
           )}
-          {searchEvents?.length === 0 &&
-            (console.log("searchEvents:", searchEvents),
-            (
-              <>
-                <p>No Events found</p>
-              </>
-            ))}
+          {searchEvents?.length === 0 && (
+            <>
+              <p>No Events found</p>
+            </>
+          )}
           {!location.state?.searchEvents && (
             <>
               {events.slice(0, visibleEvents).map((event) => (

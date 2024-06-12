@@ -1,11 +1,20 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getAllUsersArray } from "../../../../services/users.service";
 import UserSnippet from "../../../UserSnippet/UserSnippet";
 import {
   inviteUsers,
   deleteInvite,
 } from "../../../../services/invites.service";
-import { AppContext } from "../../../../context/AppContext";
+import PropTypes from "prop-types";
+
+/**
+ * EventContactsWindow component is used to display the contacts of the user.
+ *
+ * @param {object} contactsUsernames - The usernames of the contacts.
+ * @param {string} invitingUsername - The username inviter to the event.
+ * @param {string} eventId - The event ID.
+ * @returns - The JSX element for EventContactsWindow component.
+ */
 
 function EventContactsWindow({ contactsUsernames, invitingUsername, eventId }) {
   const [users, setUsers] = useState([]);
@@ -13,12 +22,10 @@ function EventContactsWindow({ contactsUsernames, invitingUsername, eventId }) {
   useEffect(() => {
     try {
       getAllUsersArray().then((res) => {
-        console.log("res", res);
-        console.log("contactsUsernames", contactsUsernames);
         const filteredUsers = res.filter((user) => {
           return contactsUsernames.includes(user.username);
         });
-        console.log("filteredUsers", filteredUsers);
+
         setUsers(filteredUsers);
       });
     } catch (error) {
@@ -51,5 +58,11 @@ function EventContactsWindow({ contactsUsernames, invitingUsername, eventId }) {
     </div>
   );
 }
+
+EventContactsWindow.propTypes = {
+  contactsUsernames: PropTypes.array.isRequired,
+  invitingUsername: PropTypes.string.isRequired,
+  eventId: PropTypes.string.isRequired,
+};
 
 export default EventContactsWindow;

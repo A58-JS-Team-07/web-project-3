@@ -4,6 +4,17 @@ import EventContactListSnippet from "./EventContactListSnippet/EventContactListS
 import { IoClose } from "react-icons/io5";
 import EventContactsWindow from "./EventContactsWindow/EventContactsWindow";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
+
+/**
+ * InviteToEvent component is used to invite users to the event.
+ *
+ * @param {string} eventId - The event ID.
+ * @param {string} invitingUsername - The username of the user inviting to the event.
+ * @param {boolean} invitingModal - The state of the inviting modal.
+ * @param {function} setInvitingModal - The function to set the inviting modal state.
+ * @returns - The JSX element for InviteToEvent component.
+ */
 
 function InviteToEvent({
   eventId,
@@ -108,5 +119,12 @@ function InviteToEvent({
     </div>
   );
 }
+
+InviteToEvent.propTypes = {
+  eventId: PropTypes.string.isRequired,
+  invitingUsername: PropTypes.string.isRequired,
+  invitingModal: PropTypes.bool.isRequired,
+  setInvitingModal: PropTypes.func.isRequired,
+};
 
 export default InviteToEvent;

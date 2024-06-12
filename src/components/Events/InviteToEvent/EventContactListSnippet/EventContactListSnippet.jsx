@@ -1,6 +1,14 @@
-import { useState } from "react";
 import { IoList } from "react-icons/io5";
 import { IoExitOutline } from "react-icons/io5";
+import PropTypes from "prop-types";
+
+/**
+ * EventContactListSnippet component which displays the contact list snippet.
+ *
+ * @param {object} contactList - The contact list object.
+ * @param {function} handleContactListClick - The function to handle the contact list click.
+ * @returns {JSX.Element} - Rendered EventContactListSnippet component.
+ */
 
 function EventContactListSnippet({ contactList, handleContactListClick }) {
   return (
@@ -18,5 +26,10 @@ function EventContactListSnippet({ contactList, handleContactListClick }) {
     </div>
   );
 }
+
+EventContactListSnippet.propTypes = {
+  contactList: PropTypes.object.isRequired,
+  handleContactListClick: PropTypes.func.isRequired,
+};
 
 export default EventContactListSnippet;

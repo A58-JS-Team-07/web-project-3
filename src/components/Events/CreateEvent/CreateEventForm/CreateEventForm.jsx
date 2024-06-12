@@ -20,6 +20,14 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { addMonths, addWeeks, addYears } from "date-fns";
 
+/**
+ * CreateEventForm component which provides a form to create an event
+ *
+ * @param {Object} props.showModal - The state of the modal. Determines if the modal is shown or not.
+ * @param {Function} props.setShowModal - The function to set the state of the modal.
+ * @returns {JSX.Element} - Rendered CreateEventForm component.
+ */
+
 function CreateEventForm({ showModal, setShowModal = () => {} }) {
   const { userData } = useContext(AppContext);
   const { setLoading } = useContext(LoaderContext);
@@ -318,7 +326,6 @@ function CreateEventForm({ showModal, setShowModal = () => {} }) {
         }
       }
 
-      console.log("Event uploaded successfully");
       setShowModal(false);
       setLoading(false);
       navigate(`/events/${eventId}`);
