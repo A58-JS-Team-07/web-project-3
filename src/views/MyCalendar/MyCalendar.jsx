@@ -18,6 +18,12 @@ import CalendarWeek from "../../components/Calendar/CalendarWeek/CalendarWeek";
 import CalendarWorkWeek from "../../components/Calendar/CalendarWorkWeek/CalendarWorkWeek";
 import CalendarDay from "../../components/Calendar/CalendarDay/CalendarDay";
 
+/**
+ * MyCalendar component is used to display the user's calendar.
+ *
+ * @returns - The JSX element for MyCalendar component.
+ */
+
 function MyCalendar() {
   const { userData } = useContext(AppContext);
   const [events, setEvents] = useState([]);
