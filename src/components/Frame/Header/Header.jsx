@@ -14,12 +14,9 @@ import { WEATHER_API_KEY } from "../../../common/constants";
 import WeatherInfo from "../../WeatherInfo/WeatherInfo";
 
 function Header() {
-  const { user, userData, setAppState } = useContext(AppContext);
-  // const [searchTerm, setSearchTerm] = useState("");
+  const { userData, setAppState } = useContext(AppContext);
   const { setLoading } = useContext(LoaderContext);
   const [weather, setWeather] = useState(null);
-  // const [address, setAddress] = useState('');
-  const [inputCity, setInputCity] = useState("");
 
   const navigate = useNavigate();
   const logout = async () => {
@@ -53,35 +50,17 @@ function Header() {
     navigate(`/events?search=${e.target.value}`, { state: { searchEvents } });
   };
 
-  // useEffect(() => {
-  //   const searchEvents = async () => {
-  //     if (searchTerm === "") {
-  //       return;
-  //     }
-  //     if (!userData) {
-  //       const searchEvents = await searchPublicEvents(searchTerm);
-  //       navigate("/events", { state: { searchEvents } });
-  //     } else {
-  //       const searchEvents = await searchUserViewEvents(searchTerm);
-  //       navigate("/events", { state: { searchEvents } });
-  //     }
-  //   };
-  //   searchEvents();
-  //   setSearchTerm("");
-  // }, [searchTerm]);
-
   useEffect(() => {
     console.log("userData", userData?.address);
     if (userData?.address) {
       const address = userData?.address;
 
-      console.log("address", address);
       fetch(
         `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${address}`
       )
         .then((response) => response.json())
         .then((data) => {
-          setWeather(data); // Set the weather state to the current weather data (const weather = data.current)
+          setWeather(data);
         })
         .catch((error) => {
           console.error("Error trying to set Weather API:", error);
