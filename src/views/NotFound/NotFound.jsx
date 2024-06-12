@@ -7,7 +7,7 @@ function NotFound() {
       <div
         className="hero min-h-[83vh]"
         style={{
-          backgroundImage: "url(./public/404-bg.jpg)",
+          backgroundImage: "url(/404-bg.jpg)",
         }}
       >
         <div className="hero-overlay bg-opacity-60"></div>
@@ -18,7 +18,8 @@ function NotFound() {
               Page Not Found
             </h1>
             <p className="mb-5 text-2xl text-white">
-              It looks like you&apos;re lost. <br /> Let&apos;s get you back on track.
+              It looks like you&apos;re lost. <br /> Let&apos;s get you back on
+              track.
             </p>
             <NavLink to="/">
               <Button>Back to Home</Button>

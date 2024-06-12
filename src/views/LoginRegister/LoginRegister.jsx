@@ -397,7 +397,7 @@ function LoginRegister() {
       </div>
       <div
         className="right w-1/2 bg-cover bg-center rounded-tl-3xl rounded-bl-3xl"
-        style={{ backgroundImage: "url('/public/login-bg.jpg')" }}
+        style={{ backgroundImage: "url('/login-bg.jpg')" }}
       ></div>
     </div>
   );

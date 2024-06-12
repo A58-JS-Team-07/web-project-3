@@ -12,7 +12,7 @@ function Home() {
         <div
           className="hero min-h-screen"
           style={{
-            backgroundImage: "url(./public/hero-bg.jpg)",
+            backgroundImage: "url(/hero-bg.jpg)",
           }}
         >
           <div className="hero-overlay bg-opacity-60"></div>
@@ -42,7 +42,7 @@ function Home() {
       <div className="info__section flex flex-row gap-14 pt-20 px-14">
         <div className="flex w-3/5">
           <img
-            src="/public/showcase/all-events.jpg"
+            src="/all-events.jpg"
             className="max-3xl rounded-lg shadow-2xl"
           />
         </div>
@@ -56,10 +56,7 @@ function Home() {
       </div>
       <div className="info__section flex flex-row-reverse gap-14 pt-20 px-14">
         <div className="flex w-3/5">
-          <img
-            src="/public/Showcase/calendar.jpg"
-            className="max-3xl rounded-lg shadow-2xl"
-          />
+          <img src="/calendar.jpg" className="max-3xl rounded-lg shadow-2xl" />
         </div>
         <div className="flex flex-col justify-center gap-5 w-2/5">
           <h2 className="text-4xl font-bold">
@@ -76,7 +73,7 @@ function Home() {
       <div className="info__section flex flex-row gap-14 py-20 px-14 ">
         <div className="flex justify-end w-3/5">
           <img
-            src="/public/Showcase/invite-friends.jpg"
+            src="/invite-friends.jpg"
             className="max-3xl rounded-lg shadow-2xl"
           />
         </div>
@@ -94,7 +91,7 @@ function Home() {
       <div className="info__section flex flex-row-reverse gap-14 px-14">
         <div className="flex w-3/5">
           <img
-            src="/public/Showcase/create-event.jpg"
+            src="/create-event.jpg"
             className="max-3xl rounded-lg shadow-2xl"
           />
         </div>
@@ -112,10 +109,7 @@ function Home() {
       </div>
       <div className="info__section flex flex-row gap-14 py-20 px-14 ">
         <div className="flex justify-end w-3/5">
-          <img
-            src="/public/Showcase/profile.jpg"
-            className="max-3xl rounded-lg shadow-2xl"
-          />
+          <img src="/profile.jpg" className="max-3xl rounded-lg shadow-2xl" />
         </div>
         <div className="flex flex-col justify-center gap-5 w-2/5">
           <h2 className="text-4xl font-bold">
