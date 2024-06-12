@@ -1,8 +1,11 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { toast } from "react-toastify";
-import Button from "../../components/Button/Button";
+import { updateProfile } from "firebase/auth";
+import { auth } from "../../config/firebase-config";
+import { createUser, getUserByUsername } from "../../services/users.service";
+import { loginUser, registerUser } from "../../services/auth.service";
 import { AppContext } from "../../context/AppContext";
+import { LoaderContext } from "../../context/LoaderContext";
 import {
   MIN_USERNAME_LENGTH,
   MAX_USERNAME_LENGTH,
@@ -11,11 +14,13 @@ import {
   isValidPassword,
   isValidName,
 } from "../../common/constants";
-import { createUser, getUserByUsername } from "../../services/users.service";
-import { auth } from "../../config/firebase-config";
-import { loginUser, registerUser } from "../../services/auth.service";
-import { updateProfile } from "firebase/auth";
-import { LoaderContext } from "../../context/LoaderContext";
+import Button from "../../components/Button/Button";
+import { toast } from "react-toastify";
+
+/**
+ * This component allows the user to login or register.
+ * @returns {JSX.Element}
+ */
 
 function LoginRegister() {
   const [activeTab, setActiveTab] = useState("login");
@@ -130,7 +135,7 @@ function LoginRegister() {
         return;
       }
 
-      const credential = await registerUser(form.email, form.password); // Register the user with email and password and get the credential object, which contains the user object in following format: { user: { uid, email, ... } }
+      const credential = await registerUser(form.email, form.password);
       console.log(credential);
       await createUser(
         form.username,
@@ -139,8 +144,8 @@ function LoginRegister() {
         form.phoneNumber,
         form.firstName,
         form.lastName
-      ); // Create a user in the database with the provided data
-      await updateProfile(auth.currentUser, { displayName: form.username }); // Update the user's display name with the provided username
+      );
+      await updateProfile(auth.currentUser, { displayName: form.username });
       setAppState({ user: { ...credential.user }, userData: null });
       navigate("/");
     } catch (error) {
@@ -204,21 +209,19 @@ function LoginRegister() {
         </p>
         <div className="switcher flex flex-row bg-neutral-200 rounded-full shadow-lg mt-2 mb-5">
           <div
-            className={`switcher__item login px-6 py-3 rounded-full text-lg min-w-[140px] text-center ${
-              activeTab === "login"
+            className={`switcher__item login px-6 py-3 rounded-full text-lg min-w-[140px] text-center ${activeTab === "login"
                 ? "bg-secondary text-white"
                 : "bg-neutral-200 text-black"
-            } transition-colors duration-300`}
+              } transition-colors duration-300`}
             onClick={() => changeTab("login")}
           >
             Login
           </div>
           <div
-            className={`switcher__item register px-6 py-3 rounded-full text-lg min-w-[140px] text-center ${
-              activeTab === "register"
+            className={`switcher__item register px-6 py-3 rounded-full text-lg min-w-[140px] text-center ${activeTab === "register"
                 ? "bg-secondary text-white"
                 : "bg-neutral-200 text-black"
-            } transition-colors duration-300`}
+              } transition-colors duration-300`}
             onClick={() => changeTab("register")}
           >
             Register
