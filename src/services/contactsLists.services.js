@@ -1,5 +1,5 @@
-import { db } from '../config/firebase-config.js';
 import { set, ref, get, push } from 'firebase/database';
+import { db } from '../config/firebase-config.js';
 
 export const createContactsList = async (username, listName) => {
     try {
@@ -43,16 +43,10 @@ export const getContactsFromList = async (clid) => {
         if (!contactsListSnapshot.exists()) return [];
         const contactsListsValues = contactsListSnapshot.val();
 
-        console.log("contactsListsValues", contactsListsValues);
-        console.log("contactsListId", clid);
-
         if (!contactsListsValues?.contacts) {
             return [];
         }
-        
-        console.log("contactsListsValuesAAA", Object.keys(contactsListsValues.contacts));
         const contactsList = Object.keys(contactsListsValues.contacts);
-        console.log("contactsListVal", contactsList);
 
         return contactsList;
     } catch (error) {
@@ -63,7 +57,6 @@ export const getContactsFromList = async (clid) => {
 export const deleteContactsList = async (clid, owner) => {
     try {
         const participants = await getContactsFromList(clid);
-        console.log("PARTICIPANTS", participants);
         
         participants.map(async (participant) => {
             await set(ref(db, `users/${participant}/contactsListsParticipant/${clid}`), null);
