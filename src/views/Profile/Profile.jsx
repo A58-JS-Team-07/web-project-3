@@ -210,7 +210,7 @@ function Profile() {
                       name="lastName"
                     />
                   </div>
-                  <div className="flex flex-col gap-2">
+                  {/* <div className="flex flex-col gap-2">
                     <input
                       className="input input-bordered"
                       value={newUserData?.email}
@@ -220,7 +220,7 @@ function Profile() {
                       id="email"
                       name="email"
                     />
-                  </div>
+                  </div> */}
                   <div className="flex flex-col gap-2">
                     <input
                       className="input input-bordered"
