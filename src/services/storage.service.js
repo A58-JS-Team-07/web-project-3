@@ -1,4 +1,3 @@
-import { updateProfile } from "firebase/auth";
 import { updateUserAvatar } from "./users.service";
 import {
   getDownloadURL,
@@ -7,6 +6,14 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { storage } from "../config/firebase-config";
+
+/**
+ * Uploads an event image to the storage.
+ *
+ * @param {File} file - The image file to upload.
+ * @param {string} eventId - The ID of the event.
+ * @returns {string} - The URL of the uploaded image.
+ */
 
 export const uploadEventImage = async (file, eventId) => {
   try {
@@ -22,6 +29,13 @@ export const uploadEventImage = async (file, eventId) => {
   }
 };
 
+/**
+ * Retrieves an event image from the storage.
+ *
+ * @param {string} eventId - The ID of the event.
+ * @returns {string} - The URL of the event image.
+ */
+
 export const getEventImage = async (eventId) => {
   try {
     const fileRef = ref(storage, `events/${eventId}.png`);
@@ -32,6 +46,12 @@ export const getEventImage = async (eventId) => {
   }
 };
 
+/**
+ * Deletes an event image from the storage.
+ *
+ * @param {string} eventId - The ID of the event.
+ */
+
 export const deleteEventImage = async (eventId) => {
   try {
     const fileRef = ref(storage, `events/${eventId}.png`);
@@ -41,6 +61,14 @@ export const deleteEventImage = async (eventId) => {
     throw error;
   }
 };
+
+/**
+ * Uploads a user avatar to the storage.
+ *
+ * @param {File} file - The image file to upload.
+ * @param {object} user - The user object.
+ * @returns {string} - The URL of the uploaded image.
+ */
 
 export const uploadAvatar = async (file, user) => {
   try {
