@@ -55,7 +55,6 @@ function UserSnippet({
   useEffect(() => {
     const isUserInList = async () => {
       const result = await isContactInList(contactsList?.clid, user);
-      console.log("isUserInList", result);
       setIsInList(result);
     };
     isUserInList();
@@ -76,8 +75,6 @@ function UserSnippet({
       console.error("Error in UserSnippet Socket: " + error);
     }
   }, [contactsList]);
-
-  console.log("UserSnippetContactsList", contactsList);
 
   return (
     <div
