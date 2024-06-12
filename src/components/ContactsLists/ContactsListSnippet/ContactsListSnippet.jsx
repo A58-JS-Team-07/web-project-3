@@ -1,18 +1,24 @@
-import propsType from "prop-types";
-import { deleteContactsList } from "../../../services/contactsLists.services";
-import { useEffect, useState, useContext } from "react";
-import { db } from "../../../config/firebase-config";
+import { useEffect, useState } from "react";
 import { ref, onValue } from "firebase/database";
+import { db } from "../../../config/firebase-config";
+import { deleteContactsList } from "../../../services/contactsLists.services";
+import PropsType from "prop-types";
 import { IoList } from "react-icons/io5";
 
+/**
+ * This component displays the contacts list name. 
+ * And provides the user with the option to delete the list.
+ * @param {Object} props.contactsList - The contacts list object
+ * @param {function} props.onListClick - The function to be executed when the list is clicked 
+ * @returns {JSX.Element}
+ */
+
 function ContactsListSnippet({ contactsList, onListClick }) {
-  const [isListClicked, setListClicked] = useState(false);
   const [contactsListValue, setContactsListValue] = useState(null);
 
   const handleDeleteList = async () => {
     try {
       await deleteContactsList(contactsList?.clid, contactsList?.owner);
-      console.log("CONTACT LIST", contactsList);
     } catch (error) {
       console.error("Error in ContactsLists > handleDeleteList:", error);
     }
@@ -29,15 +35,12 @@ function ContactsListSnippet({ contactsList, onListClick }) {
         (snapshot) => {
           const contactsListValues = snapshot.val();
           setContactsListValue(contactsListValues);
-          console.log("ContactsListSnippet", contactsList);
         }
       );
     } catch (error) {
       console.error("Error in ContactsLists > useEffect:", error);
     }
   }, []);
-
-  console.log("ContactsListSnippet", contactsList);
 
   return (
     <>
@@ -72,7 +75,8 @@ function ContactsListSnippet({ contactsList, onListClick }) {
 }
 
 ContactsListSnippet.propTypes = {
-  contactsList: propsType.object.isRequired,
+  contactsList: PropsType.object.isRequired,
+  onListClick: PropsType.func.isRequired,
 };
 
 export default ContactsListSnippet;
