@@ -1,11 +1,20 @@
-import { useState } from 'react';
-import { useContext } from 'react';
-import Button from '../../Button/Button';
-import { IoClose } from 'react-icons/io5';
+import { useState, useContext } from 'react';
 import { AppContext } from '../../../context/AppContext';
 import { createContactsList } from '../../../services/contactsLists.services';
+import Button from '../../Button/Button';
+import { 
+  MIN_CONTACT_LIST_NAME_LENGTH, 
+  MAX_CONTACT_LIST_NAME_LENGTH } from '../../../common/constants';
+import PropTypes from 'prop-types';
+import { IoClose } from 'react-icons/io5';
 import { toast } from 'react-toastify';
-import { MIN_CONTACT_LIST_NAME_LENGTH, MAX_CONTACT_LIST_NAME_LENGTH } from '../../../common/constants';
+
+/**
+ * This component allows the user to create a new contacts list.
+ * @param {boolean} props.showModal - The boolean to show or hide the wrapping modal component
+ * @param {function} props.setShowModal - Function to set the state of the boolean
+ * @returns {JSX.Element}
+ */
 
 function AddNewContactsListForm({ showModal, setShowModal = () => { } }) {
   const { userData } = useContext(AppContext);
@@ -31,7 +40,6 @@ function AddNewContactsListForm({ showModal, setShowModal = () => { } }) {
       return;
     }
 
-
     await createContactsList(userData.username, newContactsListName);
     setNewContactsListName('');
     setShowModal(false);
@@ -54,12 +62,12 @@ function AddNewContactsListForm({ showModal, setShowModal = () => { } }) {
               <IoClose />
             </button>
             <label className="input input-bordered flex mb-8 grow items-center gap-2 max-w-[400px]">
-            <input className="grow"
-              type="text"
-              value={newContactsListName}
-              onChange={handleChange}
-              placeholder="Enter new contacts list name"
-            />
+              <input className="grow"
+                type="text"
+                value={newContactsListName}
+                onChange={handleChange}
+                placeholder="Enter new contacts list name"
+              />
             </label>
             <div className="form-update-row flex gap-8 justify-between mt-5">
               <Button onClick={handleSubmit}>Create list</Button>
@@ -71,4 +79,10 @@ function AddNewContactsListForm({ showModal, setShowModal = () => { } }) {
   );
 }
 
+AddNewContactsListForm.propTypes = {
+  showModal: PropTypes.bool.isRequired,
+  setShowModal: PropTypes.func.isRequired,
+};
+
 export default AddNewContactsListForm;
+
