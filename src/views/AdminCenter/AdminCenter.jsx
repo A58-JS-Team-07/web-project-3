@@ -1,22 +1,27 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
-import { changeBanStatus } from "../../services/users.service";
-import UserSnippet from "../../components/UserSnippet/UserSnippet";
-import { toast } from "react-toastify";
 import {
+  changeBanStatus,
   searchUsers,
   getAllUsersExcludeCurrent,
 } from "../../services/users.service";
+import UserSnippet from "../../components/UserSnippet/UserSnippet";
 import Button from "../../components/Button/Button";
+import { NUM_OF_USERS_PER_ADMIN_PAGE } from "../../common/constants";
+import { toast } from "react-toastify";
+
+/**
+ * This component allows the admin to view and manage users.
+ * @returns {JSX.Element}
+ */
 
 function AdminCenter() {
   const [users, setUsers] = useState([]);
   const { userData } = useContext(AppContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("search") || "";
-  const [displayCount, setDisplayCount] = useState(7);
-  // const [userCount, setUserCount] = useState(0);
+  const [displayCount, setDisplayCount] = useState(NUM_OF_USERS_PER_ADMIN_PAGE);
 
   const setSearch = (value) => {
     setSearchParams({ search: value });
@@ -44,17 +49,6 @@ function AdminCenter() {
     };
     loadAllUsersList();
   }, []);
-
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     if (window.innerHeight + document.documentElement.scrollTop < document.documentElement.offsetHeight - 50) return;
-  //     setDisplayCount(prevCount => prevCount + 7);
-  //   };
-  //   window.addEventListener('scroll', handleScroll);
-  //   return () => {
-  //     window.removeEventListener('scroll', handleScroll);
-  //   };
-  // }, [displayCount]);
 
   function handleBanUser(user) {
     const currStatus = user.isBanned;
@@ -89,7 +83,6 @@ function AdminCenter() {
             placeholder="Enter username or email address"
             value={search}
             onChange={(e) => handleChange(e)}
-            // onKeyDown={(e) => handleChange(e)}
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -128,7 +121,7 @@ function AdminCenter() {
         {users.length > displayCount && (
           <div className="flex justify-center p-4">
             <Button
-              onClick={() => setDisplayCount((prevCount) => prevCount + 7)}
+              onClick={() => setDisplayCount((prevCount) => prevCount + NUM_OF_USERS_PER_ADMIN_PAGE)}
             >
               Load more
             </Button>
