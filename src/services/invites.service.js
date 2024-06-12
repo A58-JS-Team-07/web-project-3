@@ -1,14 +1,4 @@
-import {
-  get,
-  set,
-  update,
-  ref,
-  remove,
-  push,
-  query,
-  orderByChild,
-  equalTo,
-} from "firebase/database";
+import { update, ref, remove } from "firebase/database";
 import { db } from "../config/firebase-config.js";
 
 /**
@@ -36,6 +26,14 @@ export const inviteUsers = async (eventId, inviterUser, invitedUser) => {
   }
 };
 
+/**
+ * Deletes an invite for the invited user and the inviter user.
+ *
+ * @param {string} eventId - The ID of the event.
+ * @param {string} inviterUser - The username of the user who created the invite.
+ * @param {string} invitedUser - The username of the user who was invited.
+ */
+
 export const deleteInvite = async (eventId, inviterUser, invitedUser) => {
   try {
     await remove(
@@ -49,6 +47,14 @@ export const deleteInvite = async (eventId, inviterUser, invitedUser) => {
     throw error;
   }
 };
+
+/**
+ * Accepts an invite for the invited user and the inviter user.
+ *
+ * @param {string} eventId - The ID of the event.
+ * @param {string} inviterUser - The username of the user who created the invite.
+ * @param {string} invitedUser - The username of the user who was invited.
+ */
 
 export const acceptInvite = async (eventId, inviterUser, invitedUser) => {
   try {
