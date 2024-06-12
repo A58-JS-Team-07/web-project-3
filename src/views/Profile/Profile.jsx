@@ -21,7 +21,7 @@ function Profile() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isEditingAvatar, setIsEditingAvatar] = useState(false);
   const [newUserData, setNewUserData] = useState({...userData});
-  const [canBeInvited, setCanBeInvited] = useState(null);
+  // const [canBeInvited, setCanBeInvited] = useState(null);
   const [avatarUpload, setAvatarUpload] = useState(null);
 
   const updateForm = (prop) => (e) => {
@@ -261,7 +261,7 @@ function Profile() {
                       className="input input-bordered"
                       value={newUserData?.address}
                       onChange={updateForm("address")}
-                      placeholder="City, Country"
+                      placeholder="City"
                       type="text"
                       id="address"
                       name="address"
