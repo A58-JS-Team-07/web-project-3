@@ -1,17 +1,21 @@
-import Button from "../../Button/Button";
 import { useState } from "react";
 import AddNewContactsList from "../AddNewContactsList/AddNewContactsList";
-function AddNewContactsListModal() {
+import Button from "../../Button/Button";
 
+/**
+ * This component is a wrapper for the AddNewContactsList component.
+ * It opens the modal when the button is clicked.
+ * @returns {JSX.Element}
+ */
+
+function AddNewContactsListModal() {
   const [showModal, setShowModal] = useState(false);
 
   return (
     <div className="mt-5">
-      {/* Open the modal using document.getElementById('ID').showModal() method */}
       <Button onClick={() => setShowModal(!showModal)}>
         Add new list
       </Button>
-
       {showModal ? (
         <div>
           <AddNewContactsList showModal={showModal} setShowModal={setShowModal} />
@@ -22,4 +26,3 @@ function AddNewContactsListModal() {
 }
 
 export default AddNewContactsListModal;
-
