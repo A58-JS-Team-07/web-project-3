@@ -1,12 +1,17 @@
 import { useState, useEffect, useContext } from "react";
+import { ref, onValue } from "firebase/database";
+import { db } from "../../config/firebase-config";
 import { getAllContactsListsByUser } from "../../services/contactsLists.services";
-import AddNewContactsListModal from "../../components/ContactsLists/AddNewContactsListModal/AddNewContactsListModal";
 import { AppContext } from "../../context/AppContext";
+import AddNewContactsListModal from "../../components/ContactsLists/AddNewContactsListModal/AddNewContactsListModal";
 import ContactsListSnippet from "../../components/ContactsLists/ContactsListSnippet/ContactsListSnippet";
 import SingleContactList from "../../components/ContactsLists/SingleContactList/SingleContactList";
 import { getContactsFromList } from "../../services/contactsLists.services";
-import { ref, onValue, set } from "firebase/database";
-import { db } from "../../config/firebase-config";
+
+/**
+ * This component displays the page with all the contacts lists of the user.
+ * @returns {JSX.Element}
+ */
 
 function ContactsLists() {
   const { userData } = useContext(AppContext);
@@ -23,10 +28,6 @@ function ContactsLists() {
           const contactsListsValues = await getAllContactsListsByUser(
             userData.username
           );
-          // setListClicked(!listClicked);
-          // setContactsList(contactsList);
-          console.log("UserData", userData.username);
-          console.log("contactsListsValues", contactsListsValues);
           setContactsLists(contactsListsValues);
         } catch (error) {
           console.error("Error in ContactsLists > fetchContactsLists:", error);
@@ -36,26 +37,16 @@ function ContactsLists() {
     }
   }, [userData]);
 
-  const handleListсClick = (clid) => {
-    setClickedLists((prevState) => ({
-      ...prevState,
-      [clid]: !prevState[clid],
-    }));
-  };
-
   useEffect(() => {
     try {
       const contactsListsRef = ref(db, `contactsLists`);
       return onValue(contactsListsRef, (snapshot) => {
         if (!snapshot.exists()) return setContactsLists([]);
         const contactsListsValues = snapshot.val();
-        // console.log("Object.keys(contactsListsValues)", Object.values(contactsListsValues));
         const contactsLists = Object.values(contactsListsValues).filter(
-          (contactsList) => contactsList.owner === userData.username
+          (contactsList) => contactsList.owner === userData?.username
         );
-        // console.log("contactsLists", contactsLists);
         setContactsLists(contactsLists);
-        console.log("CL", contactsLists);
       });
     } catch (error) {
       console.error("Error in ContactsLists > useEffect:", error);
@@ -68,7 +59,6 @@ function ContactsLists() {
         const contactsValues = await getContactsFromList(contactsList?.clid);
         setContacts(contactsValues);
         setContactsList(contactsList);
-        console.log("contactsList", contactsList);
       } catch (error) {
         console.error("Error in Contacts > fetchContacts:", error);
       }
@@ -78,14 +68,10 @@ function ContactsLists() {
   }, [listClicked]);
 
   const handleListClick = (contactsList) => {
-    // console.log("List Clicked1", listClicked);
     setListClicked(!listClicked);
     setContactsList(contactsList);
-    // console.log("List", contactsList);
-    console.log("List Clicked2", listClicked);
   };
 
-  // console.log("ContactsList", contactsList);
   return (
     <div className="min-h-[92%]">
       <h1 className="contacts-lists-page text-3xl font-bold p-6">
