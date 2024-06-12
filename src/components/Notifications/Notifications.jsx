@@ -4,8 +4,14 @@ import { onValue, ref } from "firebase/database";
 import { db } from "../../config/firebase-config";
 import { AppContext } from "../../context/AppContext";
 
+/**
+ * Notifications Component is a reusable component that displays notifications.
+ *
+ * @returns {JSX.Element} - Rendered Notifications component.
+ */
+
 function Notifications() {
-  const { userData, setAppState } = useContext(AppContext);
+  const { userData } = useContext(AppContext);
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
@@ -29,8 +35,6 @@ function Notifications() {
       throw error;
     }
   }, []);
-
-  console.log("notificationsState: ", notifications);
 
   return (
     <div>
@@ -78,8 +82,6 @@ function Notifications() {
                     (notificationUsername) => {
                       const notificationeid =
                         Object.keys(notificationEventId)[0];
-
-                      console.log("notificationEventId: ", notificationeid);
 
                       return Object.keys(notificationUsername).map(
                         (notificationUser) => {

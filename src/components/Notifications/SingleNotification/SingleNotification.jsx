@@ -5,6 +5,15 @@ import { Link } from "react-router-dom";
 import { acceptInvite, deleteInvite } from "../../../services/invites.service";
 import { AppContext } from "../../../context/AppContext";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
+
+/**
+ * SingleNotification Component is a reusable component that displays a single notification.
+ *
+ * @param {Object} props.inviter - The inviter's data.
+ * @param {Object} props.event - The event's data.
+ * @returns {JSX.Element} - Rendered SingleNotification component.
+ */
 
 function SingleNotification({ inviter, event }) {
   const { userData } = useContext(AppContext);
@@ -78,5 +87,10 @@ function SingleNotification({ inviter, event }) {
     </div>
   );
 }
+
+SingleNotification.propTypes = {
+  inviter: PropTypes.string.isRequired,
+  event: PropTypes.string.isRequired,
+};
 
 export default SingleNotification;
