@@ -1,12 +1,12 @@
-import PropTypes from "prop-types";
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AppContext } from "../../../context/AppContext";
+import PropTypes from "prop-types";
 
 /**
- *
+ * Тhis component protects the admin page from unauthorized access.
  * @param {{children: any }} props
- * @returns
+ * @returns {JSX.Element}
  */
 export default function AdminPageProtect({ children }) {
   const { userData } = useContext(AppContext);
