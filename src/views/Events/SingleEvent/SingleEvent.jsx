@@ -216,7 +216,7 @@ function SingleEvent() {
 
         <div className="event-participants">
           <h2 className="text-2xl font-semibold mb-4">Participants:</h2>
-          <div className="participants flex flex-row gap-4">
+          <div className="participants flex flex-row gap-4 flex-wrap">
             {participants.map((participant) => (
               <UserSnippet key={participant.username} user={participant} />
             ))}
