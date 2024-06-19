@@ -1,4 +1,4 @@
-# Web Project 1: Sports Calendar
+# Web Project 3: Sports Calendar
 
 ## Description
 
