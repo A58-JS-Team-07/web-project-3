@@ -5,6 +5,9 @@
 Introducing Sports Calendar: a user-friendly app designed to unite sports enthusiasts in one convenient platform. Here, users can browse all upcoming sports events and add the ones they are interested in to their personal calendar, ensuring they never miss a moment. Users can also create contact lists and invite friends to the events they're participating in, sharing the thrill together. And for those who want to take the lead, users can create their own events—either public for anyone to join or private for just the friends they invite.
 
 DEMO: https://telerik-event-calendar.netlify.app/ <br>
+Credentials:
+email: georgi@mail.com
+pass: 123456789!q
 
 ## Installation
 
