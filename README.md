@@ -44,6 +44,12 @@ react-toastify<br>
 react-icons<br>
 <i>\*no out-of-the-box package used for the calendar functionality</i>
 
+## Future project plans
+Mobile responsibility<br>
+Additional verifications during login, register, profile edit and event creation<br>
+Integration of map API to show in each event a map with evet's location<br>
+Events categorization and filtration
+
 ## Project features
 
 ### Public and Private part
