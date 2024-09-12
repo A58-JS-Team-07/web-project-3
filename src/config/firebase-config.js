@@ -10,11 +10,11 @@ import { FIREBASE_API_KEY, FIREBASE_DATABASE_URL } from "../common/constants";
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
-  authDomain: "telerik-project-3.firebaseapp.com",
-  projectId: "telerik-project-3",
-  storageBucket: "telerik-project-3.appspot.com",
-  messagingSenderId: "459153028848",
-  appId: "1:459153028848:web:e4db7808a7d0c05bdcb435",
+  authDomain: "telerik-project-3-private.firebaseapp.com",
+  projectId: "telerik-project-3-private",
+  storageBucket: "telerik-project-3-private.appspot.com",
+  messagingSenderId: "518873321752",
+  appId: "1:518873321752:web:012d74eeabacce02ef4e6d",
   databaseURL: FIREBASE_DATABASE_URL,
 };
 

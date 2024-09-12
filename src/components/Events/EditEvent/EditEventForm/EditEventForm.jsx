@@ -179,7 +179,7 @@ function EditEventForm({ event, setEvent, setEditEventModal }) {
           image: newImageUrl,
           updatedOn: Date.now(),
         }));
-        setEvent({ ...eventData, image: newImageUrl, updatedOn: Date.now() });
+        await updateEvent(eventData.eid, { ...eventData, image: newImageUrl });
       } else {
         setEvent({ ...eventData, updatedOn: Date.now() });
       }
