@@ -1,10 +1,13 @@
-# Web Project 1: Sports Calendar
+# Web Project 3: Sports Calendar
 
 ## Description
 
 Introducing Sports Calendar: a user-friendly app designed to unite sports enthusiasts in one convenient platform. Here, users can browse all upcoming sports events and add the ones they are interested in to their personal calendar, ensuring they never miss a moment. Users can also create contact lists and invite friends to the events they're participating in, sharing the thrill together. And for those who want to take the lead, users can create their own events—either public for anyone to join or private for just the friends they invite.
 
 DEMO: https://telerik-event-calendar.netlify.app/ <br>
+Credentials:
+email: georgi@mail.com
+pass: 123456789!q
 
 ## Installation
 
@@ -40,6 +43,12 @@ react-datetime<br>
 react-toastify<br>
 react-icons<br>
 <i>\*no out-of-the-box package used for the calendar functionality</i>
+
+## Future project plans
+Mobile responsibility<br>
+Additional verifications during login, register, profile edit and event creation<br>
+Integration of map API to show in each event a map with evet's location<br>
+Events categorization and filtration
 
 ## Project features
 
